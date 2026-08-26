@@ -1,0 +1,17 @@
+node_modules/
+dist/
+out/
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example
+coverage/
+tmp/
+.temp/
+*.log
+playwright/.cache/
+packages/*/dist/
+examples/*/out/
+examples/*/dist/
+out/

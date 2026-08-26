@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "slug": "clip-pip-presenter",
+  "title": "Clip PIP Presenter",
+  "fps": 30,
+  "formats": [
+    { "id": "16x9", "aspectRatio": "16:9", "width": 1280, "height": 720 }
+  ],
+  "assetsRoot": ".",
+  "scenes": [
+    {
+      "id": "01",
+      "title": "Presenter corner",
+      "visualType": "component",
+      "component": "src/scenes/PresenterPip.tsx",
+      "props": {
+        "headline": "Narration lives in the corner.",
+        "detail": "The rest of the frame is motion graphics."
+      },
+      "durationInFrames": 240,
+      "transitionIn": null
+    }
+  ]
+}

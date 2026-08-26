@@ -1,0 +1,64 @@
+{
+  "skills": {
+    "dotskills-create-skill": {
+      "source": "bundled",
+      "branch": null,
+      "version": null,
+      "contentHash": null,
+      "linkedAgents": [
+        "claude",
+        "cursor"
+      ],
+      "installedAt": "2026-07-30T05:25:33.739Z",
+      "updatedAt": "2026-07-30T05:27:59.474Z"
+    },
+    "dotskills-import-skill": {
+      "source": "bundled",
+      "branch": null,
+      "version": null,
+      "contentHash": null,
+      "linkedAgents": [
+        "claude",
+        "cursor"
+      ],
+      "installedAt": "2026-07-30T05:25:33.740Z",
+      "updatedAt": "2026-07-30T05:27:59.474Z"
+    },
+    "designing-training-videos": {
+      "source": "local",
+      "branch": null,
+      "version": null,
+      "contentHash": null,
+      "linkedAgents": [
+        "claude",
+        "cursor"
+      ],
+      "installedAt": "2026-07-30T05:27:59.472Z",
+      "updatedAt": "2026-07-30T05:27:59.473Z"
+    },
+    "release-publish-packages": {
+      "source": "local",
+      "branch": null,
+      "version": null,
+      "contentHash": null,
+      "linkedAgents": [
+        "claude",
+        "cursor"
+      ],
+      "installedAt": "2026-07-30T05:27:59.474Z",
+      "updatedAt": "2026-07-30T05:27:59.474Z"
+    },
+    "video-generate-explainer": {
+      "source": "local",
+      "branch": null,
+      "version": null,
+      "contentHash": null,
+      "linkedAgents": [
+        "claude",
+        "cursor"
+      ],
+      "installedAt": "2026-07-30T05:27:59.474Z",
+      "updatedAt": "2026-07-30T05:27:59.474Z"
+    }
+  }
+}

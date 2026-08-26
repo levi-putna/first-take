@@ -1,0 +1,35 @@
+{
+  "name": "@storyboard/preview",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "app"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@storyboard/core": "0.1.0",
+    "@storyboard/media": "0.1.0",
+    "@storyboard/schema": "0.1.0",
+    "@storyboard/transitions": "0.1.0",
+    "vite": "^6.3.5"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "tsup": "^8.4.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}

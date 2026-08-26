@@ -1,0 +1,53 @@
+{
+  "name": "storyboard",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Frame-deterministic React video engine for explainer videos",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "yarn workspace @storyboard/schema build && yarn workspace @storyboard/core build && yarn workspace @storyboard/media build && yarn workspace @storyboard/transitions build && yarn workspace @storyboard/renderer build && yarn workspace @storyboard/preview build && yarn workspace @storyboard/cli build",
+    "typecheck": "yarn workspace @storyboard/schema typecheck && yarn workspace @storyboard/core typecheck && yarn workspace @storyboard/media typecheck && yarn workspace @storyboard/transitions typecheck && yarn workspace @storyboard/renderer typecheck && yarn workspace @storyboard/preview typecheck && yarn workspace @storyboard/cli typecheck",
+    "test": "vitest run --project unit --project integration",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:render": "vitest run --project render",
+    "test:smoke": "vitest run --project smoke",
+    "test:update-goldens": "UPDATE_GOLDENS=1 vitest run --project integration",
+    "test:coverage": "vitest run --project unit --coverage",
+    "test:watch": "vitest --project unit",
+    "generate:fixture-audio": "bash scripts/generate-fixture-audio.sh",
+    "storyboard": "node packages/cli/dist/cli.js",
+    "lint": "eslint packages examples --ext .ts,.tsx"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@storyboard/renderer": "0.1.0",
+    "@storyboard/schema": "0.1.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.15.0",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
+    "@vitest/coverage-v8": "^3.1.2",
+    "eslint": "^9.26.0",
+    "execa": "^9.5.2",
+    "jsdom": "^26.1.0",
+    "pixelmatch": "^5.3.0",
+    "pngjs": "^7.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  },
+  "packageManager": "yarn@1.22.22"
+}

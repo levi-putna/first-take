@@ -1,0 +1,7 @@
+{
+  "fps": 30,
+  "durationInFrames": 330,
+  "formats": ["16x9"],
+  "stills": [0, 60, 120, 202],
+  "silent": false
+}

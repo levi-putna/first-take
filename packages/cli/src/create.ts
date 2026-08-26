@@ -1,0 +1,480 @@
+import fs from "node:fs";
+import path from "node:path";
+
+export type CreateVideoOptions = {
+  /** Project slug (folder name and video.json slug). */
+  slug: string;
+  /** Absolute output directory for the new project. */
+  outDir: string;
+  /** Human-readable title. */
+  title: string;
+  /** Include seriesAudio fields pointing at assets/audio placeholders. */
+  withAudio: boolean;
+  /** Overwrite an existing non-empty directory. */
+  force: boolean;
+};
+
+/**
+ * Convert a slug into a package name safe for yarn workspaces.
+ */
+export function packageNameFromSlug({ slug }: { slug: string }): string {
+  const cleaned = slug
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  if (!cleaned) {
+    throw new Error("Slug must contain at least one letter or number");
+  }
+  return `@storyboard/${cleaned}`;
+}
+
+/**
+ * Resolve the default output directory for a new video project.
+ * Prefers `examples/<slug>` when an `examples` folder exists in cwd.
+ */
+export function resolveDefaultOutDir({
+  slug,
+  cwd = process.cwd(),
+}: {
+  slug: string;
+  cwd?: string;
+}): string {
+  const examplesDir = path.join(cwd, "examples");
+  if (fs.existsSync(examplesDir) && fs.statSync(examplesDir).isDirectory()) {
+    return path.join(examplesDir, slug);
+  }
+  return path.join(cwd, slug);
+}
+
+/**
+ * Title-case a slug for display titles.
+ */
+export function titleFromSlug({ slug }: { slug: string }): string {
+  return slug
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function writeFile({
+  filePath,
+  contents,
+}: {
+  filePath: string;
+  contents: string;
+}): void {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, contents, "utf8");
+}
+
+/**
+ * Walk up from a directory looking for tsconfig.base.json.
+ */
+function findTsconfigBase({
+  fromDir,
+}: {
+  fromDir: string;
+}): string | null {
+  let current = path.resolve(fromDir);
+  for (let i = 0; i < 8; i++) {
+    const candidate = path.join(current, "tsconfig.base.json");
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return null;
+}
+
+/**
+ * Scaffold a new Storyboard video project on disk.
+ * @returns list of relative file paths written
+ */
+export function scaffoldVideoProject({
+  slug,
+  outDir,
+  title,
+  withAudio,
+  force,
+}: CreateVideoOptions): string[] {
+  const pkgName = packageNameFromSlug({ slug });
+
+  if (fs.existsSync(outDir)) {
+    const entries = fs.readdirSync(outDir);
+    if (entries.length > 0 && !force) {
+      throw new Error(
+        `Directory already exists and is not empty: ${outDir} (pass --force to overwrite)`,
+      );
+    }
+  } else {
+    fs.mkdirSync(outDir, { recursive: true });
+  }
+
+  const written: string[] = [];
+  const add = ({ rel, contents }: { rel: string; contents: string }) => {
+    writeFile({ filePath: path.join(outDir, rel), contents });
+    written.push(rel);
+  };
+
+  add({
+    rel: "package.json",
+    contents: `${JSON.stringify(
+      {
+        name: pkgName,
+        private: true,
+        version: "0.1.0",
+        type: "module",
+        scripts: {
+          build: 'echo "example — no build"',
+          typecheck: "tsc --noEmit -p tsconfig.json",
+        },
+        dependencies: {
+          "@storyboard/core": "0.1.0",
+          "@storyboard/media": "0.1.0",
+          "@storyboard/transitions": "0.1.0",
+        },
+        devDependencies: {
+          typescript: "^5.8.3",
+          react: "^19.1.0",
+        },
+      },
+      null,
+      2,
+    )}\n`,
+  });
+
+  const baseTsconfig = findTsconfigBase({ fromDir: outDir });
+  const tsconfig = baseTsconfig
+    ? {
+        extends: path
+          .relative(outDir, baseTsconfig)
+          .split(path.sep)
+          .join("/"),
+        compilerOptions: {
+          noEmit: true,
+          rootDir: ".",
+        },
+        include: ["src", "playground.ts"],
+      }
+    : {
+        compilerOptions: {
+          target: "ES2022",
+          module: "ESNext",
+          moduleResolution: "bundler",
+          jsx: "react-jsx",
+          strict: true,
+          noEmit: true,
+          rootDir: ".",
+          skipLibCheck: true,
+        },
+        include: ["src", "playground.ts"],
+      };
+
+  add({
+    rel: "tsconfig.json",
+    contents: `${JSON.stringify(tsconfig, null, 2)}\n`,
+  });
+
+  const seriesAudio = withAudio
+    ? {
+        leadInSeconds: 4,
+        jingle: "assets/audio/intro-jingle.mp3",
+        bed: "assets/audio/bed-loop.mp3",
+        narration: "assets/audio/narration.mp3",
+        jingleVolume: 0.55,
+        bedVolumeUnderVo: 0.12,
+        bedVolumeLeadIn: 0.08,
+        jingleFadeOutSeconds: 0.6,
+        bedFadeInSeconds: 0.8,
+        bedFadeOutSeconds: 1.2,
+        tailSeconds: 0.5,
+      }
+    : undefined;
+
+  const manifest = {
+    schemaVersion: 1,
+    slug,
+    title,
+    fps: 30,
+    formats: [
+      { id: "16x9", aspectRatio: "16:9", width: 1920, height: 1080 },
+      { id: "9x16", aspectRatio: "9:16", width: 1080, height: 1920 },
+    ],
+    assetsRoot: ".",
+    leadIn: {
+      component: "src/components/LeadIn.tsx",
+      props: { label: title },
+    },
+    ...(seriesAudio ? { seriesAudio } : {}),
+    scenes: [
+      {
+        id: "01",
+        title: "Intro",
+        visualType: "component",
+        component: "src/scenes/01-Intro.tsx",
+        props: {
+          headline: "Replace this headline.",
+        },
+        durationInFrames: 90,
+        transitionIn: null,
+      },
+      {
+        id: "02",
+        title: "Point",
+        visualType: "component",
+        component: "src/scenes/02-Point.tsx",
+        props: {
+          headline: "Add your second beat here.",
+        },
+        durationInFrames: 120,
+        transitionIn: { type: "fade", durationInFrames: 15 },
+      },
+    ],
+  };
+
+  add({
+    rel: "video.json",
+    contents: `${JSON.stringify(manifest, null, 2)}\n`,
+  });
+
+  add({
+    rel: "playground.ts",
+    contents: `import IntroScene from "./src/scenes/01-Intro";
+import PointScene from "./src/scenes/02-Point";
+import LeadIn from "./src/components/LeadIn";
+
+/**
+ * Component playground registry for preview mode.
+ */
+export const playground = [
+  {
+    id: "LeadIn",
+    component: LeadIn,
+    defaultProps: { label: ${JSON.stringify(title)} },
+    durationInFrames: 120,
+  },
+  {
+    id: "Intro",
+    component: IntroScene,
+    defaultProps: { headline: "Replace this headline." },
+    durationInFrames: 90,
+  },
+  {
+    id: "Point",
+    component: PointScene,
+    defaultProps: { headline: "Add your second beat here." },
+    durationInFrames: 120,
+  },
+];
+`,
+  });
+
+  add({
+    rel: "src/components/LeadIn.tsx",
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+
+/**
+ * Brand hold during the series-audio lead-in (or opening bumper).
+ */
+export default function LeadIn({ label = ${JSON.stringify(title)} }: { label?: string }) {
+  const frame = useCurrentFrame();
+  const { fps, width, height } = useVideoConfig();
+  const opacity = interpolate(frame, [0, 0.4 * fps], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+
+  return (
+    <AbsoluteFill
+      style={{
+        background: "linear-gradient(160deg, #0b1220 0%, #152238 100%)",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity,
+      }}
+    >
+      {/* Brand mark */}
+      <div
+        style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontSize: Math.min(width, height) * 0.08,
+          color: "#f4f7ff",
+          letterSpacing: "0.04em",
+        }}
+      >
+        {label}
+      </div>
+    </AbsoluteFill>
+  );
+}
+`,
+  });
+
+  add({
+    rel: "src/scenes/01-Intro.tsx",
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+
+/**
+ * Opening scene — headline fades in.
+ */
+export default function IntroScene({
+  headline = "Replace this headline.",
+}: {
+  headline?: string;
+}) {
+  const frame = useCurrentFrame();
+  const { fps, width } = useVideoConfig();
+  const opacity = interpolate(frame, [0, 0.5 * fps], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+  const y = interpolate(frame, [0, 0.5 * fps], [24, 0], {
+    extrapolateRight: "clamp",
+  });
+
+  return (
+    <AbsoluteFill
+      style={{
+        backgroundColor: "#0e1524",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: width * 0.08,
+      }}
+    >
+      {/* Headline */}
+      <div
+        style={{
+          opacity,
+          transform: \`translateY(\${y}px)\`,
+          color: "#f2f5fb",
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontSize: Math.max(36, width * 0.045),
+          textAlign: "center",
+          lineHeight: 1.25,
+          maxWidth: "18em",
+        }}
+      >
+        {headline}
+      </div>
+    </AbsoluteFill>
+  );
+}
+`,
+  });
+
+  add({
+    rel: "src/scenes/02-Point.tsx",
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+
+/**
+ * Second beat — supporting headline after a fade transition.
+ */
+export default function PointScene({
+  headline = "Add your second beat here.",
+}: {
+  headline?: string;
+}) {
+  const frame = useCurrentFrame();
+  const { fps, width } = useVideoConfig();
+  const opacity = interpolate(frame, [0, 0.4 * fps], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+
+  return (
+    <AbsoluteFill
+      style={{
+        backgroundColor: "#0e1524",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: width * 0.08,
+      }}
+    >
+      {/* Supporting line */}
+      <div
+        style={{
+          opacity,
+          color: "#d7deed",
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontSize: Math.max(28, width * 0.035),
+          textAlign: "center",
+          maxWidth: "16em",
+        }}
+      >
+        {headline}
+      </div>
+    </AbsoluteFill>
+  );
+}
+`,
+  });
+
+  add({
+    rel: "assets/audio/.gitkeep",
+    contents: "",
+  });
+
+  add({
+    rel: "assets/audio/README.md",
+    contents: `# Audio assets
+
+Place series audio files here when you are ready to mux sound:
+
+| File | Role |
+|------|------|
+| \`intro-jingle.mp3\` | Plays during the lead-in |
+| \`bed-loop.mp3\` | Soft bed under narration |
+| \`narration.mp3\` | Continuous voice-over |
+
+Then add a \`seriesAudio\` block to \`video.json\` (or re-run \`storyboard create\` with \`--with-audio\`) and point the paths at these files.
+
+Until audio files exist, validate with:
+
+\`\`\`bash
+yarn storyboard validate video.json --no-assets
+\`\`\`
+
+Or render silently:
+
+\`\`\`bash
+yarn storyboard render video.json --silent
+\`\`\`
+`,
+  });
+
+  add({
+    rel: "README.md",
+    contents: `# ${title}
+
+Scaffolded Storyboard video project (\`${slug}\`).
+
+## Next steps
+
+1. Edit \`src/scenes/\` and \`src/components/LeadIn.tsx\`.
+2. Adjust timeline, formats, and props in \`video.json\`.
+3. ${
+      withAudio
+        ? "Drop \`intro-jingle.mp3\`, \`bed-loop.mp3\`, and \`narration.mp3\` into \`assets/audio/\` (see that folder's README)."
+        : "Optional: add audio under \`assets/audio/\` and a \`seriesAudio\` block in \`video.json\`."
+    }
+
+## Commands
+
+From the monorepo root:
+
+\`\`\`bash
+yarn storyboard validate <this-folder>/video.json${withAudio ? " --no-assets" : ""}
+yarn storyboard preview <this-folder>/video.json
+yarn storyboard still <this-folder>/video.json --frame=0 --out=out/still.png
+yarn storyboard render <this-folder>/video.json${withAudio ? " --silent" : ""}
+\`\`\`
+
+${
+  withAudio
+    ? "Until audio files exist, keep using `--no-assets` / `--silent`, or remove `seriesAudio` from `video.json`.\n\n"
+    : ""
+}See the root [authoring guide](../../.doc/07-authoring-guide.md).
+`,
+  });
+
+  return written;
+}

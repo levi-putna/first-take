@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "slug": "solid-frames",
+  "title": "Solid Frames",
+  "fps": 30,
+  "formats": [
+    { "id": "16x9", "aspectRatio": "16:9", "width": 640, "height": 360 }
+  ],
+  "assetsRoot": ".",
+  "scenes": [
+    {
+      "id": "01",
+      "title": "Solid",
+      "visualType": "component",
+      "component": "src/scenes/Solid.tsx",
+      "props": {},
+      "durationInFrames": 30,
+      "transitionIn": null
+    }
+  ]
+}

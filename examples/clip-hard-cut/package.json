@@ -1,0 +1,18 @@
+{
+  "name": "@storyboard/clip-hard-cut",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "echo \"example — no build\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@storyboard/core": "0.1.0",
+    "@storyboard/media": "0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "react": "^19.1.0"
+  }
+}

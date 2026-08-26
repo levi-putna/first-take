@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "slug": "clip-overlay-shapes",
+  "title": "Clip Overlay Shapes",
+  "fps": 30,
+  "formats": [
+    { "id": "16x9", "aspectRatio": "16:9", "width": 1280, "height": 720 }
+  ],
+  "assetsRoot": ".",
+  "scenes": [
+    {
+      "id": "01",
+      "title": "Shapes over video",
+      "visualType": "component",
+      "component": "src/scenes/OverlayShapes.tsx",
+      "props": {},
+      "durationInFrames": 240,
+      "transitionIn": null
+    }
+  ]
+}

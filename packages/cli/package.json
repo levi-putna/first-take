@@ -1,0 +1,26 @@
+{
+  "name": "@storyboard/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "storyboard": "./dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "storyboard": "node ./dist/cli.js"
+  },
+  "dependencies": {
+    "@storyboard/preview": "0.1.0",
+    "@storyboard/renderer": "0.1.0",
+    "@storyboard/schema": "0.1.0",
+    "commander": "^13.1.0",
+    "consola": "^3.4.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "tsup": "^8.4.0"
+  }
+}

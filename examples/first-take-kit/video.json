@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "slug": "first-take-kit",
+  "title": "First Take scene kit",
+  "fps": 30,
+  "formats": [
+    { "id": "16x9", "aspectRatio": "16:9", "width": 1920, "height": 1080 }
+  ],
+  "scenes": [
+    {
+      "id": "title",
+      "title": "Title",
+      "visualType": "component",
+      "component": "scenes/TitleCard.tsx",
+      "props": { "headline": "First Take", "subtitle": "Editor scene kit" },
+      "durationInFrames": 90,
+      "transitionIn": null
+    }
+  ]
+}

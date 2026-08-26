@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "slug": "hello-explainer",
+  "title": "Hello Explainer",
+  "fps": 30,
+  "formats": [
+    { "id": "16x9", "aspectRatio": "16:9", "width": 1920, "height": 1080 },
+    { "id": "9x16", "aspectRatio": "9:16", "width": 1080, "height": 1920 }
+  ],
+  "assetsRoot": ".",
+  "leadIn": {
+    "component": "src/components/LeadIn.tsx",
+    "props": { "label": "Storyboard" }
+  },
+  "seriesAudio": {
+    "leadInSeconds": 4,
+    "jingle": "assets/audio/intro-jingle.mp3",
+    "bed": "assets/audio/bed-loop.mp3",
+    "narration": "assets/audio/narration.mp3",
+    "jingleVolume": 0.55,
+    "bedVolumeUnderVo": 0.12,
+    "bedVolumeLeadIn": 0.08,
+    "jingleFadeOutSeconds": 0.6,
+    "bedFadeInSeconds": 0.8,
+    "bedFadeOutSeconds": 1.2,
+    "tailSeconds": 0.5
+  },
+  "scenes": [
+    {
+      "id": "01",
+      "title": "Hook",
+      "visualType": "component",
+      "component": "src/scenes/01-Hook.tsx",
+      "props": {
+        "headline": "You hit Tab. Nothing highlights."
+      },
+      "durationInFrames": 90,
+      "audioStartSeconds": 0,
+      "audioEndSeconds": 2.8,
+      "narration": "You hit Tab. Nothing highlights.",
+      "transitionIn": null
+    },
+    {
+      "id": "02",
+      "title": "Fix",
+      "visualType": "component",
+      "component": "src/scenes/02-Fix.tsx",
+      "props": {
+        "headline": "Focus rings make the path obvious."
+      },
+      "durationInFrames": 120,
+      "audioStartSeconds": 2.8,
+      "audioEndSeconds": 6.5,
+      "narration": "Focus rings make the path obvious.",
+      "transitionIn": { "type": "fade", "durationInFrames": 15 }
+    }
+  ]
+}
