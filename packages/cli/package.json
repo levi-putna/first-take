@@ -1,6 +1,6 @@
 {
   "name": "@levi-putna/storyboard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "bin": {
     "storyboard": "./dist/cli.js"
@@ -15,9 +15,9 @@
     "storyboard": "node ./dist/cli.js"
   },
   "dependencies": {
-    "@levi-putna/storyboard-preview": "0.1.0",
-    "@levi-putna/storyboard-renderer": "0.1.0",
-    "@levi-putna/storyboard-schema": "0.1.0",
+    "@levi-putna/storyboard-preview": "0.2.0",
+    "@levi-putna/storyboard-renderer": "0.2.0",
+    "@levi-putna/storyboard-schema": "0.2.0",
     "commander": "^13.1.0",
     "consola": "^3.4.2",
     "react": "^19.1.0",

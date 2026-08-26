@@ -1,6 +1,6 @@
 {
   "name": "@levi-putna/storyboard-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,7 +24,7 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@levi-putna/storyboard-schema": "0.1.0"
+    "@levi-putna/storyboard-schema": "0.2.0"
   },
   "devDependencies": {
     "typescript": "^5.8.3",

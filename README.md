@@ -2,6 +2,8 @@
 
 Frame-deterministic React video engine. You write scenes as React components, describe the timeline in `video.json`, and the CLI renders an MP4.
 
+It is designed for **coding agents** as much as for humans: structured artefacts, a closed CLI loop, and a playbook so an agent can direct a video and generate the content without a black-box generator.
+
 [![npm](https://img.shields.io/npm/v/@levi-putna/storyboard)](https://www.npmjs.com/package/@levi-putna/storyboard)
 [![node](https://img.shields.io/node/v/@levi-putna/storyboard)](https://nodejs.org)
 [![license](https://img.shields.io/github/license/levi-putna/storyboard)](./LICENSE)
@@ -12,7 +14,36 @@ npx @levi-putna/storyboard --help
 
 Motion is a function of the current frame. Same inputs always produce the same pixels, so renders stay reproducible.
 
-**Agents:** read [`AGENT-README.md`](./AGENT-README.md) before scaffolding a video, writing scene components, or editing `video.json`. It covers the component contract, timeline ownership, motion APIs, and which example to copy.
+## Designed for agents
+
+Storyboard treats video the way agents already treat software. You give a brief; the agent writes React scenes, updates a JSON timeline, validates, captures stills, and renders an MP4. Continuity comes from **shared components and props**, not from hoping a generative model keeps the same desk in every shot.
+
+Point the agent at [`AGENT-README.md`](./AGENT-README.md) before it scaffolds a project, writes a scene, or edits `video.json`. That file is the contract: component rules, timeline ownership, motion APIs, and which example to copy.
+
+### Why this is easy to direct
+
+| What agents get | Why it matters |
+|-----------------|----------------|
+| Declarative `video.json` | Order, duration, tracks, formats, and props are data. Agents edit JSON instead of a hidden edit decision list. |
+| Pure React scenes | Each scene is a default-exported component with JSON-serialisable props. Motion is `f(frame, props)`. |
+| Deterministic pixels | The same files always produce the same frames, so iterate-and-diff actually works. |
+| A closed CLI loop | `create` → write → `validate` → `still` → `preview` → `render`. Broken motion shows up in stills before you wait on an encode. |
+| Copyable examples | Motion patterns, overlays, clips, audio mix, dual format. Start from the closest example; do not invent from scratch. |
+
+You stay the director: review stills and the [preview studio](#preview), change the brief, and ask for another pass. Revisions are code edits, not "regenerate and hope".
+
+### Generate content
+
+For a full explainer (brief → script → scenes → narration sync → render → critic), use the [`video-generate-explainer`](.claude/skills/video-generate-explainer/SKILL.md) skill. Instructional design (what to teach, beat structure) is [`designing-training-videos`](.claude/skills/designing-training-videos/SKILL.md).
+
+Typical loop once a project exists:
+
+```bash
+npx @levi-putna/storyboard validate video.json
+npx @levi-putna/storyboard still video.json --frame=0 --out=out/still.png
+npx @levi-putna/storyboard preview video.json
+npx @levi-putna/storyboard render video.json --format=16x9
+```
 
 ## Requirements
 
@@ -60,7 +91,7 @@ Then:
 
 Drive all motion from `useCurrentFrame()`. Do not use CSS transitions or animations. Scenes are pure React components with props; `video.json` owns the timeline.
 
-Agent playbook: [`AGENT-README.md`](./AGENT-README.md).  
+Agent playbook (read this first): [`AGENT-README.md`](./AGENT-README.md).  
 Authoring detail: [`.doc/07-authoring-guide.md`](.doc/07-authoring-guide.md).  
 Component contract: [`.doc/10-component-requirements.md`](.doc/10-component-requirements.md).  
 Real footage (trim, PIP, overlays): [`.doc/09-video-clips.md`](.doc/09-video-clips.md).
@@ -186,7 +217,7 @@ Golden stills and render fixtures live under [`examples/`](./examples/README.md)
 
 ### Documentation
 
-Architecture, requirements, and the timing model live in [`.doc/`](.doc/). Playable examples: [`examples/README.md`](./examples/README.md). Agent playbook for generating videos: [`AGENT-README.md`](./AGENT-README.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md).
+Architecture, requirements, and the timing model live in [`.doc/`](.doc/). Playable examples: [`examples/README.md`](./examples/README.md). Agent playbook: [`AGENT-README.md`](./AGENT-README.md). Explainer production skill: [`.claude/skills/video-generate-explainer/SKILL.md`](.claude/skills/video-generate-explainer/SKILL.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md).
 
 Issues and pull requests: [github.com/levi-putna/storyboard](https://github.com/levi-putna/storyboard).
 
