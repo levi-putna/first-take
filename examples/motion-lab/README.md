@@ -2,6 +2,14 @@
 
 Example composition for checking common frame-driven animations and timeline consistency. All eight scenes sit on one visual track with sequential fades between them.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Scenes
 
 | # | Pattern |

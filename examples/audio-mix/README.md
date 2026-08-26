@@ -2,6 +2,16 @@
 
 Shows a visual track plus a full-length audio track. The jingle lives on the lead scene; looping bed and narration live on a transparent mix scene via props.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
+Unmute the player to hear the jingle, bed, and narration.
+
 ## Tracks
 
 | Track | Scenes |

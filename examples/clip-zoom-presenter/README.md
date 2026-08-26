@@ -2,6 +2,14 @@
 
 Ken Burns-style zoom on a presenter clip: ease in, hold, ease out. Scale is a function of `useCurrentFrame()`.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Scenes |

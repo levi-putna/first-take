@@ -2,6 +2,14 @@
 
 A long source clip trimmed inside `<Video>` (`startFrom` / `endAt`) while the scene duration is shorter than the file. The rest of the source is never shown.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Scenes |

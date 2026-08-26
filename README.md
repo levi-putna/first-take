@@ -58,12 +58,37 @@ Then:
 2. Adjust tracks, formats, and props in `video.json`. Spec: [`.doc/06-video-json-schema.md`](.doc/06-video-json-schema.md).
 3. Optional: drop MP3s into `assets/audio/` and play them with `<Audio>` inside a scene.
 
-Drive all motion from `useCurrentFrame()`. Do not use CSS transitions or animations. Scenes are pure React components with props; `video.json` owns the timeline. Double-click a timeline clip to isolate a scene. Editing props in the sidebar is a live preview override and does not write the file.
+Drive all motion from `useCurrentFrame()`. Do not use CSS transitions or animations. Scenes are pure React components with props; `video.json` owns the timeline.
 
 Agent playbook: [`AGENT-README.md`](./AGENT-README.md).  
 Authoring detail: [`.doc/07-authoring-guide.md`](.doc/07-authoring-guide.md).  
 Component contract: [`.doc/10-component-requirements.md`](.doc/10-component-requirements.md).  
 Real footage (trim, PIP, overlays): [`.doc/09-video-clips.md`](.doc/09-video-clips.md).
+
+## Preview
+
+`preview` opens a local studio in the browser. It plays the same React scenes and `video.json` timeline as render, so the stage matches the MP4.
+
+![Storyboard preview studio showing the track-overlay example: composition stage, scene sidebar, and multi-lane timeline](./img/preview-studio.png)
+
+The screenshot is [`track-overlay`](./examples/track-overlay/README.md): a full-length background, two lower thirds with a gap between them, and a corner badge on its own track.
+
+The studio is split into three panes:
+
+- **Sidebar** — scenes grouped by track, plus a props inspector for the selection
+- **Stage** — the composition at the current format (switch 16:9 / 9:16, or add a format, from the toolbar)
+- **Timeline** — play / pause, mute, timecode, and one lane per track
+
+While authoring:
+
+- Play and scrub the playhead. Mute lives in the dock. Preview audio is audible but not sample-accurate.
+- Double-click a clip to isolate that scene on a local clock. Other tracks unmount, including their audio. Back restores the full video.
+- Sidebar prop edits are live overrides and do not write `video.json`.
+
+```bash
+npx @levi-putna/storyboard preview video.json
+npx @levi-putna/storyboard preview video.json --port=3333 --no-open
+```
 
 ## CLI
 
@@ -110,7 +135,7 @@ yarn build
 
 ### Examples
 
-Compositions in [`examples/`](./examples/) are workspaces. After install and build, preview or render any of them:
+Compositions in [`examples/`](./examples/README.md) are workspaces. Each example README embeds a playable `preview.mp4` (16:9, plus 9:16 where the composition has both). After install and build, preview or render any of them:
 
 ```bash
 npx @levi-putna/storyboard validate examples/hello-explainer/video.json
@@ -123,23 +148,23 @@ npx @levi-putna/storyboard render examples/hello-explainer/video.json
 
 | Example | What it does |
 |---------|----------------|
-| [`hello-explainer`](./examples/hello-explainer/) | Dual-format explainer: visual track + spanning mix (jingle, bed, narration) |
-| [`track-overlay`](./examples/track-overlay/) | Long background, gapped transparent overlays, corner badge for z-order |
-| [`first-take-kit`](./examples/first-take-kit/) | `TitleCard` scene used by the First Take macOS editor |
-| [`motion-basics`](./examples/motion-basics/) | Frame-driven `interpolate` and `spring` on a simple block |
-| [`motion-lab`](./examples/motion-lab/) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |
-| [`solid-frames`](./examples/solid-frames/) | Solid colour hold (deterministic paint fixture) |
-| [`fade-overlap`](./examples/fade-overlap/) | Two scenes with a 10-frame fade; total duration is sum minus overlap |
-| [`multi-format`](./examples/multi-format/) | Same composition rendered in 16:9 and 9:16 |
-| [`audio-mix`](./examples/audio-mix/) | Visual track plus in-scene jingle / looping bed / narration |
-| [`audio-volume-fade`](./examples/audio-volume-fade/) | Looped bed with a V-shaped volume envelope (fade out, then back in) |
-| [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/) | Full-screen clip trimmed with `startFrom` / `endAt` |
-| [`clip-pip-presenter`](./examples/clip-pip-presenter/) | Presenter picture-in-picture in the corner over motion graphics |
-| [`clip-overlay-shapes`](./examples/clip-overlay-shapes/) | Full-screen clip with animated shapes on top |
-| [`clip-zoom-presenter`](./examples/clip-zoom-presenter/) | Ken Burns zoom in, hold, then zoom out on presenter footage |
-| [`clip-hard-cut`](./examples/clip-hard-cut/) | Two clips back-to-back with no transition |
-| [`clip-sound-move`](./examples/clip-sound-move/) | Sound-on clip that drifts around the frame |
-| [`timeline-alignment`](./examples/timeline-alignment/) | 5-minute fixture: colour holds every 10s plus a per-second counter overlay |
+| [`hello-explainer`](./examples/hello-explainer/README.md) | Dual-format explainer: visual track + spanning mix (jingle, bed, narration) |
+| [`track-overlay`](./examples/track-overlay/README.md) | Long background, gapped transparent overlays, corner badge for z-order |
+| [`first-take-kit`](./examples/first-take-kit/README.md) | `TitleCard` scene used by the First Take macOS editor |
+| [`motion-basics`](./examples/motion-basics/README.md) | Frame-driven `interpolate` and `spring` on a simple block |
+| [`motion-lab`](./examples/motion-lab/README.md) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |
+| [`solid-frames`](./examples/solid-frames/README.md) | Solid colour hold (deterministic paint fixture) |
+| [`fade-overlap`](./examples/fade-overlap/README.md) | Two scenes with a 10-frame fade; total duration is sum minus overlap |
+| [`multi-format`](./examples/multi-format/README.md) | Same composition rendered in 16:9 and 9:16 |
+| [`audio-mix`](./examples/audio-mix/README.md) | Visual track plus in-scene jingle / looping bed / narration |
+| [`audio-volume-fade`](./examples/audio-volume-fade/README.md) | Looped bed with a V-shaped volume envelope (fade out, then back in) |
+| [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/README.md) | Full-screen clip trimmed with `startFrom` / `endAt` |
+| [`clip-pip-presenter`](./examples/clip-pip-presenter/README.md) | Presenter picture-in-picture in the corner over motion graphics |
+| [`clip-overlay-shapes`](./examples/clip-overlay-shapes/README.md) | Full-screen clip with animated shapes on top |
+| [`clip-zoom-presenter`](./examples/clip-zoom-presenter/README.md) | Ken Burns zoom in, hold, then zoom out on presenter footage |
+| [`clip-hard-cut`](./examples/clip-hard-cut/README.md) | Two clips back-to-back with no transition |
+| [`clip-sound-move`](./examples/clip-sound-move/README.md) | Sound-on clip that drifts around the frame |
+| [`timeline-alignment`](./examples/timeline-alignment/README.md) | 5-minute fixture: colour holds every 10s plus a per-second counter overlay |
 
 ### Tests
 
@@ -157,11 +182,11 @@ Full strategy, fixture catalogue, and accuracy contract: [`.doc/08-testing-strat
 
 After intentional visual changes, run `yarn test:update-goldens`, inspect the PNGs under `examples/*/expected/`, and commit them with the code.
 
-Golden stills and render fixtures live under [`examples/`](./examples/). `motion-lab` also re-renders sampled frames twice and pixel-compares them for determinism. Regenerate synthetic audio for `audio-mix` with `yarn generate:fixture-audio`.
+Golden stills and render fixtures live under [`examples/`](./examples/README.md). `motion-lab` also re-renders sampled frames twice and pixel-compares them for determinism. Regenerate synthetic audio for `audio-mix` with `yarn generate:fixture-audio`.
 
 ### Documentation
 
-Architecture, requirements, and the timing model live in [`.doc/`](.doc/). Agent playbook for generating videos: [`AGENT-README.md`](./AGENT-README.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md).
+Architecture, requirements, and the timing model live in [`.doc/`](.doc/). Playable examples: [`examples/README.md`](./examples/README.md). Agent playbook for generating videos: [`AGENT-README.md`](./AGENT-README.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md).
 
 Issues and pull requests: [github.com/levi-putna/storyboard](https://github.com/levi-putna/storyboard).
 

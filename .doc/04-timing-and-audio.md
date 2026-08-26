@@ -18,7 +18,7 @@ Sequence duration, not the whole composition, so a looping bed in a 90-frame
 scene lasts 90 frames.
 
 A full-length bed is a scene whose `durationInFrames` equals the video (see
-`examples/audio-mix` and `create --with-audio`). Tracks do not auto-stretch.
+[`examples/audio-mix`](../examples/audio-mix/README.md) and `create --with-audio`). Tracks do not auto-stretch.
 
 ## 2. Units
 
@@ -61,9 +61,9 @@ durationInFrames = round((audioEndSeconds - audioStartSeconds) * fps) + LEAD_OUT
 
 Those seconds are authoring math only. They are not schema fields.
 
-Worked files: [`examples/hello-explainer`](../examples/hello-explainer/),
-[`examples/audio-mix`](../examples/audio-mix/),
-[`examples/audio-volume-fade`](../examples/audio-volume-fade/).
+Worked files: [`examples/hello-explainer`](../examples/hello-explainer/README.md),
+[`examples/audio-mix`](../examples/audio-mix/README.md),
+[`examples/audio-volume-fade`](../examples/audio-volume-fade/README.md).
 
 ## 5. Volume envelopes
 

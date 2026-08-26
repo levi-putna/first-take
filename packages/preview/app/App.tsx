@@ -19,11 +19,17 @@ import { PropFields } from "./PropFields";
 import { Timeline } from "./Timeline";
 import {
   clampDockHeight,
+  clampSidebarWidth,
   DOCK_DEFAULT_HEIGHT,
   DOCK_HEIGHT_STORAGE_KEY,
   DOCK_MAX_HEIGHT,
   DOCK_MIN_HEIGHT,
   readStoredDockHeight,
+  readStoredSidebarWidth,
+  SIDEBAR_DEFAULT_WIDTH,
+  SIDEBAR_MAX_WIDTH,
+  SIDEBAR_MIN_WIDTH,
+  SIDEBAR_WIDTH_STORAGE_KEY,
 } from "./dockLayout";
 import {
   clipBySceneId,
@@ -58,6 +64,9 @@ export function App() {
   const [dockHeight, setDockHeight] = useState(DOCK_DEFAULT_HEIGHT);
   const [dockResizing, setDockResizing] = useState(false);
   const dockResizeStart = useRef({ y: 0, height: DOCK_DEFAULT_HEIGHT });
+  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+  const [sidebarResizing, setSidebarResizing] = useState(false);
+  const sidebarResizeStart = useRef({ x: 0, width: SIDEBAR_DEFAULT_WIDTH });
 
   const fullLanes = useMemo(() => timelineLanes({ manifest }), []);
   const firstSceneId = listScenes(manifest)[0]?.id ?? "";
@@ -289,25 +298,34 @@ export function App() {
     }));
   }, [fullLanes]);
 
-  // Restore and clamp dock height when the shell resizes.
+  // Restore and clamp dock + sidebar sizes when the shell resizes.
   useEffect(() => {
     if (isEmbed) return;
 
-    const syncDockHeight = () => {
+    const syncLayoutSizes = () => {
       const shellHeight = shellRef.current?.clientHeight ?? window.innerHeight;
+      const shellWidth = shellRef.current?.clientWidth ?? window.innerWidth;
+
       setDockHeight((current) => {
         const stored = readStoredDockHeight({ shellHeight });
-        const next = clampDockHeight({
+        return clampDockHeight({
           height: stored ?? current,
           shellHeight,
         });
-        return next;
+      });
+
+      setSidebarWidth((current) => {
+        const stored = readStoredSidebarWidth({ shellWidth });
+        return clampSidebarWidth({
+          width: stored ?? current,
+          shellWidth,
+        });
       });
     };
 
-    syncDockHeight();
-    window.addEventListener("resize", syncDockHeight);
-    return () => window.removeEventListener("resize", syncDockHeight);
+    syncLayoutSizes();
+    window.addEventListener("resize", syncLayoutSizes);
+    return () => window.removeEventListener("resize", syncLayoutSizes);
   }, []);
 
   /**
@@ -316,6 +334,14 @@ export function App() {
   function beginDockResize({ clientY }: { clientY: number }) {
     dockResizeStart.current = { y: clientY, height: dockHeight };
     setDockResizing(true);
+  }
+
+  /**
+   * Drag the handle beside the sidebar to resize it.
+   */
+  function beginSidebarResize({ clientX }: { clientX: number }) {
+    sidebarResizeStart.current = { x: clientX, width: sidebarWidth };
+    setSidebarResizing(true);
   }
 
   useEffect(() => {
@@ -347,6 +373,36 @@ export function App() {
       window.removeEventListener("mouseup", onUp);
     };
   }, [dockResizing]);
+
+  useEffect(() => {
+    if (isEmbed || !sidebarResizing) return;
+
+    const onMove = (event: MouseEvent) => {
+      const shellWidth = shellRef.current?.clientWidth ?? window.innerWidth;
+      const delta = event.clientX - sidebarResizeStart.current.x;
+      setSidebarWidth(
+        clampSidebarWidth({
+          width: sidebarResizeStart.current.width + delta,
+          shellWidth,
+        }),
+      );
+    };
+
+    const onUp = () => {
+      setSidebarResizing(false);
+      setSidebarWidth((current) => {
+        window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(current));
+        return current;
+      });
+    };
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [sidebarResizing]);
 
   const selectedScene: Scene | undefined = listScenes(manifest).find(
     (scene) => scene.id === selectedSceneId,
@@ -437,7 +493,7 @@ export function App() {
   return (
     <div
       ref={shellRef}
-      className={`sb-shell${dockResizing ? " is-dock-resizing" : ""}`}
+      className={`sb-shell${dockResizing ? " is-dock-resizing" : ""}${sidebarResizing ? " is-sidebar-resizing" : ""}`}
     >
       {/* Top bar: title / video switcher + format pill */}
       <header className="sb-header">
@@ -455,25 +511,52 @@ export function App() {
 
       <div className="sb-body">
         {/* Left: scenes grouped by track + props inspector */}
-        <Explorer
-          groups={explorerGroups}
-          selectedId={selectedSceneId}
-          onSelect={(id) => selectScene({ sceneId: id })}
-        >
-          <div className="sb-props">
-            <h2>Props</h2>
-            <PropFields
-              key={selectedSceneId}
-              values={selectedProps}
-              onChange={(next) => {
-                setPropOverrides((current) => ({
-                  ...current,
-                  [selectedSceneId]: next,
-                }));
-              }}
-            />
-          </div>
-        </Explorer>
+        <div className="sb-sidebar-host" style={{ width: sidebarWidth }}>
+          <Explorer
+            groups={explorerGroups}
+            selectedId={selectedSceneId}
+            onSelect={(id) => selectScene({ sceneId: id })}
+          >
+            <div className="sb-props">
+              <h2>Props</h2>
+              <PropFields
+                key={selectedSceneId}
+                values={selectedProps}
+                onChange={(next) => {
+                  setPropOverrides((current) => ({
+                    ...current,
+                    [selectedSceneId]: next,
+                  }));
+                }}
+              />
+            </div>
+          </Explorer>
+
+          {/* Sidebar resize handle */}
+          <div
+            className="sb-sidebar-resize-handle"
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize sidebar"
+            aria-valuemin={SIDEBAR_MIN_WIDTH}
+            aria-valuemax={SIDEBAR_MAX_WIDTH}
+            aria-valuenow={sidebarWidth}
+            onMouseDown={(event) => {
+              event.preventDefault();
+              beginSidebarResize({ clientX: event.clientX });
+            }}
+            onDoubleClick={() => {
+              const shellWidth =
+                shellRef.current?.clientWidth ?? window.innerWidth;
+              const next = clampSidebarWidth({
+                width: SIDEBAR_DEFAULT_WIDTH,
+                shellWidth,
+              });
+              setSidebarWidth(next);
+              window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(next));
+            }}
+          />
+        </div>
 
         {stage}
       </div>

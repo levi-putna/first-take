@@ -223,12 +223,14 @@ A looping bed that should last the whole video is a scene whose
 
 ### Stacked overlay
 
-See `examples/track-overlay/video.json`: opaque background track, gapped
+See [`examples/track-overlay`](../examples/track-overlay/README.md)
+(`video.json`): opaque background track, gapped
 transparent overlays, optional third track for z-order.
 
 ### In-scene audio
 
-See `examples/hello-explainer/video.json` and `examples/audio-mix/video.json`:
+See [`examples/hello-explainer`](../examples/hello-explainer/README.md) and
+[`examples/audio-mix`](../examples/audio-mix/README.md):
 visual track plus a spanning mix scene that mounts `<Audio>`.
 
 ---

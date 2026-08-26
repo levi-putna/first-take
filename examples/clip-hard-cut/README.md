@@ -2,6 +2,14 @@
 
 Two sequential `<Video>` clips with no fade. The second scene starts when the first ends (`gapBeforeFrames` is 0, `transitionIn` is null).
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Scenes |

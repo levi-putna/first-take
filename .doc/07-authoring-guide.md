@@ -62,9 +62,10 @@ yarn storyboard preview my-video/video.json
 ```
 
 By default, render/still print progress and errors only. Pass `--verbose` (global) for FFmpeg output and detailed phase logs. `--silent` / `--no-audio` mute audio in the encode — they do not quiet logging.
+
 ## Isolate a scene
 
-Double-click a clip on the preview timeline. That mounts only that scene on a local clock. The sidebar inspector edits props as a live override (it does not write `video.json`). Back restores the full multi-lane timeline.
+Double-click a clip on the preview timeline. That mounts only that scene on a local clock. The sidebar inspector edits props as a live override (it does not write `video.json`). Back restores the full multi-lane timeline. Studio layout: [README.md § Preview](../README.md#preview).
 
 ## Sequences
 

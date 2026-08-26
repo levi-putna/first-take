@@ -21,8 +21,11 @@ Positioning is plain CSS: full-bleed `AbsoluteFill`, or a sized/positioned wrapp
 
 | Project | Demonstrates |
 |---------|----------------|
-| `examples/clip-trim-fullscreen` | Full-screen clip, `startFrom={10}` `endAt={30}` (20s) |
-| `examples/clip-pip-presenter` | Presenter PIP bottom-left + animated graphics |
-| `examples/clip-overlay-shapes` | Full-screen clip with shapes animated on top |
+| [`clip-trim-fullscreen`](../examples/clip-trim-fullscreen/README.md) | Full-screen clip, `startFrom={10}` `endAt={30}` (20s) |
+| [`clip-pip-presenter`](../examples/clip-pip-presenter/README.md) | Presenter PIP bottom-left + animated graphics |
+| [`clip-overlay-shapes`](../examples/clip-overlay-shapes/README.md) | Full-screen clip with shapes animated on top |
+| [`clip-zoom-presenter`](../examples/clip-zoom-presenter/README.md) | Ken Burns zoom in, hold, then zoom out |
+| [`clip-hard-cut`](../examples/clip-hard-cut/README.md) | Two clips back-to-back, no fade |
+| [`clip-sound-move`](../examples/clip-sound-move/README.md) | Sound-on clip that drifts around the frame |
 
-Assets live under each example's `assets/clips/`.
+Assets live under each example's `assets/clips/`. Playable previews: [`examples/README.md`](../examples/README.md).

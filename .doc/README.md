@@ -19,6 +19,8 @@ It is **inspired by** [Remotion](https://github.com/remotion-dev/remotion) (fram
 | [09-video-clips.md](./09-video-clips.md) | Real footage via `<Video />` (trim, PIP, overlays) |
 | [10-component-requirements.md](./10-component-requirements.md) | Normative requirements for scene / lead-in components |
 
+Playable example catalogue: [`examples/README.md`](../examples/README.md). Studio UI: [README.md § Preview](../README.md#preview).
+
 > Note: `.skills/video-generate-explainer` still mentions Remotion APIs in places. Storyboard is the engine those artefacts should target; field mapping is in [04-timing-and-audio.md](./04-timing-and-audio.md).
 
 ## Design intent (short)

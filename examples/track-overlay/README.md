@@ -4,6 +4,14 @@ Stacked tracks with gaps. A long opaque background sits on the bottom. Overlay s
 
 A fade after a gap is a fade-in from empty: it does **not** shorten the track.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Layout |

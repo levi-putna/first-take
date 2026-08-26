@@ -2,6 +2,14 @@
 
 The smallest visual fixture: one solid-colour scene. Used by unit, integration, and render tests.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Scenes |

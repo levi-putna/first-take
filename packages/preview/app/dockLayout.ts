@@ -7,8 +7,22 @@ export const DOCK_RULER_HEIGHT = 28;
 /** One timeline lane row height in pixels. */
 export const DOCK_LANE_HEIGHT = 32;
 
-/** Resize handle between stage and dock. */
-export const DOCK_RESIZE_HANDLE_HEIGHT = 6;
+/** Visual height of the dock resize separator (1px border). */
+export const DOCK_RESIZE_HANDLE_HEIGHT = 1;
+
+/** Default sidebar width in pixels. */
+export const SIDEBAR_DEFAULT_WIDTH = 280;
+
+/** Minimum sidebar width so labels and props stay readable. */
+export const SIDEBAR_MIN_WIDTH = 200;
+
+/** Absolute cap on sidebar width. */
+export const SIDEBAR_MAX_WIDTH = 480;
+
+/** Minimum stage width so the preview never collapses. */
+export const MIN_STAGE_WIDTH = 320;
+
+export const SIDEBAR_WIDTH_STORAGE_KEY = "storyboard-preview-sidebar-width";
 
 /** Top chrome height (header). */
 export const SHELL_HEADER_HEIGHT = 48;
@@ -63,4 +77,36 @@ export function readStoredDockHeight({
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed)) return null;
   return clampDockHeight({ height: parsed, shellHeight });
+}
+
+/**
+ * Clamp sidebar width against sensible min/max for the current shell size.
+ */
+export function clampSidebarWidth({
+  width,
+  shellWidth,
+}: {
+  width: number;
+  shellWidth: number;
+}): number {
+  const maxByViewport = shellWidth - MIN_STAGE_WIDTH;
+  const max = Math.min(SIDEBAR_MAX_WIDTH, maxByViewport);
+  const safeMax = Math.max(SIDEBAR_MIN_WIDTH, max);
+  return Math.min(Math.max(width, SIDEBAR_MIN_WIDTH), safeMax);
+}
+
+/**
+ * Read a persisted sidebar width from localStorage, if valid.
+ */
+export function readStoredSidebarWidth({
+  shellWidth,
+}: {
+  shellWidth: number;
+}): number | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY);
+  if (!raw) return null;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed)) return null;
+  return clampSidebarWidth({ width: parsed, shellWidth });
 }

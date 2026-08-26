@@ -9,7 +9,7 @@ to `tracks[]` and in-scene `<Audio>`:
 - Opening bumper → a visual scene (jingle as a prop + `<Audio>` on that scene)
 - Looping bed + narration → a spanning transparent scene on an audio track
   (`durationInFrames` = video length; narration uses `startFromFrame`)
-- See [`examples/hello-explainer`](../../../../examples/hello-explainer/) and
+- See [`examples/hello-explainer`](../../../../examples/hello-explainer/README.md) and
   [`.doc/04-timing-and-audio.md`](../../../../.doc/04-timing-and-audio.md)
 
 The rest of this file describes the **Remotion** explainer pipeline (Gate 7).

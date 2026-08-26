@@ -2,6 +2,14 @@
 
 Two solid colour scenes with a 10-frame crossfade. Sequential `transitionIn` shortens the track: 30 + 30 − 10 = 50 frames.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Scenes |

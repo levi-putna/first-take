@@ -52,7 +52,7 @@ Prefer a small monorepo so the core API can be imported by CLI and preview witho
 | `@levi-putna/storyboard-preview` | Local studio UI |
 | `@levi-putna/storyboard-schema` | Zod (or similar) schemas for `video.json`; types shared with CLI |
 
-Application / demo package (optional early): `examples/hello-explainer` with sample components + JSON.
+Application / demo package: [`examples/hello-explainer`](../examples/hello-explainer/README.md) with sample components + JSON. Full catalogue: [`examples/README.md`](../examples/README.md).
 
 ## 4. Language and platform
 
@@ -160,16 +160,16 @@ storyboard/
     preview/
     schema/
   examples/
+    README.md               # catalogue with links to each example README
     hello-explainer/
+      README.md
+      preview.mp4
       video.json
       src/
-        Root.tsx
-        Composition.tsx
         scenes/
         components/
       assets/
         audio/
-        images/
   package.json              # yarn workspaces root
   README.md
 ```

@@ -2,6 +2,14 @@
 
 A single scene of frame-driven motion (`interpolate` from `useCurrentFrame()`). Use it as the smallest motion fixture.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Scenes |

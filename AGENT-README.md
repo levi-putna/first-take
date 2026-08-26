@@ -39,7 +39,7 @@ Pick a working directory first.
 
 Then:
 
-1. **Scaffold** (or copy the closest example under [`examples/`](./examples/)).
+1. **Scaffold** (or copy the closest example under [`examples/`](./examples/README.md)).
 2. **Write shared chrome** (`src/components/`) before scene-specific motion.
 3. **Write scene entries** (`src/scenes/*.tsx`): default export, JSON-friendly props, `AbsoluteFill` root.
 4. **Register** each scene in `video.json` (`tracks[].scenes`, component path relative to the JSON file, `props`, `durationInFrames`).
@@ -168,7 +168,7 @@ export default function HookScene({
 }
 ```
 
-Copy motion patterns from [`examples/motion-lab`](./examples/motion-lab/) (typewriter, float, pulse, slide, stagger, spring, progress, rotate). Copy a full explainer from [`examples/hello-explainer`](./examples/hello-explainer/).
+Copy motion patterns from [`examples/motion-lab`](./examples/motion-lab/README.md) (typewriter, float, pulse, slide, stagger, spring, progress, rotate). Copy a full explainer from [`examples/hello-explainer`](./examples/hello-explainer/README.md).
 
 ### Motion APIs (`@levi-putna/storyboard-core`)
 
@@ -224,11 +224,11 @@ import { staticFile, Video } from "@levi-putna/storyboard-media";
 />
 ```
 
-Clip examples: [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/), [`clip-pip-presenter`](./examples/clip-pip-presenter/), [`clip-overlay-shapes`](./examples/clip-overlay-shapes/), [`clip-zoom-presenter`](./examples/clip-zoom-presenter/), [`clip-hard-cut`](./examples/clip-hard-cut/), [`clip-sound-move`](./examples/clip-sound-move/).
+Clip examples: [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/README.md), [`clip-pip-presenter`](./examples/clip-pip-presenter/README.md), [`clip-overlay-shapes`](./examples/clip-overlay-shapes/README.md), [`clip-zoom-presenter`](./examples/clip-zoom-presenter/README.md), [`clip-hard-cut`](./examples/clip-hard-cut/README.md), [`clip-sound-move`](./examples/clip-sound-move/README.md).
 
 ### Isolate a scene
 
-Double-click a clip on the multi-lane timeline (or use the Back control to restore the full video). Isolation renders only that scene’s component with the current props, local frame `0`, duration = scene length. Other tracks unmount, so their audio unmounts too. The sidebar inspector edits props as a live preview override (it does not write `video.json`).
+Double-click a timeline clip (or use the Back control to restore the full video). Isolation renders only that scene’s component with the current props, local frame `0`, duration = scene length. Other tracks unmount, so their audio unmounts too. The sidebar inspector edits props as a live preview override (it does not write `video.json`). Studio layout: [README.md § Preview](./README.md#preview).
 
 ---
 
@@ -315,7 +315,7 @@ durationInFrames = round((audioEndSeconds - audioStartSeconds) * fps) + LEAD_OUT
 
 4. Put the VO file on a spanning **audio track** and delay it with `<Audio startFromFrame={leadFrames} />`. Put the jingle on the opening visual scene. Put a looping bed on the same mix scene (or a dedicated bed track) with `durationInFrames` equal to the video.
 
-Worked files: [`examples/hello-explainer/video.json`](./examples/hello-explainer/video.json), [`examples/audio-mix`](./examples/audio-mix/), [`examples/audio-volume-fade`](./examples/audio-volume-fade/), [`examples/track-overlay`](./examples/track-overlay/). Timing model: [`.doc/04-timing-and-audio.md`](.doc/04-timing-and-audio.md).
+Worked files: [`examples/hello-explainer`](./examples/hello-explainer/README.md), [`examples/audio-mix`](./examples/audio-mix/README.md), [`examples/audio-volume-fade`](./examples/audio-volume-fade/README.md), [`examples/track-overlay`](./examples/track-overlay/README.md). Timing model: [`.doc/04-timing-and-audio.md`](.doc/04-timing-and-audio.md).
 
 ---
 
@@ -341,23 +341,24 @@ Validate does **not** execute components or type-check props. Broken motion only
 
 | Job | Start from |
 |-----|------------|
-| Full dual-format explainer with in-scene mix | [`examples/hello-explainer`](./examples/hello-explainer/) |
-| Stacked overlay tracks + gaps | [`examples/track-overlay`](./examples/track-overlay/) |
-| Frame-driven motion catalogue | [`examples/motion-lab`](./examples/motion-lab/) |
-| Smallest interpolate + spring | [`examples/motion-basics`](./examples/motion-basics/) |
-| Fade overlap math | [`examples/fade-overlap`](./examples/fade-overlap/) |
-| 16:9 + 9:16 | [`examples/multi-format`](./examples/multi-format/) |
-| Series jingle / bed / narration as scene Audio | [`examples/audio-mix`](./examples/audio-mix/) |
-| Frame-varying `Audio` volume | [`examples/audio-volume-fade`](./examples/audio-volume-fade/) |
-| Trimmed full-screen clip | [`examples/clip-trim-fullscreen`](./examples/clip-trim-fullscreen/) |
-| Presenter PIP + graphics | [`examples/clip-pip-presenter`](./examples/clip-pip-presenter/) |
-| Shapes over footage | [`examples/clip-overlay-shapes`](./examples/clip-overlay-shapes/) |
-| Ken Burns zoom | [`examples/clip-zoom-presenter`](./examples/clip-zoom-presenter/) |
-| Hard cut between clips | [`examples/clip-hard-cut`](./examples/clip-hard-cut/) |
-| Moving clip with sound | [`examples/clip-sound-move`](./examples/clip-sound-move/) |
-| Long timeline alignment (5 min colour holds + second counter) | [`examples/timeline-alignment`](./examples/timeline-alignment/) |
+| Full dual-format explainer with in-scene mix | [`examples/hello-explainer`](./examples/hello-explainer/README.md) |
+| Stacked overlay tracks + gaps | [`examples/track-overlay`](./examples/track-overlay/README.md) |
+| First Take `TitleCard` kit | [`examples/first-take-kit`](./examples/first-take-kit/README.md) |
+| Frame-driven motion catalogue | [`examples/motion-lab`](./examples/motion-lab/README.md) |
+| Smallest interpolate + spring | [`examples/motion-basics`](./examples/motion-basics/README.md) |
+| Fade overlap math | [`examples/fade-overlap`](./examples/fade-overlap/README.md) |
+| 16:9 + 9:16 | [`examples/multi-format`](./examples/multi-format/README.md) |
+| Series jingle / bed / narration as scene Audio | [`examples/audio-mix`](./examples/audio-mix/README.md) |
+| Frame-varying `Audio` volume | [`examples/audio-volume-fade`](./examples/audio-volume-fade/README.md) |
+| Trimmed full-screen clip | [`examples/clip-trim-fullscreen`](./examples/clip-trim-fullscreen/README.md) |
+| Presenter PIP + graphics | [`examples/clip-pip-presenter`](./examples/clip-pip-presenter/README.md) |
+| Shapes over footage | [`examples/clip-overlay-shapes`](./examples/clip-overlay-shapes/README.md) |
+| Ken Burns zoom | [`examples/clip-zoom-presenter`](./examples/clip-zoom-presenter/README.md) |
+| Hard cut between clips | [`examples/clip-hard-cut`](./examples/clip-hard-cut/README.md) |
+| Moving clip with sound | [`examples/clip-sound-move`](./examples/clip-sound-move/README.md) |
+| Long timeline alignment (5 min colour holds + second counter) | [`examples/timeline-alignment`](./examples/timeline-alignment/README.md) |
 
-Descriptions: [README.md](./README.md#examples).
+Playable previews: [`examples/README.md`](./examples/README.md). Descriptions: [README.md](./README.md#examples).
 
 ---
 

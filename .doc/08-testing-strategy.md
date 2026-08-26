@@ -58,7 +58,8 @@ flowchart TB
 
 ### Rendered MP4s
 
-- Do **not** commit MP4s (regenerated in tests; gitignored under `out/` and `examples/*/out/`).
+- Test encodes are regenerated in CI; they are gitignored under `out/` and `examples/*/out/`.
+- Documentation previews (`examples/<slug>/preview.mp4`, plus `preview-9x16.mp4` for dual-format examples) are committed so each example README can play the render. Do not treat those files as test oracles.
 - Assert with ffprobe:
   - Video codec H.264
   - Width / height match the selected format
@@ -74,14 +75,16 @@ Focused fixtures use solid colours and no text (or only optional ASCII without c
 
 | Fixture | Purpose | Key assertions |
 |---------|---------|----------------|
-| `examples/solid-frames` | Deterministic paint | Frames 0 / 15 / 29 solid colours; 30-frame silent MP4 |
-| `examples/fade-overlap` | Transition math + fade | Mid-fade blend; duration = sum − overlap |
-| `examples/multi-format` | 16:9 + 9:16 | Still dimensions; both MP4s same frame count |
-| `examples/audio-mix` | Series audio | AAC present; duration ≈ lead-in + content + tail; silent omits audio |
-| `examples/motion-basics` | interpolate + spring | Stills at known frames |
-| `examples/motion-lab` | Typewriter, float, pulse, slide, stagger, spring, progress, rotate + frame timeline | Sampled stills + dual-render determinism |
-| `examples/hello-explainer` | Full smoke | Lead / scene / mid-fade stills; `test:smoke` both formats |
-| `examples/track-overlay` | Stacked tracks | Background + gapped overlays; silent render |
+| [`solid-frames`](../examples/solid-frames/README.md) | Deterministic paint | Frames 0 / 15 / 29 solid colours; 30-frame silent MP4 |
+| [`fade-overlap`](../examples/fade-overlap/README.md) | Transition math + fade | Mid-fade blend; duration = sum − overlap |
+| [`multi-format`](../examples/multi-format/README.md) | 16:9 + 9:16 | Still dimensions; both MP4s same frame count |
+| [`audio-mix`](../examples/audio-mix/README.md) | Series audio | AAC present; duration ≈ lead-in + content + tail; silent omits audio |
+| [`motion-basics`](../examples/motion-basics/README.md) | interpolate + spring | Stills at known frames |
+| [`motion-lab`](../examples/motion-lab/README.md) | Typewriter, float, pulse, slide, stagger, spring, progress, rotate + frame timeline | Sampled stills + dual-render determinism |
+| [`hello-explainer`](../examples/hello-explainer/README.md) | Full smoke | Lead / scene / mid-fade stills; `test:smoke` both formats |
+| [`track-overlay`](../examples/track-overlay/README.md) | Stacked tracks | Background + gapped overlays; silent render |
+
+Authoring examples (playable README previews; not in the golden / short-render suite): [`first-take-kit`](../examples/first-take-kit/README.md), [`audio-volume-fade`](../examples/audio-volume-fade/README.md), [`clip-trim-fullscreen`](../examples/clip-trim-fullscreen/README.md), [`clip-pip-presenter`](../examples/clip-pip-presenter/README.md), [`clip-overlay-shapes`](../examples/clip-overlay-shapes/README.md), [`clip-zoom-presenter`](../examples/clip-zoom-presenter/README.md), [`clip-hard-cut`](../examples/clip-hard-cut/README.md), [`clip-sound-move`](../examples/clip-sound-move/README.md), [`timeline-alignment`](../examples/timeline-alignment/README.md). Catalogue: [`examples/README.md`](../examples/README.md).
 
 Each fixture includes `expected/expectations.json`:
 

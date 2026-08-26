@@ -4,7 +4,17 @@ Five-minute fixture for checking playhead and clip alignment. The background tra
 
 If a second-clip is on the wrong frame, the overlay outlines the clock in red (`Timeline mismatch`): the declared second no longer matches `floor(absoluteFrame / fps)`. Colour-block labels (`0:00 - 0:10`, `0:10 - 0:20`, ...) should change on the same beat as `0:10`, `0:20`, and so on.
 
-Composition length is 9000 frames (5:00 at 30 fps).
+Composition length is 9000 frames (5:00 at 30 fps). The still below is frame 315 (`0:10` + 15f). Play the full five minutes in the studio — a committed MP4 of this fixture would be too long to keep in git.
+
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+![Timeline alignment at 0:10](./preview.png)
+
+```bash
+yarn storyboard preview examples/timeline-alignment/video.json
+```
 
 ## Tracks
 

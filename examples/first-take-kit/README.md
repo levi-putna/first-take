@@ -6,6 +6,14 @@ Primary templates live in the First Take app (`Sources/FirstTake/Editor/Storyboa
 
 The manifest uses `schemaVersion` 2 `tracks[]` — a breaking change for the adapter. Scene ids must stay unique across tracks.
 
+Catalogue: [examples/README.md](../README.md).
+
+## Preview
+
+<video src="./preview.mp4" controls playsinline width="720"></video>
+
+[Play preview](./preview.mp4)
+
 ## Tracks
 
 | Track | Scenes |

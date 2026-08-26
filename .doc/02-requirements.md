@@ -108,7 +108,7 @@ Example shape (illustrative, not final schema):
 | F-T1 | Scenes play in track order; later tracks paint on top. |
 | F-T2 | Supported transitions: `fade` and hard cut (`null`); fade after a gap is fade-in from empty. |
 | F-T3 | Sequential fade duration overlaps adjacent scenes on that track; total length is max(tracks). |
-| F-T4 | A continuous background is a full-length scene on a lower track (see `examples/track-overlay`). |
+| F-T4 | A continuous background is a full-length scene on a lower track (see [`examples/track-overlay`](../examples/track-overlay/README.md)). |
 
 ### 4.5 Audio
 

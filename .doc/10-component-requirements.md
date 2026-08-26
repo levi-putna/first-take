@@ -226,6 +226,7 @@ Each child still obeys §3.
 
 Double-click a timeline clip to render only that scene on a local clock.
 Sidebar prop edits are live overrides and do not write `video.json`.
+Studio layout: [README.md § Preview](../README.md#preview).
 
 ---
 
