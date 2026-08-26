@@ -114,7 +114,7 @@ While authoring:
 
 - Play and scrub the playhead. Mute lives in the dock. Preview audio is audible but not sample-accurate.
 - Double-click a clip to isolate that scene on a local clock. Other tracks unmount, including their audio. Back restores the full video.
-- Sidebar prop edits are live overrides and do not write `video.json`.
+- Sidebar prop edits are live overrides. **Save to video.json** (or ⌘S / Ctrl+S) writes them to the open file so `render` / `still` pick them up.
 
 ```bash
 npx @levi-putna/storyboard preview video.json

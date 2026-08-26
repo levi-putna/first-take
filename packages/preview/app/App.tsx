@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
+import { Save } from "lucide-react";
 import {
   Sequence,
   StoryboardProvider,
@@ -75,6 +76,11 @@ export function App() {
   const [propOverrides, setPropOverrides] = useState<
     Record<string, Record<string, unknown>>
   >({});
+  const [pendingSave, setPendingSave] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const propOverridesRef = useRef(propOverrides);
+  propOverridesRef.current = propOverrides;
 
   const isolatedScene = isolatedSceneId
     ? listScenes(manifest).find((scene) => scene.id === isolatedSceneId)
@@ -157,6 +163,16 @@ export function App() {
     setIsolatedSceneId(null);
     setPlaying(false);
     setFrame(clip?.startFrame ?? 0);
+  }
+
+  /**
+   * Blur the focused field so it commits, then persist overrides to video.json.
+   */
+  function requestSave() {
+    if (saving || pendingSave) return;
+    const active = document.activeElement;
+    if (active instanceof HTMLElement) active.blur();
+    setPendingSave(true);
   }
 
   // Host bridge for First Take (and other embedders).
@@ -285,6 +301,66 @@ export function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Cmd/Ctrl+S writes live prop overrides back to the open video.json.
+  useEffect(() => {
+    if (isEmbed) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== "s") {
+        return;
+      }
+      event.preventDefault();
+      requestSave();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [saving, pendingSave]);
+
+  // Persist after the render that includes any in-progress field commit.
+  useEffect(() => {
+    if (!pendingSave || isEmbed) return;
+
+    const overrides = propOverridesRef.current;
+    if (Object.keys(overrides).length === 0) {
+      setPendingSave(false);
+      return;
+    }
+
+    let cancelled = false;
+    setSaving(true);
+    setSaveError(null);
+
+    void (async () => {
+      try {
+        const response = await fetch("/__storyboard/save-props", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ overrides }),
+        });
+        const payload = (await response.json()) as {
+          ok?: boolean;
+          errors?: string[];
+        };
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.errors?.join("; ") || "Could not save props");
+        }
+        if (!cancelled) setPropOverrides({});
+      } catch (err) {
+        if (!cancelled) {
+          setSaveError(err instanceof Error ? err.message : String(err));
+        }
+      } finally {
+        if (!cancelled) {
+          setSaving(false);
+          setPendingSave(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pendingSave]);
+
   const explorerGroups: ExplorerGroup[] = useMemo(() => {
     return fullLanes.map((lane, laneIndex) => ({
       trackId: lane.trackId,
@@ -294,9 +370,10 @@ export function App() {
         title: clip.title,
         detail: `${clip.durationInFrames}f`,
         tone: SCENE_TONES[laneIndex % SCENE_TONES.length],
+        dirty: Boolean(propOverrides[clip.sceneId]),
       })),
     }));
-  }, [fullLanes]);
+  }, [fullLanes, propOverrides]);
 
   // Restore and clamp dock + sidebar sizes when the shell resizes.
   useEffect(() => {
@@ -409,6 +486,11 @@ export function App() {
   );
   const selectedProps =
     propOverrides[selectedSceneId] ?? selectedScene?.props ?? {};
+  const dirtyCount = Object.keys(propOverrides).length;
+  const saveHint =
+    typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
+      ? "⌘S"
+      : "Ctrl+S";
 
   const Isolated = isolatedScene
     ? (components[isolatedScene.component] as
@@ -518,7 +600,13 @@ export function App() {
             onSelect={(id) => selectScene({ sceneId: id })}
           >
             <div className="sb-props">
-              <h2>Props</h2>
+              {/* Inspector heading + unsaved marker */}
+              <div className="sb-props-head">
+                <h2>Props</h2>
+                {dirtyCount > 0 ? (
+                  <span className="sb-unsaved">Unsaved</span>
+                ) : null}
+              </div>
               <PropFields
                 key={selectedSceneId}
                 values={selectedProps}
@@ -529,6 +617,22 @@ export function App() {
                   }));
                 }}
               />
+              {/* Persist live overrides to the open video.json */}
+              <button
+                type="button"
+                className="sb-add-btn"
+                disabled={dirtyCount === 0 || saving}
+                title={`Save to video.json (${saveHint})`}
+                onClick={() => requestSave()}
+              >
+                <Save size={14} aria-hidden />
+                {saving
+                  ? "Saving…"
+                  : dirtyCount > 1
+                    ? `Save ${dirtyCount} scenes`
+                    : "Save to video.json"}
+              </button>
+              {saveError ? <p className="sb-error">{saveError}</p> : null}
             </div>
           </Explorer>
 

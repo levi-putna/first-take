@@ -6,6 +6,11 @@ uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Preview studio: **Save to video.json** writes live prop inspector overrides
+  back to the open manifest (⌘S / Ctrl+S).
+
 ## [0.2.0] - 2026-08-26
 
 ### Added

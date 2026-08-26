@@ -240,6 +240,14 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+.sb-dirty-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
 .sb-props {
   border-top: 1px solid var(--border);
   padding: 10px 12px 14px;
@@ -247,13 +255,37 @@ button {
   max-height: 46%;
 }
 
+.sb-props-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
 .sb-props h2 {
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 10px;
   font-weight: 650;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--faint);
+}
+
+.sb-unsaved {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.sb-props .sb-add-btn {
+  margin-top: 4px;
+}
+
+.sb-props .sb-error {
+  margin: 8px 0 0;
 }
 
 .sb-field {

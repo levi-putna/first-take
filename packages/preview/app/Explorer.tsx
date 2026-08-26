@@ -6,6 +6,7 @@ export type ExplorerItem = {
   title: string;
   detail: string;
   tone: string;
+  dirty?: boolean;
 };
 
 export type ExplorerGroup = {
@@ -42,7 +43,7 @@ export function Explorer({
                 <button
                   key={item.id}
                   type="button"
-                  className="sb-row"
+                  className={`sb-row${item.dirty ? " is-dirty" : ""}`}
                   role="option"
                   aria-selected={item.id === selectedId}
                   onClick={() => onSelect(item.id)}
@@ -53,6 +54,13 @@ export function Explorer({
                     <strong>{item.title}</strong>
                     <span>{item.detail}</span>
                   </span>
+                  {item.dirty ? (
+                    <span
+                      className="sb-dirty-dot"
+                      title="Unsaved props"
+                      aria-label="Unsaved props"
+                    />
+                  ) : null}
                 </button>
               ))}
             </div>

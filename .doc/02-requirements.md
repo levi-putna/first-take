@@ -37,7 +37,7 @@ Storyboard is a general-purpose, frame-deterministic React video engine. Require
 |----|-------------|
 | F-C1 | Components are standard React function components with typed props. |
 | F-C2 | Components drive all motion from the engine's current-frame API (local to their sequence). |
-| F-C3 | A scene can be isolated in preview; changing sidebar props is a live override and does not write `video.json`. |
+| F-C3 | A scene can be isolated in preview; changing sidebar props is a live override until Save writes them to `video.json`. |
 | F-C4 | Shared / kit components are importable by many scenes without forking. |
 | F-C5 | Components read `width` / `height` / `fps` from video config for multi-format layout. |
 
@@ -126,7 +126,7 @@ Example shape (illustrative, not final schema):
 | ID | Requirement |
 |----|-------------|
 | F-P1 | Dev preview: scrub frames, play, jump to scene boundaries. |
-| F-P2 | Isolate a scene from the timeline (double-click); sidebar edits props as a live override. |
+| F-P2 | Isolate a scene from the timeline (double-click); sidebar edits props as a live override; Save writes them to `video.json`. |
 | F-P3 | Still capture: export PNG of a given composition frame (for QA stills). |
 | F-P4 | Clear errors when a component uses non-deterministic patterns (lint / docs; automated detection where practical). |
 

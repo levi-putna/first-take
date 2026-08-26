@@ -65,7 +65,7 @@ By default, render/still print progress and errors only. Pass `--verbose` (globa
 
 ## Isolate a scene
 
-Double-click a clip on the preview timeline. That mounts only that scene on a local clock. The sidebar inspector edits props as a live override (it does not write `video.json`). Back restores the full multi-lane timeline. Studio layout: [README.md § Preview](../README.md#preview).
+Double-click a clip on the preview timeline. That mounts only that scene on a local clock. The sidebar inspector edits props as a live override; Save writes them to `video.json`. Back restores the full multi-lane timeline. Studio layout: [README.md § Preview](../README.md#preview).
 
 ## Sequences
 

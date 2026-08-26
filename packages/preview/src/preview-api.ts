@@ -122,6 +122,140 @@ function appendFormatToManifestFile({
 }
 
 /**
+ * Return a non-array object, or null when the value is not that shape.
+ */
+function asPlainObject({
+  value,
+}: {
+  value: unknown;
+}): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+/**
+ * Clone scene props through JSON so only serialisable values are written.
+ */
+function cloneJsonProps({
+  sceneId,
+  props,
+}: {
+  sceneId: string;
+  props: unknown;
+}): { ok: true; props: Record<string, unknown> } | { ok: false; error: string } {
+  if (!asPlainObject({ value: props })) {
+    return {
+      ok: false,
+      error: `Props for scene "${sceneId}" must be a JSON object`,
+    };
+  }
+  try {
+    const cloned = asPlainObject({
+      value: JSON.parse(JSON.stringify(props)) as unknown,
+    });
+    if (!cloned) {
+      return {
+        ok: false,
+        error: `Props for scene "${sceneId}" must be a JSON object`,
+      };
+    }
+    return { ok: true, props: cloned };
+  } catch {
+    return {
+      ok: false,
+      error: `Props for scene "${sceneId}" are not JSON-serialisable`,
+    };
+  }
+}
+
+/**
+ * Replace scene props in video.json without rewriting Zod defaults onto disk.
+ */
+export function saveScenePropsToManifestFile({
+  manifestPath,
+  overrides,
+}: {
+  manifestPath: string;
+  overrides: Record<string, unknown>;
+}): { ok: true } | { ok: false; errors: string[] } {
+  const sceneIds = Object.keys(overrides);
+  if (sceneIds.length === 0) {
+    return { ok: false, errors: ["No prop changes to save"] };
+  }
+
+  const nextProps = new Map<string, Record<string, unknown>>();
+  for (const sceneId of sceneIds) {
+    const cloned = cloneJsonProps({ sceneId, props: overrides[sceneId] });
+    if (!cloned.ok) return { ok: false, errors: [cloned.error] };
+    nextProps.set(sceneId, cloned.props);
+  }
+
+  let raw: unknown;
+  try {
+    raw = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as unknown;
+  } catch (err) {
+    return {
+      ok: false,
+      errors: [
+        `Could not read video.json: ${err instanceof Error ? err.message : String(err)}`,
+      ],
+    };
+  }
+
+  if (!asPlainObject({ value: raw })) {
+    return { ok: false, errors: ["video.json must be an object"] };
+  }
+
+  const file = raw as { tracks?: unknown };
+  if (!Array.isArray(file.tracks)) {
+    return { ok: false, errors: ["video.json is missing a tracks array"] };
+  }
+
+  const remaining = new Set(sceneIds);
+  const nextTracks = file.tracks.map((track: unknown) => {
+    const entry = asPlainObject({ value: track });
+    if (!entry || !Array.isArray(entry.scenes)) {
+      return track;
+    }
+    const scenes = entry.scenes.map((scene: unknown) => {
+      const sceneEntry = asPlainObject({ value: scene });
+      if (!sceneEntry || typeof sceneEntry.id !== "string") {
+        return scene;
+      }
+      const props = nextProps.get(sceneEntry.id);
+      if (!props) return scene;
+      remaining.delete(sceneEntry.id);
+      return { ...sceneEntry, props };
+    });
+    return { ...entry, scenes };
+  });
+
+  if (remaining.size > 0) {
+    return {
+      ok: false,
+      errors: [...remaining].map((id) => `Unknown scene id "${id}"`),
+    };
+  }
+
+  const next = {
+    ...file,
+    tracks: nextTracks,
+  };
+  const validated = videoManifestSchema.safeParse(next);
+  if (!validated.success) {
+    return {
+      ok: false,
+      errors: validated.error.issues.map(
+        (issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`,
+      ),
+    };
+  }
+
+  fs.writeFileSync(manifestPath, `${JSON.stringify(next, null, 2)}\n`, "utf8");
+  return { ok: true };
+}
+
+/**
  * Pathname without query string.
  */
 function requestPathname({ req }: { req: IncomingMessage }): string {
@@ -211,6 +345,44 @@ export function previewApiPlugin({
                 return;
               }
               sendJson({ res, status: 200, body: { ok: true } });
+            } catch (err) {
+              sendJson({
+                res,
+                status: 400,
+                body: {
+                  ok: false,
+                  errors: [err instanceof Error ? err.message : String(err)],
+                },
+              });
+            }
+          })();
+          return;
+        }
+
+        if (method === "POST" && pathname === "/__storyboard/save-props") {
+          void (async () => {
+            try {
+              const body = (await readJsonBody({ req })) as {
+                overrides?: unknown;
+              };
+              const overrides = asPlainObject({ value: body.overrides });
+              if (!overrides) {
+                sendJson({
+                  res,
+                  status: 400,
+                  body: { ok: false, errors: ["overrides is required"] },
+                });
+                return;
+              }
+              const result = saveScenePropsToManifestFile({
+                manifestPath: session.getManifestPath(),
+                overrides,
+              });
+              sendJson({
+                res,
+                status: result.ok ? 200 : 400,
+                body: result,
+              });
             } catch (err) {
               sendJson({
                 res,

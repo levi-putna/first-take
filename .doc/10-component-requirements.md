@@ -225,7 +225,7 @@ Each child still obeys §3.
 ### 5.3 Isolate in preview
 
 Double-click a timeline clip to render only that scene on a local clock.
-Sidebar prop edits are live overrides and do not write `video.json`.
+Sidebar prop edits are live overrides; Save writes them to `video.json`.
 Studio layout: [README.md § Preview](../README.md#preview).
 
 ---

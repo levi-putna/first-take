@@ -228,7 +228,7 @@ Clip examples: [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/README.m
 
 ### Isolate a scene
 
-Double-click a timeline clip (or use the Back control to restore the full video). Isolation renders only that scene’s component with the current props, local frame `0`, duration = scene length. Other tracks unmount, so their audio unmounts too. The sidebar inspector edits props as a live preview override (it does not write `video.json`). Studio layout: [README.md § Preview](./README.md#preview).
+Double-click a timeline clip (or use the Back control to restore the full video). Isolation renders only that scene’s component with the current props, local frame `0`, duration = scene length. Other tracks unmount, so their audio unmounts too. The sidebar inspector edits props as a live preview override; Save writes those props back to `video.json`. Studio layout: [README.md § Preview](./README.md#preview).
 
 ---
 
