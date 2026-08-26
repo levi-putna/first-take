@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type MouseEvent,
+  type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
   ArrowLeft,
@@ -20,7 +21,7 @@ import {
   TimelineFocusBar,
   type TimelineFocusChangeReason,
 } from "./TimelineFocusBar";
-import type { TimelineLane } from "./timelineModel";
+import type { TimelineClip, TimelineLane } from "./timelineModel";
 import {
   clampPixelsPerFrame,
   defaultPixelsPerFrame,
@@ -34,6 +35,23 @@ import {
 
 const LABEL_WIDTH = 96;
 const RULER_HEIGHT = 28;
+const DRAG_THRESHOLD_PX = 4;
+const TRIM_HANDLE_PX = 7;
+
+type ClipDragMode = "move" | "trim-end";
+
+type ClipDragState = {
+  mode: ClipDragMode;
+  sceneId: string;
+  sourceTrackId: string;
+  originX: number;
+  originStart: number;
+  originDuration: number;
+  moved: boolean;
+  previewStart: number;
+  previewDuration: number;
+  targetTrackId: string;
+};
 
 /**
  * Bottom editor dock: transport, zoomable time ruler, lanes, and focus bar.
@@ -53,6 +71,11 @@ export function Timeline({
   onIsolateScene,
   isolated,
   onBack,
+  editable = false,
+  onMoveScene,
+  onTrimScene,
+  dropTargetTrackId = null,
+  onDropTargetTrackChange,
 }: {
   frame: number;
   durationInFrames: number;
@@ -68,9 +91,22 @@ export function Timeline({
   onIsolateScene: (sceneId: string) => void;
   isolated: boolean;
   onBack: () => void;
+  editable?: boolean;
+  onMoveScene?: (args: {
+    sceneId: string;
+    targetTrackId: string;
+    startFrame: number;
+  }) => void;
+  onTrimScene?: (args: {
+    sceneId: string;
+    durationInFrames: number;
+  }) => void;
+  dropTargetTrackId?: string | null;
+  onDropTargetTrackChange?: (trackId: string | null) => void;
 }) {
   const last = Math.max(0, durationInFrames - 1);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const laneRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const applyingFocusRef = useRef(false);
   const didInitZoomRef = useRef(false);
   const applyZoomRef = useRef<
@@ -82,12 +118,29 @@ export function Timeline({
     }) => void
   >(() => {});
   const dragging = useRef(false);
+  const clipDragRef = useRef<ClipDragState | null>(null);
+  const onMoveSceneRef = useRef(onMoveScene);
+  const onTrimSceneRef = useRef(onTrimScene);
+  const onDropTargetTrackChangeRef = useRef(onDropTargetTrackChange);
+  const onSelectSceneRef = useRef(onSelectScene);
+  const lanesRef = useRef(lanes);
+  onMoveSceneRef.current = onMoveScene;
+  onTrimSceneRef.current = onTrimScene;
+  onDropTargetTrackChangeRef.current = onDropTargetTrackChange;
+  onSelectSceneRef.current = onSelectScene;
+  lanesRef.current = lanes;
 
   const [pixelsPerFrame, setPixelsPerFrame] = useState(1);
   const [scrollMetrics, setScrollMetrics] = useState({
     scrollLeft: 0,
     clientWidth: 0,
   });
+  const [clipPreview, setClipPreview] = useState<{
+    sceneId: string;
+    trackId: string;
+    startFrame: number;
+    durationInFrames: number;
+  } | null>(null);
 
   const trackWidth = scrollMetrics.clientWidth;
   const contentWidth = durationInFrames * pixelsPerFrame;
@@ -199,12 +252,28 @@ export function Timeline({
       const rect = el.getBoundingClientRect();
       const x = clientX - rect.left + el.scrollLeft;
       const next = Math.round(x / Math.max(0.0001, pixelsPerFrame));
-      return Math.max(0, Math.min(last, next));
+      return Math.max(0, next);
     },
-    [last, pixelsPerFrame],
+    [pixelsPerFrame],
   );
 
+  /**
+   * Resolve which lane is under the pointer.
+   */
+  const trackIdFromClientY = useCallback((clientY: number) => {
+    for (const lane of lanesRef.current) {
+      const el = laneRefs.current.get(lane.trackId);
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      if (clientY >= rect.top && clientY <= rect.bottom) {
+        return lane.trackId;
+      }
+    }
+    return lanesRef.current[0]?.trackId ?? "";
+  }, []);
+
   const seekFromEvent = (event: MouseEvent<HTMLElement>) => {
+    if (clipDragRef.current) return;
     dragging.current = true;
     onFrameChange(frameFromClientX(event.clientX));
   };
@@ -224,6 +293,123 @@ export function Timeline({
       window.removeEventListener("mouseup", onUp);
     };
   }, [frameFromClientX, onFrameChange]);
+
+  useEffect(() => {
+    if (!editable) return;
+
+    /**
+     * Drag or trim a clip while the pointer is down.
+     */
+    function handlePointerMove(event: PointerEvent) {
+      const drag = clipDragRef.current;
+      if (!drag) return;
+
+      const deltaX = event.clientX - drag.originX;
+      if (!drag.moved && Math.abs(deltaX) < DRAG_THRESHOLD_PX) {
+        return;
+      }
+      drag.moved = true;
+
+      if (drag.mode === "move") {
+        const deltaFrames = Math.round(
+          deltaX / Math.max(0.0001, pixelsPerFrame),
+        );
+        const targetTrackId = trackIdFromClientY(event.clientY);
+        drag.targetTrackId = targetTrackId;
+        drag.previewStart = Math.max(0, drag.originStart + deltaFrames);
+        onDropTargetTrackChangeRef.current?.(targetTrackId);
+        setClipPreview({
+          sceneId: drag.sceneId,
+          trackId: targetTrackId,
+          startFrame: drag.previewStart,
+          durationInFrames: drag.originDuration,
+        });
+        return;
+      }
+
+      const deltaFrames = Math.round(
+        deltaX / Math.max(0.0001, pixelsPerFrame),
+      );
+      drag.previewDuration = Math.max(1, drag.originDuration + deltaFrames);
+      setClipPreview({
+        sceneId: drag.sceneId,
+        trackId: drag.sourceTrackId,
+        startFrame: drag.originStart,
+        durationInFrames: drag.previewDuration,
+      });
+    }
+
+    /**
+     * Commit or cancel the active clip drag.
+     */
+    function finishPointer() {
+      const drag = clipDragRef.current;
+      clipDragRef.current = null;
+      onDropTargetTrackChangeRef.current?.(null);
+      setClipPreview(null);
+
+      if (!drag) return;
+
+      if (!drag.moved) {
+        onSelectSceneRef.current(drag.sceneId);
+        return;
+      }
+
+      if (drag.mode === "move") {
+        onMoveSceneRef.current?.({
+          sceneId: drag.sceneId,
+          targetTrackId: drag.targetTrackId,
+          startFrame: drag.previewStart,
+        });
+        return;
+      }
+
+      onTrimSceneRef.current?.({
+        sceneId: drag.sceneId,
+        durationInFrames: drag.previewDuration,
+      });
+    }
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", finishPointer);
+    window.addEventListener("pointercancel", finishPointer);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", finishPointer);
+      window.removeEventListener("pointercancel", finishPointer);
+    };
+  }, [editable, pixelsPerFrame, trackIdFromClientY]);
+
+  /**
+   * Starts a clip move or trim interaction.
+   */
+  function beginClipDrag({
+    event,
+    clip,
+    lane,
+    mode,
+  }: {
+    event: ReactPointerEvent<HTMLElement>;
+    clip: TimelineClip;
+    lane: TimelineLane;
+    mode: ClipDragMode;
+  }) {
+    if (!editable) return;
+    event.preventDefault();
+    event.stopPropagation();
+    clipDragRef.current = {
+      mode,
+      sceneId: clip.sceneId,
+      sourceTrackId: lane.trackId,
+      originX: event.clientX,
+      originStart: clip.startFrame,
+      originDuration: clip.durationInFrames,
+      moved: false,
+      previewStart: clip.startFrame,
+      previewDuration: clip.durationInFrames,
+      targetTrackId: lane.trackId,
+    };
+  }
 
   /**
    * Applies a clamped zoom, optionally anchoring a frame under the cursor.
@@ -382,6 +568,78 @@ export function Timeline({
 
   const playheadLeft = frame * pixelsPerFrame;
 
+  /**
+   * Render a clip with optional trim handle and drag preview.
+   */
+  function renderClip({
+    clip,
+    lane,
+    laneIndex,
+  }: {
+    clip: TimelineClip;
+    lane: TimelineLane;
+    laneIndex: number;
+  }) {
+    const isPreview =
+      clipPreview?.sceneId === clip.sceneId &&
+      clipPreview.trackId === lane.trackId;
+    const startFrame = isPreview ? clipPreview.startFrame : clip.startFrame;
+    const duration = isPreview
+      ? clipPreview.durationInFrames
+      : clip.durationInFrames;
+    const isDragging =
+      clipDragRef.current?.sceneId === clip.sceneId && isPreview;
+
+    return (
+      <div
+        key={clip.key}
+        className={`sb-clip-wrap${selectedSceneId === clip.sceneId ? " is-current" : ""}${isDragging ? " is-dragging" : ""}`}
+        style={{
+          left: startFrame * pixelsPerFrame,
+          width: duration * pixelsPerFrame,
+        }}
+      >
+        <button
+          type="button"
+          className="sb-clip"
+          style={{ background: clipTone(laneIndex) }}
+          title={`${clip.title} · ${duration}f`}
+          onPointerDown={(event) => {
+            if (!editable) {
+              onSelectScene(clip.sceneId);
+              return;
+            }
+            const rect = event.currentTarget.getBoundingClientRect();
+            const nearEnd =
+              event.clientX > rect.right - TRIM_HANDLE_PX && editable;
+            beginClipDrag({
+              event,
+              clip,
+              lane,
+              mode: nearEnd ? "trim-end" : "move",
+            });
+          }}
+          onDoubleClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onIsolateScene(clip.sceneId);
+          }}
+        >
+          {clip.title}
+        </button>
+        {editable ? (
+          <div
+            className="sb-clip-trim-handle"
+            aria-hidden
+            onPointerDown={(event) => {
+              beginClipDrag({ event, clip, lane, mode: "trim-end" });
+            }}
+          />
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div className="sb-dock">
       {/* Play / pause + timecode */}
@@ -441,7 +699,11 @@ export function Timeline({
                 style={{ height: RULER_HEIGHT }}
               />
               {lanes.map((lane) => (
-                <div key={lane.trackId} className="sb-timeline-label">
+                <div
+                  key={lane.trackId}
+                  className={`sb-timeline-label${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
+                  title={lane.description}
+                >
                   {lane.title}
                 </div>
               ))}
@@ -487,28 +749,18 @@ export function Timeline({
                 </div>
 
                 {lanes.map((lane, laneIndex) => (
-                  <div key={lane.trackId} className="sb-lane">
-                    {lane.clips.map((clip) => (
-                      <button
-                        key={clip.key}
-                        type="button"
-                        className={`sb-clip${selectedSceneId === clip.sceneId ? " is-current" : ""}`}
-                        style={{
-                          left: clip.startFrame * pixelsPerFrame,
-                          width: clip.durationInFrames * pixelsPerFrame,
-                          background: clipTone(laneIndex),
-                        }}
-                        title={`${clip.title} · ${clip.durationInFrames}f`}
-                        onClick={() => onSelectScene(clip.sceneId)}
-                        onDoubleClick={(event) => {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          onIsolateScene(clip.sceneId);
-                        }}
-                      >
-                        {clip.title}
-                      </button>
-                    ))}
+                  <div
+                    key={lane.trackId}
+                    ref={(node) => {
+                      if (node) laneRefs.current.set(lane.trackId, node);
+                      else laneRefs.current.delete(lane.trackId);
+                    }}
+                    className={`sb-lane${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
+                    data-track-id={lane.trackId}
+                  >
+                    {lane.clips.map((clip) =>
+                      renderClip({ clip, lane, laneIndex }),
+                    )}
                   </div>
                 ))}
 

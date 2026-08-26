@@ -2,10 +2,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { saveScenePropsToManifestFile } from "./preview-api.js";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
+import { saveScenePropsToManifestFile, saveStudioChangesToManifestFile } from "./preview-api.js";
 
 const minimalManifest = {
-  schemaVersion: 2,
+  schemaVersion: 2 as const,
   slug: "solo",
   title: "Solo Video",
   formats: [{ id: "16x9", aspectRatio: "16:9", width: 640, height: 360 }],
@@ -134,5 +135,128 @@ describe("saveScenePropsToManifestFile", () => {
     if (!result.ok) {
       expect(result.errors[0]).toMatch(/must be a JSON object/);
     }
+  });
+});
+
+describe("saveStudioChangesToManifestFile", () => {
+  it("writes timeline timing without injecting Zod defaults", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-save-timeline-"));
+    const manifestPath = writeManifest({ dir });
+
+    const result = saveStudioChangesToManifestFile({
+      manifestPath,
+      timeline: {
+        ...minimalManifest,
+        fps: 30,
+        assetsRoot: ".",
+        tracks: [
+          {
+            id: "main",
+            title: "Main",
+            scenes: [
+              {
+                id: "01",
+                title: "Hold",
+                visualType: "component" as const,
+                component: "src/A.tsx",
+                durationInFrames: 8,
+                gapBeforeFrames: 0,
+                props: { headline: "Original" },
+              },
+              {
+                id: "02",
+                title: "Next",
+                visualType: "component" as const,
+                component: "src/B.tsx",
+                durationInFrames: 12,
+                gapBeforeFrames: 4,
+                props: { headline: "Keep me" },
+              },
+            ],
+          },
+        ],
+      } as VideoManifest,
+    });
+
+    expect(result).toEqual({ ok: true });
+    const saved = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
+      tracks: Array<{
+        scenes: Array<Record<string, unknown>>;
+      }>;
+    };
+    expect(saved.tracks[0]?.scenes[0]?.durationInFrames).toBe(8);
+    expect(saved.tracks[0]?.scenes[1]?.gapBeforeFrames).toBe(4);
+    expect(saved.tracks[0]?.scenes[0]).not.toHaveProperty("visualType");
+    expect(saved.tracks[0]?.scenes[1]).not.toHaveProperty("visualType");
+  });
+
+  it("moves a scene between tracks and saves props together", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-save-move-"));
+    const manifestPath = writeManifest({
+      dir,
+      manifest: {
+        ...minimalManifest,
+        tracks: [
+          {
+            id: "main",
+            title: "Main",
+            scenes: minimalManifest.tracks[0].scenes,
+          },
+          {
+            id: "overlay",
+            title: "Overlay",
+            scenes: [],
+          },
+        ],
+      },
+    });
+
+    const result = saveStudioChangesToManifestFile({
+      manifestPath,
+      timeline: {
+        ...minimalManifest,
+        fps: 30,
+        assetsRoot: ".",
+        tracks: [
+          {
+            id: "main",
+            title: "Main",
+            scenes: [
+              {
+                ...minimalManifest.tracks[0].scenes[1],
+                visualType: "component" as const,
+                gapBeforeFrames: 0,
+              },
+            ],
+          },
+          {
+            id: "overlay",
+            title: "Overlay",
+            description: "Callouts",
+            scenes: [
+              {
+                ...minimalManifest.tracks[0].scenes[0],
+                visualType: "component" as const,
+                gapBeforeFrames: 0,
+              },
+            ],
+          },
+        ],
+      } as VideoManifest,
+      overrides: { "01": { headline: "Moved" } },
+    });
+
+    expect(result).toEqual({ ok: true });
+    const saved = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
+      tracks: Array<{
+        id: string;
+        description?: string;
+        scenes: Array<{ id: string; props?: { headline?: string } }>;
+      }>;
+    };
+    expect(saved.tracks[1]?.description).toBe("Callouts");
+    expect(saved.tracks[1]?.scenes[0]?.id).toBe("01");
+    expect(saved.tracks[1]?.scenes[0]?.props).toEqual({ headline: "Moved" });
+    expect(saved.tracks[0]?.scenes.map((scene) => scene.id)).toEqual(["02"]);
   });
 });

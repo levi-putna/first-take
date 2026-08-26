@@ -15,6 +15,7 @@ export type TimelineClip = {
 export type TimelineLane = {
   trackId: string;
   title: string;
+  description?: string;
   clips: TimelineClip[];
 };
 
@@ -30,6 +31,7 @@ export function timelineLanes({
   return manifest.tracks.map((track) => ({
     trackId: track.id,
     title: track.title ?? track.id,
+    description: track.description,
     clips: placements
       .filter((placement) => placement.trackId === track.id)
       .map((placement) => ({

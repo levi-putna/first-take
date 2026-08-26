@@ -10,6 +10,7 @@ import {
   totalDurationInFrames,
   type Format,
   type Scene,
+  type VideoManifest,
 } from "@levi-putna/storyboard-schema";
 import { CompositionFromManifest } from "@levi-putna/storyboard-transitions";
 import { components, manifest } from "./.generated/project";
@@ -33,6 +34,14 @@ import {
   SIDEBAR_WIDTH_STORAGE_KEY,
 } from "./dockLayout";
 import {
+  addTrack,
+  moveScene,
+  reorderTracks,
+  timelineStructureEqual,
+  trimSceneEnd,
+  updateTrack,
+} from "./timelineEdit";
+import {
   clipBySceneId,
   timelineLanes,
   type TimelineLane,
@@ -52,7 +61,6 @@ export function App() {
   const [formatId, setFormatId] = useState(manifest.formats[0].id);
   const format =
     manifest.formats.find((entry) => entry.id === formatId) ?? manifest.formats[0];
-  const compositionDuration = totalDurationInFrames(manifest);
   const [frame, setFrame] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -68,8 +76,30 @@ export function App() {
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
   const [sidebarResizing, setSidebarResizing] = useState(false);
   const sidebarResizeStart = useRef({ x: 0, width: SIDEBAR_DEFAULT_WIDTH });
+  const [workingManifest, setWorkingManifest] = useState<VideoManifest>(manifest);
+  const [dropTargetTrackId, setDropTargetTrackId] = useState<string | null>(
+    null,
+  );
 
-  const fullLanes = useMemo(() => timelineLanes({ manifest }), []);
+  useEffect(() => {
+    setWorkingManifest(manifest);
+    setPropOverrides({});
+    setSaveError(null);
+    setDropTargetTrackId(null);
+    setIsolatedSceneId(null);
+    setSelectedSceneId(listScenes(manifest)[0]?.id ?? "");
+    setFrame(0);
+  }, [manifest]);
+
+  const compositionDuration = totalDurationInFrames(workingManifest);
+  const fullLanes = useMemo(
+    () => timelineLanes({ manifest: workingManifest }),
+    [workingManifest],
+  );
+  const timelineDirty = useMemo(
+    () => !timelineStructureEqual({ left: manifest, right: workingManifest }),
+    [manifest, workingManifest],
+  );
   const firstSceneId = listScenes(manifest)[0]?.id ?? "";
   const [selectedSceneId, setSelectedSceneId] = useState(firstSceneId);
   const [isolatedSceneId, setIsolatedSceneId] = useState<string | null>(null);
@@ -83,7 +113,7 @@ export function App() {
   propOverridesRef.current = propOverrides;
 
   const isolatedScene = isolatedSceneId
-    ? listScenes(manifest).find((scene) => scene.id === isolatedSceneId)
+    ? listScenes(workingManifest).find((scene) => scene.id === isolatedSceneId)
     : undefined;
   const isolatedClip = isolatedSceneId
     ? clipBySceneId({ lanes: fullLanes, sceneId: isolatedSceneId })
@@ -119,7 +149,7 @@ export function App() {
       height: format.height,
       durationInFrames: duration,
     }),
-    [format, duration],
+    [format, duration, workingManifest.fps, workingManifest.slug],
   );
 
   /**
@@ -147,7 +177,7 @@ export function App() {
    * Isolate a scene on a local clock (double-click).
    */
   function isolateScene({ sceneId }: { sceneId: string }) {
-    const scene = listScenes(manifest).find((entry) => entry.id === sceneId);
+    const scene = listScenes(workingManifest).find((entry) => entry.id === sceneId);
     if (!scene) return;
     setSelectedSceneId(sceneId);
     setIsolatedSceneId(sceneId);
@@ -163,6 +193,54 @@ export function App() {
     setIsolatedSceneId(null);
     setPlaying(false);
     setFrame(clip?.startFrame ?? 0);
+  }
+
+  /**
+   * Apply a timeline move from the clip editor.
+   */
+  function applyMoveScene({
+    sceneId,
+    targetTrackId,
+    startFrame,
+  }: {
+    sceneId: string;
+    targetTrackId: string;
+    startFrame: number;
+  }) {
+    try {
+      setWorkingManifest((current) =>
+        moveScene({
+          manifest: current,
+          sceneId,
+          targetTrackId,
+          startFrame,
+          playheadFrame: frame,
+        }),
+      );
+      setSaveError(null);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  /**
+   * Apply a clip end-trim from the timeline editor.
+   */
+  function applyTrimScene({
+    sceneId,
+    durationInFrames,
+  }: {
+    sceneId: string;
+    durationInFrames: number;
+  }) {
+    try {
+      setWorkingManifest((current) =>
+        trimSceneEnd({ manifest: current, sceneId, durationInFrames }),
+      );
+      setSaveError(null);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : String(err));
+    }
   }
 
   /**
@@ -320,7 +398,9 @@ export function App() {
     if (!pendingSave || isEmbed) return;
 
     const overrides = propOverridesRef.current;
-    if (Object.keys(overrides).length === 0) {
+    const hasPropChanges = Object.keys(overrides).length > 0;
+    const hasTimelineChanges = timelineDirty;
+    if (!hasPropChanges && !hasTimelineChanges) {
       setPendingSave(false);
       return;
     }
@@ -334,14 +414,17 @@ export function App() {
         const response = await fetch("/__storyboard/save-props", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ overrides }),
+          body: JSON.stringify({
+            overrides,
+            timeline: hasTimelineChanges ? workingManifest : undefined,
+          }),
         });
         const payload = (await response.json()) as {
           ok?: boolean;
           errors?: string[];
         };
         if (!response.ok || !payload.ok) {
-          throw new Error(payload.errors?.join("; ") || "Could not save props");
+          throw new Error(payload.errors?.join("; ") || "Could not save changes");
         }
         if (!cancelled) setPropOverrides({});
       } catch (err) {
@@ -359,21 +442,30 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, [pendingSave]);
+  }, [pendingSave, timelineDirty, workingManifest]);
 
   const explorerGroups: ExplorerGroup[] = useMemo(() => {
-    return fullLanes.map((lane, laneIndex) => ({
-      trackId: lane.trackId,
-      title: lane.title,
-      items: lane.clips.map((clip) => ({
-        id: clip.sceneId,
-        title: clip.title,
-        detail: `${clip.durationInFrames}f`,
-        tone: SCENE_TONES[laneIndex % SCENE_TONES.length],
-        dirty: Boolean(propOverrides[clip.sceneId]),
-      })),
-    }));
-  }, [fullLanes, propOverrides]);
+    const savedLanes = timelineLanes({ manifest });
+    return fullLanes.map((lane, laneIndex) => {
+      const savedLane = savedLanes.find((entry) => entry.trackId === lane.trackId);
+      const trackDirty =
+        savedLane?.title !== lane.title ||
+        (savedLane?.description ?? "") !== (lane.description ?? "");
+      return {
+        trackId: lane.trackId,
+        title: lane.title,
+        description: lane.description,
+        dirty: trackDirty,
+        items: lane.clips.map((clip) => ({
+          id: clip.sceneId,
+          title: clip.title,
+          detail: `${clip.durationInFrames}f`,
+          tone: SCENE_TONES[laneIndex % SCENE_TONES.length],
+          dirty: Boolean(propOverrides[clip.sceneId]),
+        })),
+      };
+    });
+  }, [fullLanes, manifest, propOverrides]);
 
   // Restore and clamp dock + sidebar sizes when the shell resizes.
   useEffect(() => {
@@ -481,12 +573,13 @@ export function App() {
     };
   }, [sidebarResizing]);
 
-  const selectedScene: Scene | undefined = listScenes(manifest).find(
+  const selectedScene: Scene | undefined = listScenes(workingManifest).find(
     (scene) => scene.id === selectedSceneId,
   );
   const selectedProps =
     propOverrides[selectedSceneId] ?? selectedScene?.props ?? {};
-  const dirtyCount = Object.keys(propOverrides).length;
+  const propDirtyCount = Object.keys(propOverrides).length;
+  const unsavedCount = propDirtyCount + (timelineDirty ? 1 : 0);
   const saveHint =
     typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
       ? "⌘S"
@@ -539,7 +632,7 @@ export function App() {
             </Sequence>
           ) : (
             <CompositionFromManifest
-              manifest={manifest}
+              manifest={workingManifest}
               components={components}
               scenePropOverrides={propOverrides}
             />
@@ -598,12 +691,49 @@ export function App() {
             groups={explorerGroups}
             selectedId={selectedSceneId}
             onSelect={(id) => selectScene({ sceneId: id })}
+            onTrackTitleChange={({ trackId, title }) => {
+              setWorkingManifest((current) =>
+                updateTrack({ manifest: current, trackId, title }),
+              );
+            }}
+            onTrackDescriptionChange={({ trackId, description }) => {
+              setWorkingManifest((current) =>
+                updateTrack({
+                  manifest: current,
+                  trackId,
+                  description: description || null,
+                }),
+              );
+            }}
+            onTrackMoveUp={(trackId) => {
+              const ids = workingManifest.tracks.map((track) => track.id);
+              const index = ids.indexOf(trackId);
+              if (index <= 0) return;
+              const next = [...ids];
+              [next[index - 1], next[index]] = [next[index], next[index - 1]];
+              setWorkingManifest((current) =>
+                reorderTracks({ manifest: current, trackIds: next }),
+              );
+            }}
+            onTrackMoveDown={(trackId) => {
+              const ids = workingManifest.tracks.map((track) => track.id);
+              const index = ids.indexOf(trackId);
+              if (index < 0 || index >= ids.length - 1) return;
+              const next = [...ids];
+              [next[index], next[index + 1]] = [next[index + 1], next[index]];
+              setWorkingManifest((current) =>
+                reorderTracks({ manifest: current, trackIds: next }),
+              );
+            }}
+            onAddTrack={() => {
+              setWorkingManifest((current) => addTrack({ manifest: current }));
+            }}
           >
             <div className="sb-props">
               {/* Inspector heading + unsaved marker */}
               <div className="sb-props-head">
                 <h2>Props</h2>
-                {dirtyCount > 0 ? (
+                {unsavedCount > 0 ? (
                   <span className="sb-unsaved">Unsaved</span>
                 ) : null}
               </div>
@@ -621,15 +751,15 @@ export function App() {
               <button
                 type="button"
                 className="sb-add-btn"
-                disabled={dirtyCount === 0 || saving}
+                disabled={unsavedCount === 0 || saving}
                 title={`Save to video.json (${saveHint})`}
                 onClick={() => requestSave()}
               >
                 <Save size={14} aria-hidden />
                 {saving
                   ? "Saving…"
-                  : dirtyCount > 1
-                    ? `Save ${dirtyCount} scenes`
+                  : unsavedCount > 1
+                    ? `Save ${unsavedCount} changes`
                     : "Save to video.json"}
               </button>
               {saveError ? <p className="sb-error">{saveError}</p> : null}
@@ -694,7 +824,7 @@ export function App() {
         <Timeline
           frame={frame}
           durationInFrames={duration}
-          fps={manifest.fps}
+          fps={workingManifest.fps}
           playing={playing}
           muted={muted}
           onPlayingChange={setPlaying}
@@ -706,6 +836,11 @@ export function App() {
           onIsolateScene={(sceneId) => isolateScene({ sceneId })}
           isolated={Boolean(isolatedSceneId)}
           onBack={backToTimeline}
+          editable={!isolatedSceneId}
+          onMoveScene={applyMoveScene}
+          onTrimScene={applyTrimScene}
+          dropTargetTrackId={dropTargetTrackId}
+          onDropTargetTrackChange={setDropTargetTrackId}
         />
       </div>
     </div>

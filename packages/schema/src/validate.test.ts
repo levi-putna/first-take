@@ -158,6 +158,47 @@ describe("validateVideoFile", () => {
     expect(result.ok).toBe(false);
   });
 
+  it("accepts empty tracks when another track has scenes", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-empty-track-"));
+    const manifestPath = path.join(dir, "video.json");
+    fs.writeFileSync(
+      manifestPath,
+      JSON.stringify({
+        ...base,
+        tracks: [
+          base.tracks[0],
+          {
+            id: "overlay",
+            title: "Overlay",
+            description: "Lower thirds and badges",
+            scenes: [],
+          },
+        ],
+      }),
+    );
+    const result = validateVideoFile({ manifestPath, checkAssets: false });
+    expect(result.ok).toBe(true);
+  });
+
+  it("rejects manifests where every track is empty", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-all-empty-"));
+    const manifestPath = path.join(dir, "video.json");
+    fs.writeFileSync(
+      manifestPath,
+      JSON.stringify({
+        ...base,
+        tracks: [{ id: "empty", title: "Empty", scenes: [] }],
+      }),
+    );
+    const result = validateVideoFile({ manifestPath, checkAssets: false });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.includes("At least one track"))).toBe(
+        true,
+      );
+    }
+  });
+
   it("rejects unsupported visualType in MVP", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-vtype-"));
     const manifestPath = path.join(dir, "video.json");

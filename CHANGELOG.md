@@ -10,6 +10,11 @@ uses [Semantic Versioning](https://semver.org/).
 
 - Preview studio: **Save to video.json** writes live prop inspector overrides
   back to the open manifest (⌘S / Ctrl+S).
+- Preview studio: drag clips to reposition or trim, move between tracks, and
+  manage track title, description, and render order; timeline edits save to
+  `video.json`.
+- Track `description` field and empty `scenes` arrays (at least one track must
+  still contain a scene).
 
 ## [0.2.0] - 2026-08-26
 

@@ -49,6 +49,10 @@ export function validateVideoFile({
   errors.push(...validateUniqueSceneIds(manifest));
   errors.push(...validateTransitionLengths(manifest));
 
+  if (!manifest.tracks.some((track) => track.scenes.length > 0)) {
+    errors.push("At least one track must contain a scene");
+  }
+
   if (checkAssets) {
     errors.push(...assertAssetsExist({ manifest, manifestPath }));
   }

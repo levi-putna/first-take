@@ -1,7 +1,14 @@
 import fs from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin } from "vite";
-import { formatSchema, videoManifestSchema } from "@levi-putna/storyboard-schema";
+import {
+  formatSchema,
+  validateTransitionLengths,
+  validateUniqueSceneIds,
+  videoManifestSchema,
+  type Scene,
+  type VideoManifest,
+} from "@levi-putna/storyboard-schema";
 import { sameManifestPath, type PreviewProject } from "./discover-projects.js";
 import { tryServeAsset } from "./serve-assets.js";
 
@@ -164,6 +171,222 @@ function cloneJsonProps({
     return {
       ok: false,
       error: `Props for scene "${sceneId}" are not JSON-serialisable`,
+    };
+  }
+}
+
+/**
+ * Merge a draft scene onto its on-disk object without injecting Zod defaults.
+ */
+function mergeSceneOnDisk({
+  fileScene,
+  draftScene,
+  propOverride,
+}: {
+  fileScene: Record<string, unknown>;
+  draftScene: Scene;
+  propOverride?: Record<string, unknown>;
+}): Record<string, unknown> {
+  const next: Record<string, unknown> = { ...fileScene };
+  next.durationInFrames = draftScene.durationInFrames;
+
+  const gap = draftScene.gapBeforeFrames ?? 0;
+  if (gap > 0) {
+    next.gapBeforeFrames = gap;
+  } else if ("gapBeforeFrames" in fileScene) {
+    delete next.gapBeforeFrames;
+  }
+
+  if (draftScene.transitionIn === null) {
+    next.transitionIn = null;
+  } else if (draftScene.transitionIn) {
+    next.transitionIn = draftScene.transitionIn;
+  } else if (!("transitionIn" in fileScene)) {
+    delete next.transitionIn;
+  }
+
+  if (propOverride) {
+    next.props = propOverride;
+  }
+
+  return next;
+}
+
+/**
+ * Merge a draft track onto disk, rebuilding scene membership and order.
+ */
+function mergeTrackOnDisk({
+  fileTrack,
+  draftTrack,
+  sceneFiles,
+  propOverrides,
+}: {
+  fileTrack?: Record<string, unknown>;
+  draftTrack: VideoManifest["tracks"][number];
+  sceneFiles: Map<string, Record<string, unknown>>;
+  propOverrides: Map<string, Record<string, unknown>>;
+}): Record<string, unknown> {
+  const next: Record<string, unknown> = fileTrack
+    ? { ...fileTrack }
+    : { id: draftTrack.id };
+
+  if (draftTrack.title) {
+    next.title = draftTrack.title;
+  } else if ("title" in next) {
+    delete next.title;
+  }
+
+  if (draftTrack.description) {
+    next.description = draftTrack.description;
+  } else if ("description" in next) {
+    delete next.description;
+  }
+
+  const scenes = draftTrack.scenes.map((draftScene) => {
+    const fileScene = sceneFiles.get(draftScene.id);
+    if (!fileScene) {
+      throw new Error(`Unknown scene id "${draftScene.id}"`);
+    }
+    return mergeSceneOnDisk({
+      fileScene,
+      draftScene,
+      propOverride: propOverrides.get(draftScene.id),
+    });
+  });
+
+  next.scenes = scenes;
+  return next;
+}
+
+/**
+ * Persist timeline structure and optional prop overrides to video.json.
+ */
+export function saveStudioChangesToManifestFile({
+  manifestPath,
+  timeline,
+  overrides = {},
+}: {
+  manifestPath: string;
+  timeline?: VideoManifest;
+  overrides?: Record<string, unknown>;
+}): { ok: true } | { ok: false; errors: string[] } {
+  const hasOverrides = Object.keys(overrides).length > 0;
+  if (!timeline && !hasOverrides) {
+    return { ok: false, errors: ["No changes to save"] };
+  }
+
+  const propOverrides = new Map<string, Record<string, unknown>>();
+  for (const sceneId of Object.keys(overrides)) {
+    const cloned = cloneJsonProps({ sceneId, props: overrides[sceneId] });
+    if (!cloned.ok) return { ok: false, errors: [cloned.error] };
+    propOverrides.set(sceneId, cloned.props);
+  }
+
+  if (timeline) {
+    const parsed = videoManifestSchema.safeParse(timeline);
+    if (!parsed.success) {
+      return {
+        ok: false,
+        errors: parsed.error.issues.map(
+          (issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`,
+        ),
+      };
+    }
+    const errors = [
+      ...validateUniqueSceneIds(parsed.data),
+      ...validateTransitionLengths(parsed.data),
+    ];
+    if (!parsed.data.tracks.some((track) => track.scenes.length > 0)) {
+      errors.push("At least one track must contain a scene");
+    }
+    if (errors.length > 0) {
+      return { ok: false, errors };
+    }
+  }
+
+  let raw: unknown;
+  try {
+    raw = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as unknown;
+  } catch (err) {
+    return {
+      ok: false,
+      errors: [
+        `Could not read video.json: ${err instanceof Error ? err.message : String(err)}`,
+      ],
+    };
+  }
+
+  if (!asPlainObject({ value: raw })) {
+    return { ok: false, errors: ["video.json must be an object"] };
+  }
+
+  const file = raw as { tracks?: unknown };
+  if (!Array.isArray(file.tracks)) {
+    return { ok: false, errors: ["video.json is missing a tracks array"] };
+  }
+
+  const sceneFiles = new Map<string, Record<string, unknown>>();
+  for (const track of file.tracks) {
+    const entry = asPlainObject({ value: track });
+    if (!entry || !Array.isArray(entry.scenes)) continue;
+    for (const scene of entry.scenes) {
+      const sceneEntry = asPlainObject({ value: scene });
+      if (!sceneEntry || typeof sceneEntry.id !== "string") continue;
+      sceneFiles.set(sceneEntry.id, sceneEntry);
+    }
+  }
+
+  if (!timeline) {
+    return saveScenePropsToManifestFile({ manifestPath, overrides });
+  }
+
+  const fileTracks = new Map<string, Record<string, unknown>>();
+  for (const track of file.tracks) {
+    const entry = asPlainObject({ value: track });
+    if (!entry || typeof entry.id !== "string") continue;
+    fileTracks.set(entry.id, entry);
+  }
+
+  try {
+    const nextTracks = timeline.tracks.map((draftTrack) =>
+      mergeTrackOnDisk({
+        fileTrack: fileTracks.get(draftTrack.id),
+        draftTrack,
+        sceneFiles,
+        propOverrides,
+      }),
+    );
+
+    for (const sceneId of propOverrides.keys()) {
+      if (
+        !timeline.tracks.some((track) =>
+          track.scenes.some((scene) => scene.id === sceneId),
+        )
+      ) {
+        return { ok: false, errors: [`Unknown scene id "${sceneId}"`] };
+      }
+    }
+
+    const next = {
+      ...file,
+      tracks: nextTracks,
+    };
+    const validated = videoManifestSchema.safeParse(next);
+    if (!validated.success) {
+      return {
+        ok: false,
+        errors: validated.error.issues.map(
+          (issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`,
+        ),
+      };
+    }
+
+    fs.writeFileSync(manifestPath, `${JSON.stringify(next, null, 2)}\n`, "utf8");
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      errors: [err instanceof Error ? err.message : String(err)],
     };
   }
 }
@@ -364,18 +587,78 @@ export function previewApiPlugin({
             try {
               const body = (await readJsonBody({ req })) as {
                 overrides?: unknown;
+                timeline?: unknown;
               };
-              const overrides = asPlainObject({ value: body.overrides });
-              if (!overrides) {
+              const overrides = asPlainObject({ value: body.overrides }) ?? {};
+              const timelineParsed = body.timeline
+                ? videoManifestSchema.safeParse(body.timeline)
+                : null;
+              if (body.timeline && timelineParsed && !timelineParsed.success) {
                 sendJson({
                   res,
                   status: 400,
-                  body: { ok: false, errors: ["overrides is required"] },
+                  body: {
+                    ok: false,
+                    errors: timelineParsed.error.issues.map(
+                      (issue) =>
+                        `${issue.path.join(".") || "(root)"}: ${issue.message}`,
+                    ),
+                  },
                 });
                 return;
               }
-              const result = saveScenePropsToManifestFile({
+              const result = saveStudioChangesToManifestFile({
                 manifestPath: session.getManifestPath(),
+                timeline: timelineParsed?.success
+                  ? timelineParsed.data
+                  : undefined,
+                overrides,
+              });
+              sendJson({
+                res,
+                status: result.ok ? 200 : 400,
+                body: result,
+              });
+            } catch (err) {
+              sendJson({
+                res,
+                status: 400,
+                body: {
+                  ok: false,
+                  errors: [err instanceof Error ? err.message : String(err)],
+                },
+              });
+            }
+          })();
+          return;
+        }
+
+        if (method === "POST" && pathname === "/__storyboard/save-timeline") {
+          void (async () => {
+            try {
+              const body = (await readJsonBody({ req })) as {
+                timeline?: unknown;
+                overrides?: unknown;
+              };
+              const timelineParsed = videoManifestSchema.safeParse(body.timeline);
+              if (!timelineParsed.success) {
+                sendJson({
+                  res,
+                  status: 400,
+                  body: {
+                    ok: false,
+                    errors: timelineParsed.error.issues.map(
+                      (issue) =>
+                        `${issue.path.join(".") || "(root)"}: ${issue.message}`,
+                    ),
+                  },
+                });
+                return;
+              }
+              const overrides = asPlainObject({ value: body.overrides }) ?? {};
+              const result = saveStudioChangesToManifestFile({
+                manifestPath: session.getManifestPath(),
+                timeline: timelineParsed.data,
                 overrides,
               });
               sendJson({

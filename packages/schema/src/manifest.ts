@@ -43,7 +43,9 @@ export const sceneSchema = z.object({
 export const trackSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1).optional(),
-  scenes: z.array(sceneSchema).min(1),
+  /** Optional preview note for the lane (studio sidebar). */
+  description: z.string().min(1).optional(),
+  scenes: z.array(sceneSchema),
 });
 
 /**

@@ -65,7 +65,7 @@ to fail.
 | `fps` | positive number | no | `30` | Frames per second for the whole composition |
 | `formats` | `Format[]` | yes (≥1) | — | One render pass per format unless the CLI selects one |
 | `assetsRoot` | string | no | `"."` | Base directory for audio paths found in scene props |
-| `tracks` | `Track[]` | yes (≥1) | — | Stacked lanes; at least one scene each |
+| `tracks` | `Track[]` | yes (≥1) | — | Stacked lanes; at least one track must contain a scene |
 
 There is no root `scenes[]`, `leadIn`, or `seriesAudio`. A one-track video is
 still a valid video. Opening bumpers are ordinary scenes on a visual track.
@@ -88,7 +88,8 @@ reads `useVideoConfig().width` / `.height` should differ per format.
 |-------|------|----------|-------|
 | `id` | non-empty string | yes | Stable lane id |
 | `title` | non-empty string | no | Preview label (falls back to `id`) |
-| `scenes` | `Scene[]` | yes (≥1) | Clips on this lane, in order |
+| `description` | non-empty string | no | Optional preview note (studio sidebar) |
+| `scenes` | `Scene[]` | yes | Clips on this lane, in order (may be empty) |
 
 Track 0 is the bottom paint layer. Later tracks paint on top. Empty time on a
 track (gaps) mounts no `Sequence`.
