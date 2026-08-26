@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "audio-mix",
   "title": "Audio Mix",
   "fps": 30,
@@ -7,32 +7,57 @@
     { "id": "16x9", "aspectRatio": "16:9", "width": 640, "height": 360 }
   ],
   "assetsRoot": ".",
-  "leadIn": {
-    "component": "src/scenes/Lead.tsx",
-    "props": {}
-  },
-  "seriesAudio": {
-    "leadInSeconds": 1,
-    "jingle": "assets/audio/intro-jingle.mp3",
-    "bed": "assets/audio/bed-loop.mp3",
-    "narration": "assets/audio/narration.mp3",
-    "jingleVolume": 0.55,
-    "bedVolumeUnderVo": 0.12,
-    "bedVolumeLeadIn": 0.08,
-    "jingleFadeOutSeconds": 0.3,
-    "bedFadeInSeconds": 0.2,
-    "bedFadeOutSeconds": 0.3,
-    "tailSeconds": 0.5
-  },
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Content",
-      "visualType": "component",
-      "component": "src/scenes/Content.tsx",
-      "props": {},
-      "durationInFrames": 60,
-      "transitionIn": null
+      "id": "visual",
+      "title": "Visual",
+      "scenes": [
+        {
+          "id": "lead",
+          "title": "Lead",
+          "visualType": "component",
+          "component": "src/scenes/Lead.tsx",
+          "props": {
+            "jingle": "assets/audio/intro-jingle.mp3",
+            "jingleVolume": 0.55,
+            "jingleFadeOutSeconds": 0.3
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "content",
+          "title": "Content",
+          "visualType": "component",
+          "component": "src/scenes/Content.tsx",
+          "props": {},
+          "durationInFrames": 60,
+          "transitionIn": null
+        }
+      ]
+    },
+    {
+      "id": "audio",
+      "title": "Audio",
+      "scenes": [
+        {
+          "id": "mix",
+          "title": "Mix",
+          "visualType": "component",
+          "component": "src/scenes/Mix.tsx",
+          "props": {
+            "bed": "assets/audio/bed-loop.mp3",
+            "narration": "assets/audio/narration.mp3",
+            "voStartFrame": 30,
+            "bedVolumeUnderVo": 0.12,
+            "bedVolumeLeadIn": 0.08,
+            "bedFadeInSeconds": 0.2,
+            "bedFadeOutSeconds": 0.3
+          },
+          "durationInFrames": 90,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }

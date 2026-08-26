@@ -50,7 +50,7 @@ program
   .option("--title <title>", "Human-readable title (default: derived from slug)")
   .option(
     "--with-audio",
-    "Include seriesAudio paths for jingle / bed / narration",
+    "Add a looping bed track with in-scene Audio (assets/audio/bed-loop.mp3)",
     false,
   )
   .option("--force", "Overwrite an existing non-empty directory", false)

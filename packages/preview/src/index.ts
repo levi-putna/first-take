@@ -76,7 +76,7 @@ export async function startPreview({
   let currentManifest = manifest;
 
   /**
-   * Write Vite modules for the open video (manifest, component map, playground).
+   * Write Vite modules for the open video (manifest and component map).
    */
   const writeGeneratedModules = ({
     next,
@@ -116,20 +116,7 @@ export const components = {
 ${mapEntries}
 };
 export const manifestPath = ${JSON.stringify(manifestFile)};
-export const playgroundModules = import.meta.glob(${JSON.stringify(
-        path.join(videoDir, "src/**/*.{tsx,ts}").replace(/\\/g, "/"),
-      )}, { eager: true });
 `,
-      "utf8",
-    );
-
-    const playgroundPath = path.join(videoDir, "playground.ts");
-    const hasPlayground = fs.existsSync(playgroundPath);
-    fs.writeFileSync(
-      path.join(generatedDir, "playground-entry.ts"),
-      hasPlayground
-        ? `export { playground } from ${JSON.stringify(playgroundPath)};\n`
-        : `export const playground: Array<{ id: string; component: React.ComponentType<any>; defaultProps: Record<string, unknown>; durationInFrames: number }> = [];\n`,
       "utf8",
     );
 

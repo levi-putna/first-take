@@ -3,6 +3,7 @@ import {
   FrameOffsetProvider,
   useAbsoluteFrame,
   useCurrentFrame,
+  useSequenceDuration,
 } from "./context.js";
 
 export type SequenceProps = {
@@ -30,7 +31,13 @@ export function Sequence({
 }: SequenceProps) {
   const parentFrame = useCurrentFrame();
   const absoluteFrame = useAbsoluteFrame();
+  const parentDuration = useSequenceDuration();
   const localFrame = parentFrame - from;
+  const remainingParent =
+    parentDuration === undefined
+      ? undefined
+      : Math.max(0, parentDuration - from);
+  const sequenceDurationInFrames = durationInFrames ?? remainingParent;
 
   const inRange =
     localFrame >= 0 &&
@@ -41,7 +48,11 @@ export function Sequence({
   }
 
   const content = (
-    <FrameOffsetProvider absoluteFrame={absoluteFrame} localFrame={localFrame}>
+    <FrameOffsetProvider
+      absoluteFrame={absoluteFrame}
+      localFrame={localFrame}
+      sequenceDurationInFrames={sequenceDurationInFrames}
+    >
       {children}
     </FrameOffsetProvider>
   );

@@ -4,14 +4,14 @@ Normative specification for the Storyboard **video definition file** — the JSO
 manifest that drives validation, preview, still capture, and MP4 render.
 
 Validated by `@levi-putna/storyboard-schema` (`videoManifestSchema`). Current
-`schemaVersion` is **`1`**.
+`schemaVersion` is **`2`**.
 
 Companion docs:
 
 | Doc | Role |
 |-----|------|
 | This file | Normative field and validation contract |
-| [04-timing-and-audio.md](./04-timing-and-audio.md) | How narration alignment maps onto these fields |
+| [04-timing-and-audio.md](./04-timing-and-audio.md) | In-scene Audio, Sequence clipping, preview vs mux |
 | [07-authoring-guide.md](./07-authoring-guide.md) | Practical CLI / project layout |
 | [10-component-requirements.md](./10-component-requirements.md) | Requirements for React modules referenced by this file |
 | [09-video-clips.md](./09-video-clips.md) | Embedding real footage *inside* components |
@@ -21,18 +21,19 @@ Companion docs:
 ## 1. Purpose and layer model
 
 ```
-video.json  →  scenes + lead-in + formats + series audio
+video.json  →  tracks[] of scenes + formats
      │
      ├─ resolves React modules (paths relative to this file)
-     ├─ resolves audio assets (paths relative to assetsRoot)
-     └─ computes total composition duration in frames
+     ├─ scans scene props for audio file paths (best-effort)
+     └─ composition duration = max(track lengths)
 ```
 
 | Layer | Owned by | Responsibility |
 |-------|----------|----------------|
-| **Video** | `video.json` | Order, timing, formats, global audio, which modules to load |
-| **Scene** | One entry in `scenes[]` | One timeline beat: duration, props, optional narration window |
-| **Component** | `.tsx` module | Frame-driven pixels from props (see component requirements) |
+| **Video** | `video.json` | Tracks, formats, fps, which modules to load |
+| **Track** | One entry in `tracks[]` | One stacked lane. Index 0 paints on the bottom |
+| **Scene** | One entry in `track.scenes[]` | One clip: duration, gap, props, optional fade |
+| **Component** | `.tsx` module | Frame-driven pixels (and optional `<Audio>`) from props |
 
 The JSON file is the single source of timeline truth. Components must not
 hardcode global scene order or composition length.
@@ -45,11 +46,12 @@ hardcode global scene order or composition length.
 |----------|--------|
 | Typical filename | `video.json` (any path accepted by the CLI) |
 | Encoding | UTF-8 JSON object |
-| Schema | `schemaVersion: 1` |
+| Schema | `schemaVersion: 2` |
 | Validate | `yarn storyboard validate <path-to-video.json>` |
 
-Invalid JSON, schema failures, illegal transitions, unsupported `visualType`,
-or missing referenced audio files cause validation to fail.
+Invalid JSON, schema failures, illegal transitions, duplicate scene ids,
+unsupported `visualType`, or missing referenced audio files cause validation
+to fail.
 
 ---
 
@@ -57,15 +59,16 @@ or missing referenced audio files cause validation to fail.
 
 | Field | Type | Required | Default | Notes |
 |-------|------|----------|---------|-------|
-| `schemaVersion` | `1` (literal) | yes | — | Bump only on breaking manifest changes |
-| `slug` | non-empty string | yes | — | Output filename stem (e.g. `hello-explainer` → `hello-explainer-16x9.mp4`) |
+| `schemaVersion` | `2` (literal) | yes | — | Breaking bump from v1 (`scenes` / `leadIn` / `seriesAudio`) |
+| `slug` | non-empty string | yes | — | Output filename stem |
 | `title` | non-empty string | yes | — | Human-readable title |
 | `fps` | positive number | no | `30` | Frames per second for the whole composition |
 | `formats` | `Format[]` | yes (≥1) | — | One render pass per format unless the CLI selects one |
-| `assetsRoot` | string | no | `"."` | Base directory for series-audio paths; relative to the JSON file’s directory |
-| `leadIn` | `LeadIn` | no | — | Visual bumper during series lead-in |
-| `seriesAudio` | `SeriesAudio` | no | — | Jingle / bed / narration mix |
-| `scenes` | `Scene[]` | yes (≥1) | — | Ordered timeline beats |
+| `assetsRoot` | string | no | `"."` | Base directory for audio paths found in scene props |
+| `tracks` | `Track[]` | yes (≥1) | — | Stacked lanes; at least one scene each |
+
+There is no root `scenes[]`, `leadIn`, or `seriesAudio`. A one-track video is
+still a valid video. Opening bumpers are ordinary scenes on a visual track.
 
 ### 3.1 Format
 
@@ -76,67 +79,36 @@ or missing referenced audio files cause validation to fail.
 | `width` | positive integer | yes | Render width in pixels |
 | `height` | positive integer | yes | Render height in pixels |
 
-All formats share the same timeline, fps, scenes, and audio. Only layout that
+All formats share the same timeline, fps, tracks, and audio. Only layout that
 reads `useVideoConfig().width` / `.height` should differ per format.
 
-### 3.2 LeadIn
-
-Shown for `round(seriesAudio.leadInSeconds * fps)` frames at the start of the
-composition (or zero lead-in frames if `seriesAudio` / `leadInSeconds` is absent).
+### 3.2 Track
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
-| `component` | non-empty string | no | Path to a default-export React module, relative to the JSON file |
-| `props` | object | no | Arbitrary JSON props passed into the component |
+| `id` | non-empty string | yes | Stable lane id |
+| `title` | non-empty string | no | Preview label (falls back to `id`) |
+| `scenes` | `Scene[]` | yes (≥1) | Clips on this lane, in order |
 
-If `leadIn` is omitted, the lead-in time (if any) may still exist for audio
-while the picture is empty / clear depending on the renderer composition.
-
-### 3.3 SeriesAudio
-
-Optional overarching mix for explainer-style videos. Paths are resolved as:
-
-```
-<path of video.json directory> / <assetsRoot> / <relativePath>
-```
-
-| Field | Type | Default | Notes |
-|-------|------|---------|-------|
-| `leadInSeconds` | ≥ 0 number | `4` | Pre-roll before narration / content |
-| `jingle` | string | — | Intro sting under `assetsRoot` |
-| `bed` | string | — | Looping underscore |
-| `narration` | string | — | Continuous body VO file |
-| `jingleVolume` | 0–2 | `0.55` | Peak jingle gain |
-| `bedVolumeUnderVo` | 0–2 | `0.12` | Bed level under narration |
-| `bedVolumeLeadIn` | 0–2 | `0.08` | Bed level during lead-in |
-| `jingleFadeOutSeconds` | ≥ 0 | `0.6` | Crossfade as VO starts |
-| `bedFadeInSeconds` | ≥ 0 | `0.8` | |
-| `bedFadeOutSeconds` | ≥ 0 | `1.2` | |
-| `tailSeconds` | ≥ 0 | — | Extra hold after content (e.g. bed fade) |
-
-Any of `jingle`, `bed`, or `narration` that is set **must** exist on disk when
-asset checking is enabled (default for `validate`).
-
-Volume fields accept up to `2` to allow intentional boost; typical values stay ≤ `1`.
+Track 0 is the bottom paint layer. Later tracks paint on top. Empty time on a
+track (gaps) mounts no `Sequence`.
 
 ---
 
 ## 4. Scene object
 
-Each scene is one beat on the timeline.
+Each scene is one clip on a track.
 
 | Field | Type | Required | Default | Notes |
 |-------|------|----------|---------|-------|
-| `id` | non-empty string | yes | — | Stable id (unique recommended) |
+| `id` | non-empty string | yes | — | Unique **across all tracks** |
 | `title` | non-empty string | yes | — | Human label |
 | `visualType` | enum | no | `"component"` | MVP: only `"component"` is allowed |
 | `component` | non-empty string | yes | — | Module path relative to the JSON file |
-| `props` | object | no | — | Scene data passed to the component |
+| `props` | object | no | — | Spread onto the default-exported component |
 | `durationInFrames` | positive integer | yes | — | Local length of this scene |
-| `audioStartSeconds` | ≥ 0 number | no | — | Start in the **narration file** clock |
-| `audioEndSeconds` | ≥ 0 number | no | — | End in the **narration file** clock |
-| `narration` | string | no | — | Script slice for this beat (documentation / tooling) |
-| `transitionIn` | `null` \| `TransitionIn` | no | — | Overlap with the **previous** scene |
+| `gapBeforeFrames` | integer ≥ 0 | no | `0` | Empty frames on this track before the scene |
+| `transitionIn` | `null` \| `TransitionIn` | no | — | Fade in; see §4.2 |
 
 ### 4.1 visualType
 
@@ -153,16 +125,23 @@ not via `visualType: "real-video"`. See [09-video-clips.md](./09-video-clips.md)
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `type` | `"fade"` | Only fade is defined in schema v1 |
-| `durationInFrames` | positive integer | Overlap length |
+| `type` | `"fade"` | Only fade is defined |
+| `durationInFrames` | positive integer | Fade length |
 
-Rules (enforced by `validateTransitionLengths`):
+Behaviour depends on the gap:
 
-1. The first scene’s `transitionIn` does not create an overlap (index 0).
-2. For scene `i` (`i ≥ 1`), if `transitionIn.durationInFrames` is `t > 0`:
-   - `t` must be **strictly less than** the previous scene’s `durationInFrames`
-   - `t` must be **strictly less than** this scene’s `durationInFrames`
-3. `null` or omitted means a hard cut (no overlap).
+| Condition | Effect |
+|-----------|--------|
+| `gapBeforeFrames === 0` and not the first scene | Sequential **crossfade**. Shortens this track by `durationInFrames` |
+| `gapBeforeFrames > 0` | Fade-in **from empty**. Does **not** shorten the track |
+| First scene on the track | No previous clip; fade-in from empty if a fade is set |
+
+Sequential fade rules (enforced by `validateTransitionLengths` when the fade
+actually overlaps):
+
+1. Fade length `t` must be **strictly less than** the previous scene’s duration
+2. And **strictly less than** this scene’s duration
+3. `null` or omitted with `gapBeforeFrames === 0` is a hard cut
 
 ### 4.3 Component path resolution
 
@@ -170,10 +149,7 @@ Rules (enforced by `validateTransitionLengths`):
 resolve(dirname(video.json), scene.component)
 ```
 
-`assetsRoot` does **not** apply to component paths. Example: with
-`video.json` at `examples/hello-explainer/video.json` and
-`"component": "src/scenes/01-Hook.tsx"`, the module is
-`examples/hello-explainer/src/scenes/01-Hook.tsx`.
+`assetsRoot` does **not** apply to component paths.
 
 The module **must** default-export a React component. See
 [10-component-requirements.md](./10-component-requirements.md).
@@ -181,87 +157,79 @@ The module **must** default-export a React component. See
 ### 4.4 Props
 
 `props` is an arbitrary JSON object. Storyboard does not validate prop shapes.
-The component is responsible for typing and defaults. Prefer serialisable values
-(strings, numbers, booleans, plain objects/arrays). Do not put functions in JSON.
-
-### 4.5 Narration timing fields
-
-When series narration is used:
-
-- `audioStartSeconds` / `audioEndSeconds` are relative to the **narration media
-  file**, not the composition clock.
-- Composition content starts after `leadInFrames` (see §5).
-- Upstream tooling typically sets:
-
-```
-durationInFrames =
-  round((audioEndSeconds - audioStartSeconds) * fps) + LEAD_OUT_FRAMES
-```
-
-with a small lead-out (about 3–5 frames) so cuts are not clipped. See
-[04-timing-and-audio.md](./04-timing-and-audio.md).
+Prefer serialisable values. Audio file paths in props (strings ending
+`.mp3` / `.wav` / `.m4a` / `.aac`) are scanned by `validate` and must exist
+under `assetsRoot` unless `--no-assets`.
 
 ---
 
 ## 5. Duration math
 
-All integers are frames. `fps` comes from the root.
+Composition length is the **longest track**, not the sum of every scene.
+
+Per track:
 
 ```
-leadInFrames    = round((seriesAudio?.leadInSeconds ?? 0) * fps)
-contentFrames   = sum(scene.durationInFrames)
-                  - sum(transitionIn.durationInFrames for scenes after the first)
-tailFrames      = round((seriesAudio?.tailSeconds ?? 0) * fps)
-totalFrames     = leadInFrames + contentFrames + tailFrames
-```
-
-Scene absolute start frames (after lead-in, with overlaps):
-
-```
-cursor = leadInFrames
-for each scene i:
-  overlap = (i == 0) ? 0 : (scene.transitionIn?.durationInFrames ?? 0)
+cursor = 0
+for each scene:
+  cursor += gapBeforeFrames
+  overlap = (gapBeforeFrames === 0 && not first) ? transitionIn.duration : 0
   cursor -= overlap
-  sceneStarts[i] = cursor
-  cursor += scene.durationInFrames
+  scene starts at cursor
+  cursor += durationInFrames
+trackLength = cursor
+totalFrames = max(trackLengths)
 ```
 
-Implemented in `@levi-putna/storyboard-schema` as `leadInFrames`, `contentDurationInFrames`,
-`totalDurationInFrames`, and `sceneStartFrames`.
+Implemented in `@levi-putna/storyboard-schema` as `trackDurationInFrames`,
+`totalDurationInFrames`, `scenePlacements`, and `sceneStartFrames`.
+
+A looping bed that should last the whole video is a scene whose
+`durationInFrames` equals that video. Tracks do not auto-stretch.
 
 ---
 
 ## 6. Minimal and full examples
 
-### Minimal (silent, single format)
+### Minimal (silent, one track)
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "solid-frames",
   "title": "Solid Frames",
   "fps": 30,
   "formats": [
     { "id": "16x9", "aspectRatio": "16:9", "width": 1920, "height": 1080 }
   ],
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Colour hold",
-      "visualType": "component",
-      "component": "src/scenes/Colour.tsx",
-      "props": { "colour": "#112233" },
-      "durationInFrames": 30,
-      "transitionIn": null
+      "id": "main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Colour hold",
+          "visualType": "component",
+          "component": "src/scenes/Colour.tsx",
+          "props": { "colour": "#112233" },
+          "durationInFrames": 30,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }
 ```
 
-### Full explainer-shaped (abridged)
+### Stacked overlay
 
-See `examples/hello-explainer/video.json` for a complete dual-format file with
-`leadIn`, `seriesAudio`, two scenes, and a mid-timeline fade.
+See `examples/track-overlay/video.json`: opaque background track, gapped
+transparent overlays, optional third track for z-order.
+
+### In-scene audio
+
+See `examples/hello-explainer/video.json` and `examples/audio-mix/video.json`:
+visual track plus a spanning mix scene that mounts `<Audio>`.
 
 ---
 
@@ -269,13 +237,14 @@ See `examples/hello-explainer/video.json` for a complete dual-format file with
 
 `yarn storyboard validate <video.json>` (via `validateVideoFile`) checks:
 
-1. File exists and parses as JSON  
-2. Zod schema (`videoManifestSchema`)  
-3. Transition length rules (§4.2)  
-4. Referenced series-audio files exist (unless `checkAssets: false`)  
-5. Every scene `visualType` is `"component"`  
+1. File exists and parses as JSON
+2. Zod schema (`videoManifestSchema`)
+3. Unique scene ids across tracks
+4. Sequential transition length rules (§4.2)
+5. Audio paths in scene props exist (unless `checkAssets: false`)
+6. Every scene `visualType` is `"component"`
 
-It does **not** currently type-check React props or execute components.
+It does **not** type-check React props or execute components.
 
 ---
 
@@ -285,18 +254,19 @@ Scaffolded by `yarn storyboard create <slug>`:
 
 ```
 my-video/
-  video.json              ← this specification
-  playground.ts           ← optional preview registry
+  video.json
   package.json
   src/
-    scenes/               ← scene entry components
-    components/           ← shared / lead-in components
+    scenes/
   assets/
-    audio/                ← seriesAudio paths typically live here
+    audio/
 ```
 
-This layout is conventional, not schema-enforced. Paths in JSON may point
-anywhere relative to the manifest (or under `assetsRoot` for audio).
+`--with-audio` adds a second bed track and `src/scenes/Bed.tsx` with
+`<Audio loop />`. Isolation in preview is **double-click** on a timeline clip,
+not a playground registry.
+
+This layout is conventional, not schema-enforced.
 
 ---
 
@@ -304,9 +274,9 @@ anywhere relative to the manifest (or under `assetsRoot` for audio).
 
 | Change | Guidance |
 |--------|----------|
-| Add optional root/scene fields | Prefer backward-compatible additions; keep `schemaVersion: 1` until a break |
+| v1 `scenes` / `leadIn` / `seriesAudio` | Removed. Rewrite as `tracks[]` and in-scene `<Audio>` |
+| Add optional root/scene fields | Prefer backward-compatible additions; keep `schemaVersion: 2` until a break |
 | Rename/remove fields or change types | Bump `schemaVersion` and update this doc + `@levi-putna/storyboard-schema` |
 | New transition types | Extend `transitionInSchema`; document here |
-| Implement `generated-video` / `real-video` | Remove MVP rejection in `validate.ts` and document behaviour |
 
 Schema source of truth in code: `packages/schema/src/manifest.ts`.

@@ -328,10 +328,69 @@ button {
   padding: 24px;
 }
 
+.sb-shell.is-dock-resizing {
+  cursor: ns-resize;
+  user-select: none;
+}
+
+.sb-dock-resize-handle {
+  flex-shrink: 0;
+  height: 6px;
+  margin-top: -3px;
+  border-top: 1px solid var(--border);
+  background: transparent;
+  cursor: ns-resize;
+  touch-action: none;
+  position: relative;
+  z-index: 30;
+}
+
+.sb-dock-resize-handle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 3px;
+  margin-left: -18px;
+  margin-top: -1.5px;
+  border-radius: 999px;
+  background: var(--border);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.sb-dock-resize-handle:hover::after,
+.sb-shell.is-dock-resizing .sb-dock-resize-handle::after {
+  opacity: 1;
+}
+
+.sb-dock-resize-handle:hover,
+.sb-shell.is-dock-resizing .sb-dock-resize-handle {
+  background: var(--accent-soft);
+}
+
+.sb-dock-host {
+  flex-shrink: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .sb-dock {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   flex-shrink: 0;
   border-top: 1px solid var(--border);
   background: var(--panel);
+}
+
+.sb-timeline-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sb-transport {
@@ -398,27 +457,96 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
-.sb-track {
-  position: relative;
-  height: 72px;
-  margin: 10px 12px 12px;
+.sb-timeline {
+  display: flex;
+  min-height: 0;
   user-select: none;
 }
 
-.sb-track-row {
+.sb-timeline-labels {
+  flex-shrink: 0;
+  width: 92px;
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.sb-timeline-label-gutter {
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+}
+
+.sb-timeline-label {
+  height: 32px;
+  padding: 0 8px;
   display: flex;
-  height: 44px;
-  border-radius: 8px;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
-  border: 1px solid var(--border);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sb-timeline-scroll {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.sb-timeline-stack {
+  position: relative;
+}
+
+.sb-ruler {
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.sb-ruler-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transform: translateX(-1px);
+}
+
+.sb-ruler-tick span {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 2px;
+  padding-left: 4px;
+}
+
+.sb-ruler-tick::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 8px;
+  background: var(--border);
+}
+
+.sb-lane {
+  position: relative;
+  height: 32px;
+  border-bottom: 1px solid var(--border);
   background: var(--bg);
 }
 
 .sb-clip {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
   min-width: 0;
-  height: 100%;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6px 8px;
+  border: 0;
+  border-radius: 4px;
+  padding: 0 8px;
   color: #eef3ff;
   font-size: 11px;
   font-weight: 600;
@@ -426,10 +554,11 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
+  text-align: left;
 }
 
 .sb-clip.is-current {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
 }
 
 .sb-playhead {
@@ -437,29 +566,31 @@ button {
   top: 0;
   bottom: 0;
   width: 0;
+  z-index: 5;
   pointer-events: none;
 }
 
-.sb-playhead::before {
-  content: "";
+.sb-playhead-diamond {
   position: absolute;
-  top: -2px;
-  left: -5px;
+  left: 0;
   width: 10px;
   height: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
   background: var(--playhead);
   transform: rotate(45deg);
   border-radius: 1px;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
-.sb-playhead::after {
-  content: "";
+.sb-playhead-stem {
   position: absolute;
-  top: 6px;
-  bottom: 0;
   left: -0.5px;
+  bottom: 0;
   width: 1px;
   background: var(--playhead);
+  pointer-events: none;
 }
 
 .sb-format {

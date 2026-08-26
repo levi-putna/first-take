@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { chromium, type Browser, type Page } from "playwright";
 import type { VideoManifest } from "@levi-putna/storyboard-schema";
-import { sceneStartFrames, totalDurationInFrames } from "@levi-putna/storyboard-schema";
+import { scenePlacements, totalDurationInFrames } from "@levi-putna/storyboard-schema";
 import type { AudioClipDescriptor, VideoClipDescriptor } from "@levi-putna/storyboard-media";
 import { prepareFramesDir } from "./serve.js";
 import { extractAllVideoClips } from "./video-frames.js";
@@ -155,9 +155,9 @@ export async function captureFrames({
       pages.push(page);
     }
 
-    // Collect clips at scene starts (Video may not be mounted at frame 0)
+    // Collect clips at scene starts (Video / Audio may not be mounted at frame 0)
     const sampleFrames = [
-      ...new Set([0, ...sceneStartFrames(manifest)]),
+      ...new Set([0, ...scenePlacements(manifest).map((p) => p.from)]),
     ].filter((f) => f >= 0 && f < total);
 
     const audioById = new Map<string, AudioClipDescriptor>();

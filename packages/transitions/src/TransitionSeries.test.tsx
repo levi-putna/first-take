@@ -15,6 +15,7 @@ const scenes: Scene[] = [
     visualType: "component",
     component: "A",
     durationInFrames: 30,
+    gapBeforeFrames: 0,
     transitionIn: null,
   },
   {
@@ -23,6 +24,7 @@ const scenes: Scene[] = [
     visualType: "component",
     component: "B",
     durationInFrames: 30,
+    gapBeforeFrames: 0,
     transitionIn: { type: "fade", durationInFrames: 10 },
   },
 ];
@@ -32,6 +34,32 @@ describe("computeScenePlacements", () => {
     const placements = computeScenePlacements(scenes);
     expect(placements[0].from).toBe(0);
     expect(placements[1].from).toBe(20);
+  });
+
+  it("places a scene after a gap without overlapping", () => {
+    const gapped: Scene[] = [
+      {
+        id: "a",
+        title: "A",
+        visualType: "component",
+        component: "A",
+        durationInFrames: 20,
+        gapBeforeFrames: 10,
+        transitionIn: null,
+      },
+      {
+        id: "b",
+        title: "B",
+        visualType: "component",
+        component: "B",
+        durationInFrames: 20,
+        gapBeforeFrames: 15,
+        transitionIn: { type: "fade", durationInFrames: 8 },
+      },
+    ];
+    const placements = computeScenePlacements(gapped);
+    expect(placements[0].from).toBe(10);
+    expect(placements[1].from).toBe(45);
   });
 });
 

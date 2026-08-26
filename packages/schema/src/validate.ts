@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import { videoManifestSchema, type VideoManifest } from "./manifest.js";
-import { validateTransitionLengths } from "./duration.js";
+import {
+  listScenes,
+  validateTransitionLengths,
+  validateUniqueSceneIds,
+} from "./duration.js";
 import { assertAssetsExist } from "./assets.js";
 
 export type ValidateVideoResult =
@@ -42,6 +46,7 @@ export function validateVideoFile({
   }
 
   const manifest = parsed.data;
+  errors.push(...validateUniqueSceneIds(manifest));
   errors.push(...validateTransitionLengths(manifest));
 
   if (checkAssets) {
@@ -49,7 +54,7 @@ export function validateVideoFile({
   }
 
   // Non-component visual types are reserved but not implemented in MVP
-  for (const scene of manifest.scenes) {
+  for (const scene of listScenes(manifest)) {
     if (scene.visualType !== "component") {
       errors.push(
         `Scene "${scene.id}" visualType "${scene.visualType}" is not supported in MVP (use "component")`,

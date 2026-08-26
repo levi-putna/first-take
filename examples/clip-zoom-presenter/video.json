@@ -1,21 +1,32 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "clip-zoom-presenter",
   "title": "Clip Zoom Presenter",
   "fps": 30,
   "formats": [
-    { "id": "16x9", "aspectRatio": "16:9", "width": 1280, "height": 720 }
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1280,
+      "height": 720
+    }
   ],
   "assetsRoot": ".",
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Zoom in, hold, zoom out",
-      "visualType": "component",
-      "component": "src/scenes/ZoomPresenter.tsx",
-      "props": {},
-      "durationInFrames": 240,
-      "transitionIn": null
+      "id": "main",
+      "title": "Main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Zoom in, hold, zoom out",
+          "visualType": "component",
+          "component": "src/scenes/ZoomPresenter.tsx",
+          "props": {},
+          "durationInFrames": 240,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }

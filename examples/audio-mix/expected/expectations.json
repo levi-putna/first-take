@@ -1,6 +1,6 @@
 {
   "fps": 30,
-  "durationInFrames": 105,
+  "durationInFrames": 90,
   "formats": ["16x9"],
   "stills": [0, 30, 60],
   "silent": false

@@ -5,7 +5,10 @@ import {
   interpolate,
   useCurrentFrame,
 } from "@levi-putna/storyboard-core";
-import type { Scene } from "@levi-putna/storyboard-schema";
+import {
+  sequentialOverlapFrames,
+  type Scene,
+} from "@levi-putna/storyboard-schema";
 
 export type ComponentMap = Record<string, ComponentType<Record<string, unknown>>>;
 
@@ -17,15 +20,15 @@ type Placement = {
 };
 
 /**
- * Compute sequence placements with transition overlaps (same math as schema content duration).
+ * Compute sequence placements with gaps and sequential fade overlaps.
  */
 export function computeScenePlacements(scenes: Scene[]): Placement[] {
   const placements: Placement[] = [];
   let cursor = 0;
   for (let i = 0; i < scenes.length; i++) {
     const scene = scenes[i];
-    const overlap = i === 0 ? 0 : (scene.transitionIn?.durationInFrames ?? 0);
-    cursor -= overlap;
+    cursor += scene.gapBeforeFrames ?? 0;
+    cursor -= sequentialOverlapFrames({ scene, index: i });
     placements.push({
       scene,
       from: cursor,
@@ -74,7 +77,7 @@ function FadeScene({
 }
 
 /**
- * Play scenes in order with optional fade overlaps between them.
+ * Play scenes in order with optional fade overlaps and gaps between them.
  */
 export function TransitionSeries({
   scenes,
@@ -95,9 +98,14 @@ export function TransitionSeries({
           );
         }
         const overlapIn =
-          index === 0 ? 0 : (placement.scene.transitionIn?.durationInFrames ?? 0);
+          placement.scene.transitionIn?.type === "fade"
+            ? (placement.scene.transitionIn.durationInFrames ?? 0)
+            : 0;
         const next = scenes[index + 1];
-        const overlapOut = next?.transitionIn?.durationInFrames ?? 0;
+        const overlapOut =
+          next?.transitionIn?.type === "fade"
+            ? sequentialOverlapFrames({ scene: next, index: index + 1 })
+            : 0;
 
         return (
           <Sequence
@@ -109,12 +117,8 @@ export function TransitionSeries({
             <FadeScene
               scene={placement.scene}
               Component={Comp}
-              overlapIn={
-                placement.scene.transitionIn?.type === "fade" ? overlapIn : 0
-              }
-              overlapOut={
-                next?.transitionIn?.type === "fade" ? overlapOut : 0
-              }
+              overlapIn={overlapIn}
+              overlapOut={overlapOut}
             />
           </Sequence>
         );

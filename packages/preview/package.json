@@ -38,7 +38,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
-  "description": "Local Storyboard studio and component playground",
+  "description": "Local Storyboard studio",
   "license": "MIT",
   "engines": {
     "node": ">=22"

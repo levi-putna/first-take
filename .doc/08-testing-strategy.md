@@ -80,7 +80,8 @@ Focused fixtures use solid colours and no text (or only optional ASCII without c
 | `examples/audio-mix` | Series audio | AAC present; duration ≈ lead-in + content + tail; silent omits audio |
 | `examples/motion-basics` | interpolate + spring | Stills at known frames |
 | `examples/motion-lab` | Typewriter, float, pulse, slide, stagger, spring, progress, rotate + frame timeline | Sampled stills + dual-render determinism |
-| `examples/hello-explainer` | Full smoke | Lead-in / scene / mid-fade stills; `test:smoke` both formats |
+| `examples/hello-explainer` | Full smoke | Lead / scene / mid-fade stills; `test:smoke` both formats |
+| `examples/track-overlay` | Stacked tracks | Background + gapped overlays; silent render |
 
 Each fixture includes `expected/expectations.json`:
 
@@ -117,7 +118,7 @@ Suggested CI matrix: `yarn test` on every PR; `yarn test:render` on every PR; `y
 | F-R1 determinism | Golden stills (re-run same still → match) |
 | F-CLI5 multi-format | `multi-format` stills + `test:render` |
 | F-A* audio mux | `audio-mix` `test:render` |
-| F-E3 lead-in | `audio-mix`, `hello-explainer` duration |
+| F-E3 opening bumper / mix | `audio-mix`, `hello-explainer` duration |
 | F-P3 still capture | Integration golden stills |
 | F-CLI1 render MP4 | `test:render`, `test:smoke` |
 

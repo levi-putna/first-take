@@ -1,21 +1,35 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
 import {
+  Sequence,
   StoryboardProvider,
   type VideoConfig,
 } from "@levi-putna/storyboard-core";
-import { totalDurationInFrames } from "@levi-putna/storyboard-schema";
+import {
+  listScenes,
+  totalDurationInFrames,
+  type Format,
+  type Scene,
+} from "@levi-putna/storyboard-schema";
 import { CompositionFromManifest } from "@levi-putna/storyboard-transitions";
 import { components, manifest } from "./.generated/project";
-import { playground } from "./.generated/playground-entry";
-import { Explorer, type ExplorerItem } from "./Explorer";
+import { Explorer, type ExplorerGroup } from "./Explorer";
 import { FormatSwitcher } from "./FormatSwitcher";
 import { ProjectSwitcher } from "./ProjectSwitcher";
 import { PropFields } from "./PropFields";
 import { Timeline } from "./Timeline";
-import { timelineSegments, segmentAtFrame } from "./timelineModel";
-import type { Format } from "@levi-putna/storyboard-schema";
-
-type Mode = "video" | "playground";
+import {
+  clampDockHeight,
+  DOCK_DEFAULT_HEIGHT,
+  DOCK_HEIGHT_STORAGE_KEY,
+  DOCK_MAX_HEIGHT,
+  DOCK_MIN_HEIGHT,
+  readStoredDockHeight,
+} from "./dockLayout";
+import {
+  clipBySceneId,
+  timelineLanes,
+  type TimelineLane,
+} from "./timelineModel";
 
 const isEmbed =
   typeof window !== "undefined" &&
@@ -24,22 +38,63 @@ const isEmbed =
 const SCENE_TONES = ["var(--scene-a)", "var(--scene-b)", "var(--lead)"];
 
 /**
- * Preview studio: video editor chrome + component playground.
+ * Preview studio: composition stage, scenes sidebar, and multi-lane timeline.
  * With `?embed=1`, hides chrome and accepts host frame control (First Take).
  */
 export function App() {
-  const [mode, setMode] = useState<Mode>("video");
   const [formatId, setFormatId] = useState(manifest.formats[0].id);
   const format =
     manifest.formats.find((entry) => entry.id === formatId) ?? manifest.formats[0];
-  const duration = totalDurationInFrames(manifest);
+  const compositionDuration = totalDurationInFrames(manifest);
   const [frame, setFrame] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
   const lastTs = useRef<number | null>(null);
   const accum = useRef(0);
   const hostDriven = useRef(isEmbed);
+  const shellRef = useRef<HTMLDivElement>(null);
   const wellRef = useRef<HTMLDivElement>(null);
   const [well, setWell] = useState({ w: 900, h: 500 });
+  const [dockHeight, setDockHeight] = useState(DOCK_DEFAULT_HEIGHT);
+  const [dockResizing, setDockResizing] = useState(false);
+  const dockResizeStart = useRef({ y: 0, height: DOCK_DEFAULT_HEIGHT });
+
+  const fullLanes = useMemo(() => timelineLanes({ manifest }), []);
+  const firstSceneId = listScenes(manifest)[0]?.id ?? "";
+  const [selectedSceneId, setSelectedSceneId] = useState(firstSceneId);
+  const [isolatedSceneId, setIsolatedSceneId] = useState<string | null>(null);
+  const [propOverrides, setPropOverrides] = useState<
+    Record<string, Record<string, unknown>>
+  >({});
+
+  const isolatedScene = isolatedSceneId
+    ? listScenes(manifest).find((scene) => scene.id === isolatedSceneId)
+    : undefined;
+  const isolatedClip = isolatedSceneId
+    ? clipBySceneId({ lanes: fullLanes, sceneId: isolatedSceneId })
+    : undefined;
+
+  const duration = isolatedScene
+    ? isolatedScene.durationInFrames
+    : compositionDuration;
+
+  const lanes: TimelineLane[] = isolatedScene
+    ? [
+        {
+          trackId: "focus",
+          title: isolatedScene.title,
+          clips: [
+            {
+              key: isolatedScene.id,
+              sceneId: isolatedScene.id,
+              title: isolatedScene.title,
+              startFrame: 0,
+              durationInFrames: isolatedScene.durationInFrames,
+            },
+          ],
+        },
+      ]
+    : fullLanes;
 
   const config: VideoConfig = useMemo(
     () => ({
@@ -52,7 +107,48 @@ export function App() {
     [format, duration],
   );
 
-  const segments = useMemo(() => timelineSegments({ manifest }), [manifest]);
+  /**
+   * Select a scene in the sidebar and timeline. Seeks if the playhead is outside the clip.
+   */
+  function selectScene({ sceneId }: { sceneId: string }) {
+    setSelectedSceneId(sceneId);
+    setPlaying(false);
+    if (isolatedSceneId) {
+      setIsolatedSceneId(sceneId);
+      setFrame(0);
+      return;
+    }
+    const clip = clipBySceneId({ lanes: fullLanes, sceneId });
+    if (!clip) return;
+    if (
+      frame < clip.startFrame ||
+      frame >= clip.startFrame + clip.durationInFrames
+    ) {
+      setFrame(clip.startFrame);
+    }
+  }
+
+  /**
+   * Isolate a scene on a local clock (double-click).
+   */
+  function isolateScene({ sceneId }: { sceneId: string }) {
+    const scene = listScenes(manifest).find((entry) => entry.id === sceneId);
+    if (!scene) return;
+    setSelectedSceneId(sceneId);
+    setIsolatedSceneId(sceneId);
+    setPlaying(false);
+    setFrame(0);
+  }
+
+  /**
+   * Leave isolate mode and restore the composition playhead.
+   */
+  function backToTimeline() {
+    const clip = isolatedClip;
+    setIsolatedSceneId(null);
+    setPlaying(false);
+    setFrame(clip?.startFrame ?? 0);
+  }
 
   // Host bridge for First Take (and other embedders).
   useEffect(() => {
@@ -104,7 +200,6 @@ export function App() {
   }, [duration]);
 
   // Play advances integer frames at fps.
-  // In embed mode the host (First Take) owns the clock via setSeconds.
   useEffect(() => {
     if (isEmbed) return;
     if (!playing) {
@@ -124,7 +219,7 @@ export function App() {
           const next = current + steps;
           if (next >= duration) {
             setPlaying(false);
-            return duration - 1;
+            return Math.max(0, duration - 1);
           }
           return next;
         });
@@ -167,51 +262,6 @@ export function App() {
     ? Math.min(viewport.w / format.width, viewport.h / format.height)
     : Math.min(1, (well.w - pad) / format.width, (well.h - pad) / format.height);
 
-  // Playground state
-  const [pgId, setPgId] = useState(playground[0]?.id ?? "");
-  const entry = playground.find((item) => item.id === pgId);
-  const [appliedProps, setAppliedProps] = useState<Record<string, unknown>>(
-    entry?.defaultProps ?? {},
-  );
-  const [pgFrame, setPgFrame] = useState(0);
-  const [pgPlaying, setPgPlaying] = useState(false);
-  const pgDuration = entry?.durationInFrames ?? 90;
-
-  useEffect(() => {
-    if (!entry) return;
-    setAppliedProps(entry.defaultProps);
-    setPgFrame(0);
-    setPgPlaying(false);
-  }, [pgId, entry]);
-
-  useEffect(() => {
-    if (!pgPlaying || !entry) return;
-    let raf = 0;
-    let last: number | null = null;
-    let acc = 0;
-    const tick = (ts: number) => {
-      if (last == null) last = ts;
-      const delta = (ts - last) / 1000;
-      last = ts;
-      acc += delta * manifest.fps;
-      if (acc >= 1) {
-        const steps = Math.floor(acc);
-        acc -= steps;
-        setPgFrame((current) => {
-          const next = current + steps;
-          if (next >= pgDuration) {
-            setPgPlaying(false);
-            return pgDuration - 1;
-          }
-          return next;
-        });
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [pgPlaying, entry, pgDuration]);
-
   // Space toggles playback unless a field is focused.
   useEffect(() => {
     if (isEmbed) return;
@@ -220,47 +270,95 @@ export function App() {
       const tag = (event.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       event.preventDefault();
-      if (mode === "video") setPlaying((value) => !value);
-      else setPgPlaying((value) => !value);
+      setPlaying((value) => !value);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [mode]);
-
-  const videoItems: ExplorerItem[] = useMemo(() => {
-    const items: ExplorerItem[] = [];
-    if (manifest.leadIn) {
-      items.push({
-        id: "lead-in",
-        title: "Lead-in",
-        detail: "Brand hold",
-        tone: "var(--lead)",
-      });
-    }
-    manifest.scenes.forEach((scene, index) => {
-      const audio =
-        scene.audioStartSeconds != null && scene.audioEndSeconds != null
-          ? `VO ${scene.audioStartSeconds}s–${scene.audioEndSeconds}s`
-          : `${scene.durationInFrames}f`;
-      items.push({
-        id: scene.id,
-        title: scene.title,
-        detail: audio,
-        tone: SCENE_TONES[index % SCENE_TONES.length],
-      });
-    });
-    return items;
   }, []);
 
-  const playgroundItems: ExplorerItem[] = playground.map((item, index) => ({
-    id: item.id,
-    title: item.id,
-    detail: `${item.durationInFrames}f`,
-    tone: SCENE_TONES[index % SCENE_TONES.length],
-  }));
+  const explorerGroups: ExplorerGroup[] = useMemo(() => {
+    return fullLanes.map((lane, laneIndex) => ({
+      trackId: lane.trackId,
+      title: lane.title,
+      items: lane.clips.map((clip) => ({
+        id: clip.sceneId,
+        title: clip.title,
+        detail: `${clip.durationInFrames}f`,
+        tone: SCENE_TONES[laneIndex % SCENE_TONES.length],
+      })),
+    }));
+  }, [fullLanes]);
 
-  const selectedVideoId =
-    segmentAtFrame({ segments, frame })?.key ?? segments[0]?.key ?? "";
+  // Restore and clamp dock height when the shell resizes.
+  useEffect(() => {
+    if (isEmbed) return;
+
+    const syncDockHeight = () => {
+      const shellHeight = shellRef.current?.clientHeight ?? window.innerHeight;
+      setDockHeight((current) => {
+        const stored = readStoredDockHeight({ shellHeight });
+        const next = clampDockHeight({
+          height: stored ?? current,
+          shellHeight,
+        });
+        return next;
+      });
+    };
+
+    syncDockHeight();
+    window.addEventListener("resize", syncDockHeight);
+    return () => window.removeEventListener("resize", syncDockHeight);
+  }, []);
+
+  /**
+   * Drag the handle above the timeline to resize the dock.
+   */
+  function beginDockResize({ clientY }: { clientY: number }) {
+    dockResizeStart.current = { y: clientY, height: dockHeight };
+    setDockResizing(true);
+  }
+
+  useEffect(() => {
+    if (isEmbed || !dockResizing) return;
+
+    const onMove = (event: MouseEvent) => {
+      const shellHeight = shellRef.current?.clientHeight ?? window.innerHeight;
+      const delta = dockResizeStart.current.y - event.clientY;
+      setDockHeight(
+        clampDockHeight({
+          height: dockResizeStart.current.height + delta,
+          shellHeight,
+        }),
+      );
+    };
+
+    const onUp = () => {
+      setDockResizing(false);
+      setDockHeight((current) => {
+        window.localStorage.setItem(DOCK_HEIGHT_STORAGE_KEY, String(current));
+        return current;
+      });
+    };
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [dockResizing]);
+
+  const selectedScene: Scene | undefined = listScenes(manifest).find(
+    (scene) => scene.id === selectedSceneId,
+  );
+  const selectedProps =
+    propOverrides[selectedSceneId] ?? selectedScene?.props ?? {};
+
+  const Isolated = isolatedScene
+    ? (components[isolatedScene.component] as
+        | ComponentType<Record<string, unknown>>
+        | undefined)
+    : undefined;
 
   const stage = (
     <main
@@ -281,36 +379,35 @@ export function App() {
           : undefined
       }
     >
-      {mode === "video" ? (
-        <CompositionFrame
-          width={format.width}
-          height={format.height}
-          scale={scale}
-          embed={isEmbed}
+      <CompositionFrame
+        width={format.width}
+        height={format.height}
+        scale={scale}
+        embed={isEmbed}
+      >
+        <StoryboardProvider
+          frame={frame}
+          config={config}
+          playing={playing}
+          muted={isEmbed ? true : muted}
         >
-          <StoryboardProvider frame={frame} config={config}>
+          {isolatedScene && Isolated ? (
+            <Sequence from={0} durationInFrames={isolatedScene.durationInFrames}>
+              <Isolated
+                {...(propOverrides[isolatedScene.id] ??
+                  isolatedScene.props ??
+                  {})}
+              />
+            </Sequence>
+          ) : (
             <CompositionFromManifest
               manifest={manifest}
               components={components}
+              scenePropOverrides={propOverrides}
             />
-          </StoryboardProvider>
-        </CompositionFrame>
-      ) : entry ? (
-        <PlaygroundStage
-          Component={entry.component}
-          props={appliedProps}
-          frame={pgFrame}
-          durationInFrames={pgDuration}
-          fps={manifest.fps}
-          width={format.width}
-          height={format.height}
-          scale={scale}
-        />
-      ) : (
-        <p className="sb-empty">
-          No playground entries. Add playground.ts in the project.
-        </p>
-      )}
+          )}
+        </StoryboardProvider>
+      </CompositionFrame>
     </main>
   );
 
@@ -338,7 +435,10 @@ export function App() {
   };
 
   return (
-    <div className="sb-shell">
+    <div
+      ref={shellRef}
+      className={`sb-shell${dockResizing ? " is-dock-resizing" : ""}`}
+    >
       {/* Top bar: title / video switcher + format pill */}
       <header className="sb-header">
         <div className="sb-title">
@@ -354,76 +454,73 @@ export function App() {
       </header>
 
       <div className="sb-body">
-        {/* Left: scene / component picker + props inspector */}
+        {/* Left: scenes grouped by track + props inspector */}
         <Explorer
-          mode={mode}
-          onModeChange={(next) => {
-            setPlaying(false);
-            setPgPlaying(false);
-            setMode(next);
-          }}
-          items={mode === "video" ? videoItems : playgroundItems}
-          selectedId={mode === "video" ? selectedVideoId : pgId}
-          onSelect={(id) => {
-            if (mode === "playground") {
-              setPgId(id);
-              return;
-            }
-            const segment = segments.find((entry) => entry.key === id);
-            if (segment) {
-              setPlaying(false);
-              setFrame(segment.startFrame);
-            }
-          }}
+          groups={explorerGroups}
+          selectedId={selectedSceneId}
+          onSelect={(id) => selectScene({ sceneId: id })}
         >
-          {mode === "playground" && entry ? (
-            <div className="sb-props">
-              <h2>Props</h2>
-              <PropFields
-                key={entry.id}
-                values={appliedProps}
-                onChange={(next) => {
-                  setAppliedProps(next);
-                  setPgFrame(0);
-                }}
-              />
-            </div>
-          ) : null}
+          <div className="sb-props">
+            <h2>Props</h2>
+            <PropFields
+              key={selectedSceneId}
+              values={selectedProps}
+              onChange={(next) => {
+                setPropOverrides((current) => ({
+                  ...current,
+                  [selectedSceneId]: next,
+                }));
+              }}
+            />
+          </div>
         </Explorer>
 
         {stage}
       </div>
 
-      {/* Bottom: transport + clip track */}
-      {mode === "video" ? (
+      {/* Resize handle */}
+      <div
+        className="sb-dock-resize-handle"
+        role="separator"
+        aria-orientation="horizontal"
+        aria-label="Resize timeline"
+        aria-valuemin={DOCK_MIN_HEIGHT}
+        aria-valuemax={DOCK_MAX_HEIGHT}
+        aria-valuenow={dockHeight}
+        onMouseDown={(event) => {
+          event.preventDefault();
+          beginDockResize({ clientY: event.clientY });
+        }}
+        onDoubleClick={() => {
+          const shellHeight = shellRef.current?.clientHeight ?? window.innerHeight;
+          const next = clampDockHeight({
+            height: DOCK_DEFAULT_HEIGHT,
+            shellHeight,
+          });
+          setDockHeight(next);
+          window.localStorage.setItem(DOCK_HEIGHT_STORAGE_KEY, String(next));
+        }}
+      />
+
+      {/* Bottom: transport + multi-lane timeline */}
+      <div className="sb-dock-host" style={{ height: dockHeight }}>
         <Timeline
           frame={frame}
           durationInFrames={duration}
           fps={manifest.fps}
           playing={playing}
+          muted={muted}
           onPlayingChange={setPlaying}
+          onMutedChange={setMuted}
           onFrameChange={setFrame}
-          segments={segments}
+          lanes={lanes}
+          selectedSceneId={selectedSceneId}
+          onSelectScene={(sceneId) => selectScene({ sceneId })}
+          onIsolateScene={(sceneId) => isolateScene({ sceneId })}
+          isolated={Boolean(isolatedSceneId)}
+          onBack={backToTimeline}
         />
-      ) : (
-        <Timeline
-          frame={pgFrame}
-          durationInFrames={pgDuration}
-          fps={manifest.fps}
-          playing={pgPlaying}
-          onPlayingChange={setPgPlaying}
-          onFrameChange={setPgFrame}
-          segments={[
-            {
-              key: entry?.id ?? "component",
-              kind: "scene",
-              title: entry?.id ?? "Component",
-              startFrame: 0,
-              durationInFrames: pgDuration,
-            },
-          ]}
-        />
-      )}
+      </div>
     </div>
   );
 }
@@ -450,7 +547,6 @@ function CompositionFrame({
       style={{
         width: width * scale,
         height: height * scale,
-        boxShadow: embed ? undefined : undefined,
       }}
     >
       <div
@@ -467,43 +563,5 @@ function CompositionFrame({
         {children}
       </div>
     </div>
-  );
-}
-
-/**
- * Isolated playground component under a local frame clock.
- */
-function PlaygroundStage({
-  Component,
-  props,
-  frame,
-  durationInFrames,
-  fps,
-  width,
-  height,
-  scale,
-}: {
-  Component: ComponentType<Record<string, unknown>>;
-  props: Record<string, unknown>;
-  frame: number;
-  durationInFrames: number;
-  fps: number;
-  width: number;
-  height: number;
-  scale: number;
-}) {
-  const config: VideoConfig = {
-    id: "playground",
-    fps,
-    width,
-    height,
-    durationInFrames,
-  };
-  return (
-    <CompositionFrame width={width} height={height} scale={scale} embed={false}>
-      <StoryboardProvider frame={frame} config={config}>
-        <Component {...props} />
-      </StoryboardProvider>
-    </CompositionFrame>
   );
 }

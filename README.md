@@ -48,17 +48,17 @@ npx @levi-putna/storyboard preview video.json
 npx @levi-putna/storyboard render video.json
 ```
 
-`create` writes `video.json`, a lead-in plus two scene components, `playground.ts`, `package.json`, and `assets/audio/`. Pass `--with-audio` if you already have jingle, bed, or narration files; `--force` overwrites a non-empty folder.
+`create` writes `video.json` (`schemaVersion` 2, `tracks[]`), two scene components, `package.json`, and `assets/audio/`. Pass `--with-audio` for a looping bed track with in-scene `<Audio>`; `--force` overwrites a non-empty folder.
 
 Rendered files land in `out/` (for example `out/my-feature-16x9.mp4`). Use `--format=16x9` and `--out=out/hello.mp4` to pin a single format and path.
 
 Then:
 
-1. Edit scenes under `src/scenes/` and the bumper in `src/components/LeadIn.tsx`.
-2. Adjust timeline, formats, and props in `video.json`. Spec: [`.doc/06-video-json-schema.md`](.doc/06-video-json-schema.md).
-3. Optional: drop MP3s into `assets/audio/` and enable `seriesAudio`.
+1. Edit scenes under `src/scenes/`.
+2. Adjust tracks, formats, and props in `video.json`. Spec: [`.doc/06-video-json-schema.md`](.doc/06-video-json-schema.md).
+3. Optional: drop MP3s into `assets/audio/` and play them with `<Audio>` inside a scene.
 
-Drive all motion from `useCurrentFrame()`. Do not use CSS transitions or animations. Scenes are pure React components with props; `video.json` owns the timeline and audio. Changing playground props restarts the animation from frame 0. That is intentional.
+Drive all motion from `useCurrentFrame()`. Do not use CSS transitions or animations. Scenes are pure React components with props; `video.json` owns the timeline. Double-click a timeline clip to isolate a scene. Editing props in the sidebar is a live preview override and does not write the file.
 
 Agent playbook: [`AGENT-README.md`](./AGENT-README.md).  
 Authoring detail: [`.doc/07-authoring-guide.md`](.doc/07-authoring-guide.md).  
@@ -95,7 +95,7 @@ npx @levi-putna/storyboard render video.json --verbose
 | [`@levi-putna/storyboard-media`](https://www.npmjs.com/package/@levi-putna/storyboard-media) | Img, Audio, staticFile |
 | [`@levi-putna/storyboard-transitions`](https://www.npmjs.com/package/@levi-putna/storyboard-transitions) | Fade TransitionSeries |
 | [`@levi-putna/storyboard-renderer`](https://www.npmjs.com/package/@levi-putna/storyboard-renderer) | Vite bundle, Playwright capture, FFmpeg encode |
-| [`@levi-putna/storyboard-preview`](https://www.npmjs.com/package/@levi-putna/storyboard-preview) | Studio and component playground |
+| [`@levi-putna/storyboard-preview`](https://www.npmjs.com/package/@levi-putna/storyboard-preview) | Studio: multi-lane timeline and audible preview |
 
 ## Develop
 
@@ -123,14 +123,15 @@ npx @levi-putna/storyboard render examples/hello-explainer/video.json
 
 | Example | What it does |
 |---------|----------------|
-| [`hello-explainer`](./examples/hello-explainer/) | Full dual-format explainer: lead-in, two scenes, fade, series audio (jingle, bed, narration) |
+| [`hello-explainer`](./examples/hello-explainer/) | Dual-format explainer: visual track + spanning mix (jingle, bed, narration) |
+| [`track-overlay`](./examples/track-overlay/) | Long background, gapped transparent overlays, corner badge for z-order |
 | [`first-take-kit`](./examples/first-take-kit/) | `TitleCard` scene used by the First Take macOS editor |
 | [`motion-basics`](./examples/motion-basics/) | Frame-driven `interpolate` and `spring` on a simple block |
 | [`motion-lab`](./examples/motion-lab/) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |
-| [`solid-frames`](./examples/solid-frames/) | Solid colour that steps every 15 frames (deterministic paint fixture) |
+| [`solid-frames`](./examples/solid-frames/) | Solid colour hold (deterministic paint fixture) |
 | [`fade-overlap`](./examples/fade-overlap/) | Two scenes with a 10-frame fade; total duration is sum minus overlap |
 | [`multi-format`](./examples/multi-format/) | Same composition rendered in 16:9 and 9:16 |
-| [`audio-mix`](./examples/audio-mix/) | Series audio: jingle, looping bed, narration, lead-in and tail |
+| [`audio-mix`](./examples/audio-mix/) | Visual track plus in-scene jingle / looping bed / narration |
 | [`audio-volume-fade`](./examples/audio-volume-fade/) | Looped bed with a V-shaped volume envelope (fade out, then back in) |
 | [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/) | Full-screen clip trimmed with `startFrom` / `endAt` |
 | [`clip-pip-presenter`](./examples/clip-pip-presenter/) | Presenter picture-in-picture in the corner over motion graphics |
@@ -138,6 +139,7 @@ npx @levi-putna/storyboard render examples/hello-explainer/video.json
 | [`clip-zoom-presenter`](./examples/clip-zoom-presenter/) | Ken Burns zoom in, hold, then zoom out on presenter footage |
 | [`clip-hard-cut`](./examples/clip-hard-cut/) | Two clips back-to-back with no transition |
 | [`clip-sound-move`](./examples/clip-sound-move/) | Sound-on clip that drifts around the frame |
+| [`timeline-alignment`](./examples/timeline-alignment/) | 5-minute fixture: colour holds every 10s plus a per-second counter overlay |
 
 ### Tests
 

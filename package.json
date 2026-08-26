@@ -2,7 +2,7 @@
   "name": "storyboard",
   "private": true,
   "version": "0.1.0",
-  "description": "Frame-deterministic React video engine for explainer videos",
+  "description": "Frame-deterministic React video engine",
   "workspaces": [
     "packages/*",
     "examples/*"

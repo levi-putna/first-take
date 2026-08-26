@@ -20,9 +20,9 @@ Three layers, never mixed:
 
 | Layer | Owns | Lives in |
 |-------|------|----------|
-| **Video** | Order, timing, formats, series audio, which modules to load | `video.json` |
-| **Scene** | One timeline beat: duration, props, optional narration window | One object in `scenes[]` |
-| **Component** | Frame-driven pixels from props | Default-exported `.tsx` |
+| **Video** | Order, timing, formats, tracks, which modules to load | `video.json` |
+| **Scene** | One clip: duration, gap, props | One object in `tracks[].scenes[]` |
+| **Component** | Frame-driven pixels (and optional `<Audio>`) from props | Default-exported `.tsx` |
 
 Components must not hardcode global scene order, sibling scenes, or composition length. Continuity comes from **shared components + props**, not from re-describing the same UI in every scene.
 
@@ -42,8 +42,8 @@ Then:
 1. **Scaffold** (or copy the closest example under [`examples/`](./examples/)).
 2. **Write shared chrome** (`src/components/`) before scene-specific motion.
 3. **Write scene entries** (`src/scenes/*.tsx`): default export, JSON-friendly props, `AbsoluteFill` root.
-4. **Register** each scene in `video.json` (`component` path relative to the JSON file, `props`, `durationInFrames`).
-5. **Register playground** entries in `playground.ts` so preview can isolate a component.
+4. **Register** each scene in `video.json` (`tracks[].scenes`, component path relative to the JSON file, `props`, `durationInFrames`).
+5. **Isolate** a scene in preview by double-clicking its clip (or selecting it in the sidebar).
 6. **Validate**, capture **stills** at start / mid / end, then **preview**, then **render**.
 
 ```bash
@@ -66,7 +66,7 @@ npx @levi-putna/storyboard preview video.json
 npx @levi-putna/storyboard render video.json --format=16x9
 ```
 
-`--with-audio` on `create` adds `seriesAudio` fields pointing at `assets/audio/`. `--force` overwrites a non-empty folder.
+`--with-audio` on `create` adds a second **bed** track: a transparent scene with `<Audio loop />` whose duration matches the visual track, pointing at `assets/audio/bed-loop.mp3`. `--force` overwrites a non-empty folder.
 
 ---
 
@@ -74,14 +74,13 @@ npx @levi-putna/storyboard render video.json --format=16x9
 
 ```
 my-video/
-  video.json                 # timeline source of truth
-  playground.ts              # isolated component preview registry
+  video.json                 # timeline source of truth (tracks[])
   package.json
   src/
     scenes/                  # default-export scene entries referenced by video.json
-    components/              # shared chrome + lead-in bumper
+    components/              # shared chrome
   assets/
-    audio/                   # jingle, bed, narration (seriesAudio paths)
+    audio/                   # files passed as props to <Audio />
     clips/                   # real footage for <Video />
 ```
 
@@ -227,47 +226,41 @@ import { staticFile, Video } from "@levi-putna/storyboard-media";
 
 Clip examples: [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/), [`clip-pip-presenter`](./examples/clip-pip-presenter/), [`clip-overlay-shapes`](./examples/clip-overlay-shapes/), [`clip-zoom-presenter`](./examples/clip-zoom-presenter/), [`clip-hard-cut`](./examples/clip-hard-cut/), [`clip-sound-move`](./examples/clip-sound-move/).
 
-### Playground
+### Isolate a scene
 
-Export `playground` from `playground.ts` next to `video.json`. Changing props in the UI restarts the local animation from frame 0. That is intentional.
-
-```ts
-export const playground = [
-  {
-    id: "Hook",
-    component: HookScene,
-    defaultProps: { headline: "You hit Tab. Nothing highlights." },
-    durationInFrames: 90,
-  },
-];
-```
+Double-click a clip on the multi-lane timeline (or use the Back control to restore the full video). Isolation renders only that scene’s component with the current props, local frame `0`, duration = scene length. Other tracks unmount, so their audio unmounts too. The sidebar inspector edits props as a live preview override (it does not write `video.json`).
 
 ---
 
 ## Using components from `video.json`
 
-Schema v1. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-schema.md).
+Schema v2. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-schema.md).
 
 ### Minimal silent video
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "my-video",
   "title": "My Video",
   "fps": 30,
   "formats": [
     { "id": "16x9", "aspectRatio": "16:9", "width": 1920, "height": 1080 }
   ],
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Hook",
-      "visualType": "component",
-      "component": "src/scenes/01-Hook.tsx",
-      "props": { "headline": "You hit Tab. Nothing highlights." },
-      "durationInFrames": 90,
-      "transitionIn": null
+      "id": "main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Hook",
+          "visualType": "component",
+          "component": "src/scenes/01-Hook.tsx",
+          "props": { "headline": "You hit Tab. Nothing highlights." },
+          "durationInFrames": 90,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }
@@ -277,28 +270,32 @@ Schema v1. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-
 
 | Field | Rule |
 |-------|------|
-| `id` | Stable string (`"01"`, `"hook"`). Unique recommended |
+| `id` | Stable string (`"01"`, `"hook"`). Unique **across all tracks** |
 | `component` | Path relative to `video.json`. Module must default-export |
-| `props` | Arbitrary JSON. Storyboard does **not** type-check props |
+| `props` | Arbitrary JSON. Storyboard does **not** type-check props. Audio paths here are validated |
 | `durationInFrames` | Local length. For narrated scenes, derive from speech (below) |
-| `transitionIn` | First scene: `null`. Later: `{ "type": "fade", "durationInFrames": 15 }` or `null` (hard cut) |
-| `audioStartSeconds` / `audioEndSeconds` | Clocks on the **narration file**, not the composition |
-| `narration` | Script slice for this beat (docs / tooling). Does not play audio by itself |
+| `gapBeforeFrames` | Empty time on this track before the clip (default 0) |
+| `transitionIn` | First scene or after a gap: fade-in from empty. Sequential fade only when `gapBeforeFrames === 0` |
 
 Fade overlap rules (enforced by `validate`):
 
 - Fade length `t` must be **strictly less than** the previous scene’s `durationInFrames`
 - And **strictly less than** this scene’s `durationInFrames`
 
-All formats share fps, scenes, and audio. Only layout that reads `useVideoConfig()` should differ.
+All formats share fps, tracks, and audio. Only layout that reads `useVideoConfig()` should differ.
 
 ### Duration math
 
 ```
-leadInFrames  = round((seriesAudio.leadInSeconds ?? 0) * fps)
-contentFrames = sum(scene.durationInFrames) - sum(fade overlaps after the first scene)
-tailFrames    = round((seriesAudio.tailSeconds ?? 0) * fps)
-totalFrames   = leadInFrames + contentFrames + tailFrames
+per track:
+  cursor = 0
+  for each scene:
+    cursor += gapBeforeFrames
+    overlap = (gapBeforeFrames === 0 && not first) ? transitionIn.duration : 0
+    cursor -= overlap
+    scene starts at cursor
+    cursor += durationInFrames
+totalFrames = max(trackLengths)
 ```
 
 Seconds ↔ frames: `round(seconds * fps)` and `frame / fps`. Default fps is **30**.
@@ -316,33 +313,9 @@ LEAD_OUT_FRAMES ≈ 3–5
 durationInFrames = round((audioEndSeconds - audioStartSeconds) * fps) + LEAD_OUT_FRAMES
 ```
 
-4. Keep those seconds relative to `narration.mp3`. Composition content starts after `leadInFrames` (typically 4s → 120 frames at 30fps).
+4. Put the VO file on a spanning **audio track** and delay it with `<Audio startFromFrame={leadFrames} />`. Put the jingle on the opening visual scene. Put a looping bed on the same mix scene (or a dedicated bed track) with `durationInFrames` equal to the video.
 
-Declare series mix on the **root**, not inside every scene:
-
-```json
-"leadIn": {
-  "component": "src/components/LeadIn.tsx",
-  "props": { "label": "Storyboard" }
-},
-"seriesAudio": {
-  "leadInSeconds": 4,
-  "jingle": "assets/audio/intro-jingle.mp3",
-  "bed": "assets/audio/bed-loop.mp3",
-  "narration": "assets/audio/narration.mp3",
-  "jingleVolume": 0.55,
-  "bedVolumeUnderVo": 0.12,
-  "bedVolumeLeadIn": 0.08,
-  "jingleFadeOutSeconds": 0.6,
-  "bedFadeInSeconds": 0.8,
-  "bedFadeOutSeconds": 1.2,
-  "tailSeconds": 0.5
-}
-```
-
-Any of `jingle` / `bed` / `narration` that is set must exist on disk (`validate` checks this unless `--no-assets`).
-
-Worked files: [`examples/hello-explainer/video.json`](./examples/hello-explainer/video.json), [`examples/audio-mix`](./examples/audio-mix/), [`examples/audio-volume-fade`](./examples/audio-volume-fade/). Timing model: [`.doc/04-timing-and-audio.md`](.doc/04-timing-and-audio.md).
+Worked files: [`examples/hello-explainer/video.json`](./examples/hello-explainer/video.json), [`examples/audio-mix`](./examples/audio-mix/), [`examples/audio-volume-fade`](./examples/audio-volume-fade/), [`examples/track-overlay`](./examples/track-overlay/). Timing model: [`.doc/04-timing-and-audio.md`](.doc/04-timing-and-audio.md).
 
 ---
 
@@ -353,7 +326,7 @@ Worked files: [`examples/hello-explainer/video.json`](./examples/hello-explainer
 | `create <slug>` | New project. `--dir`, `--title`, `--with-audio`, `--force` |
 | `validate <video.json>` | After every JSON or asset path change. Catches schema, fade math, missing audio |
 | `still <video.json> --frame=N` | Self-audit a scene. Capture start, mid, and end before presenting |
-| `preview <video.json>` | Studio + playground. `--port`, `--no-open` |
+| `preview <video.json>` | Studio: scenes sidebar, props inspector, multi-lane timeline. `--port`, `--no-open` |
 | `render <video.json>` | Encode MP4. `--format=16x9\|all`, `--out`, `--concurrency`, `--keep-frames` |
 
 `--silent` / `--no-audio` mute **encode** audio. They do not quiet logs. `--verbose` prints FFmpeg and phase detail.
@@ -368,12 +341,13 @@ Validate does **not** execute components or type-check props. Broken motion only
 
 | Job | Start from |
 |-----|------------|
-| Full dual-format explainer with series audio | [`examples/hello-explainer`](./examples/hello-explainer/) |
+| Full dual-format explainer with in-scene mix | [`examples/hello-explainer`](./examples/hello-explainer/) |
+| Stacked overlay tracks + gaps | [`examples/track-overlay`](./examples/track-overlay/) |
 | Frame-driven motion catalogue | [`examples/motion-lab`](./examples/motion-lab/) |
 | Smallest interpolate + spring | [`examples/motion-basics`](./examples/motion-basics/) |
 | Fade overlap math | [`examples/fade-overlap`](./examples/fade-overlap/) |
 | 16:9 + 9:16 | [`examples/multi-format`](./examples/multi-format/) |
-| Series jingle / bed / narration | [`examples/audio-mix`](./examples/audio-mix/) |
+| Series jingle / bed / narration as scene Audio | [`examples/audio-mix`](./examples/audio-mix/) |
 | Frame-varying `Audio` volume | [`examples/audio-volume-fade`](./examples/audio-volume-fade/) |
 | Trimmed full-screen clip | [`examples/clip-trim-fullscreen`](./examples/clip-trim-fullscreen/) |
 | Presenter PIP + graphics | [`examples/clip-pip-presenter`](./examples/clip-pip-presenter/) |
@@ -381,6 +355,7 @@ Validate does **not** execute components or type-check props. Broken motion only
 | Ken Burns zoom | [`examples/clip-zoom-presenter`](./examples/clip-zoom-presenter/) |
 | Hard cut between clips | [`examples/clip-hard-cut`](./examples/clip-hard-cut/) |
 | Moving clip with sound | [`examples/clip-sound-move`](./examples/clip-sound-move/) |
+| Long timeline alignment (5 min colour holds + second counter) | [`examples/timeline-alignment`](./examples/timeline-alignment/) |
 
 Descriptions: [README.md](./README.md#examples).
 
@@ -397,8 +372,7 @@ Before presenting a scene or render:
 - [ ] Multi-format layout uses `width` / `height` from `useVideoConfig()`
 - [ ] Media uses `@levi-putna/storyboard-media` (`staticFile`, `Img`, `Audio`, `Video`)
 - [ ] No Remotion imports; no hard-coded scene index or sibling scenes
-- [ ] Playground entry with `defaultProps`
-- [ ] `video.json` paths resolve; first `transitionIn` is `null`; fade lengths are legal
+- [ ] `video.json` uses `tracks[]`; scene ids unique across tracks; fade lengths are legal
 - [ ] Narrated durations derived from alignment + lead-out, not guessed
 - [ ] `validate` passes; stills captured at start / mid / end look correct
 - [ ] Shared chrome lives in `src/components/`, not copy-pasted per scene

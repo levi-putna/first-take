@@ -223,7 +223,7 @@ export async function renderAndAssertMedia({
     if (audio) {
       throw new Error(`Expected no audio stream for silent render, got ${audio.codec_name}`);
     }
-  } else if (manifest.seriesAudio) {
+  } else if (!useSilent) {
     if (!audio || audio.codec_name !== "aac") {
       throw new Error(
         `Expected AAC audio, got ${audio?.codec_name ?? "(none)"}`,

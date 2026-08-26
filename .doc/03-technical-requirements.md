@@ -49,7 +49,7 @@ Prefer a small monorepo so the core API can be imported by CLI and preview witho
 | `@levi-putna/storyboard-transitions` | Fade (v1); slide/wipe later |
 | `@levi-putna/storyboard-renderer` | Bundle orchestration, Chromium control, frame capture, FFmpeg stitch, stills |
 | `@levi-putna/storyboard` | `storyboard` binary: render, still, preview, validate |
-| `@levi-putna/storyboard-preview` | Local studio / component playground UI |
+| `@levi-putna/storyboard-preview` | Local studio UI |
 | `@levi-putna/storyboard-schema` | Zod (or similar) schemas for `video.json`; types shared with CLI |
 
 Application / demo package (optional early): `examples/hello-explainer` with sample components + JSON.
@@ -143,7 +143,7 @@ function Sequence(props: {
 function Series(props: { children: React.ReactNode }): JSX.Element;
 ```
 
-Plus: `AbsoluteFill`, `delayRender` / `continueRender` / `cancelRender`, media components, and a root registration API analogous to "register compositions" (list of videos / playground entries the CLI can discover).
+Plus: `AbsoluteFill`, `delayRender` / `continueRender` / `cancelRender`, media components, and a root registration API analogous to "register compositions" (list of videos the CLI can discover).
 
 ## 7. Project layout (suggested)
 
@@ -183,9 +183,15 @@ Content projects (e.g. a Next.js app) may later vendor Storyboard and keep produ
 - Compute:
 
 ```
-leadInFrames = round(leadInSeconds * fps)
-contentFrames = sum(scene.durationInFrames) - sum(transition.durationInFrames)
-totalFrames = leadInFrames + contentFrames + optionalTailFrames
+per track:
+  cursor = 0
+  for each scene:
+    cursor += gapBeforeFrames
+    overlap = (gapBeforeFrames === 0 && not first) ? transitionIn.duration : 0
+    cursor -= overlap
+    scene starts at cursor
+    cursor += durationInFrames
+totalFrames = max(trackLengths)
 ```
 
 - Reject configs where a transition is longer than either adjacent scene.
@@ -200,7 +206,7 @@ totalFrames = leadInFrames + contentFrames + optionalTailFrames
 | Concurrency | Configurable page pool (default ~ CPU cores / 2); `--concurrency=1` for debugging. |
 | Stills | Same path as one frame of render. |
 | Image format | JPEG (fast) default for intermediate frames; PNG for stills / lossless debug. |
-| Audio | Build an FFmpeg filter graph (or intermediate stems) from layers: trim, delay (lead-in), volume envelopes, loop bed. |
+| Audio | Build an FFmpeg filter graph from in-scene clips: trim, delay, volume envelopes, loop. |
 | Codecs | H.264 + AAC in MP4 for MVP. |
 | Retries | Retry a frame if the browser tab crashes or delay-render times out (configurable). |
 
@@ -208,7 +214,7 @@ totalFrames = leadInFrames + contentFrames + optionalTailFrames
 
 - Vite-based app loading the same components as render.
 - Timeline scrubber bound to `currentFrame` state (not wall-clock alone - play mode advances frame by `fps`).
-- Component playground route: `/component/:id` with props editor.
+- Scene isolate: double-click a timeline clip; sidebar props editor.
 - Must use the same `@levi-putna/storyboard-core` hooks so preview matches render.
 
 ## 11. Testing strategy
@@ -248,7 +254,7 @@ Document install steps for macOS (`brew install ffmpeg`) and Linux CI images.
 
 ## 15. Implementation phases (recommended)
 
-1. **Core + preview** - frame context, interpolate, Sequence/Series, Vite playground, one example component.
+1. **Core + preview** - frame context, interpolate, Sequence/Series, Vite studio, one example component.
 2. **Schema + validate** - video.json, duration math, asset checks.
 3. **Renderer MVP** - sequential then concurrent stills/frames + FFmpeg silent video.
 4. **Audio mux** - narration + lead-in + bed envelopes.

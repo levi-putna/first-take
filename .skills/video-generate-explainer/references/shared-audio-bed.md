@@ -1,5 +1,21 @@
 # Shared series audio: intro jingle + soft bed
 
+## Storyboard mapping
+
+When the **render target is Storyboard** (`video.json` / this engine), do **not**
+write Remotion `seriesAudio.ts`, root `seriesAudio`, or `leadIn`. Map the mix
+to `tracks[]` and in-scene `<Audio>`:
+
+- Opening bumper → a visual scene (jingle as a prop + `<Audio>` on that scene)
+- Looping bed + narration → a spanning transparent scene on an audio track
+  (`durationInFrames` = video length; narration uses `startFromFrame`)
+- See [`examples/hello-explainer`](../../../../examples/hello-explainer/) and
+  [`.doc/04-timing-and-audio.md`](../../../../.doc/04-timing-and-audio.md)
+
+The rest of this file describes the **Remotion** explainer pipeline (Gate 7).
+
+---
+
 Jumbo AI training videos (and any production that opts into series audio)
 share **one intro jingle** and **one soft looping soundtrack** behind the
 narration. Generate them with the **ElevenLabs Music API**, store them once

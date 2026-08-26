@@ -56,9 +56,9 @@ describe("scaffoldVideoProject", () => {
     expect(written).toContain("video.json");
     expect(written).toContain("src/scenes/01-Intro.tsx");
     expect(written).toContain("src/scenes/02-Point.tsx");
-    expect(written).toContain("src/components/LeadIn.tsx");
+    expect(written).not.toContain("playground.ts");
+    expect(fs.existsSync(path.join(outDir, "playground.ts"))).toBe(false);
     expect(written).toContain("assets/audio/.gitkeep");
-    expect(fs.existsSync(path.join(outDir, "playground.ts"))).toBe(true);
 
     const result = validateVideoFile({
       manifestPath: path.join(outDir, "video.json"),
@@ -81,18 +81,29 @@ describe("scaffoldVideoProject", () => {
     ).toThrow(/already exists/);
   });
 
-  it("includes seriesAudio when withAudio is true", () => {
+  it("adds a bed track with in-scene Audio when withAudio is true", () => {
     const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-scaffold-audio-"));
-    scaffoldVideoProject({
+    const written = scaffoldVideoProject({
       slug: "with-audio",
       outDir,
       title: "With Audio",
       withAudio: true,
       force: false,
     });
+    expect(written).toContain("src/scenes/Bed.tsx");
     const raw = JSON.parse(
       fs.readFileSync(path.join(outDir, "video.json"), "utf8"),
-    ) as { seriesAudio?: { narration?: string } };
-    expect(raw.seriesAudio?.narration).toBe("assets/audio/narration.mp3");
+    ) as {
+      schemaVersion: number;
+      tracks: Array<{
+        id: string;
+        scenes: Array<{ props?: { src?: string } }>;
+      }>;
+    };
+    expect(raw.schemaVersion).toBe(2);
+    expect(raw.tracks.map((track) => track.id)).toEqual(["visual", "bed"]);
+    expect(raw.tracks[1]?.scenes[0]?.props?.src).toBe(
+      "assets/audio/bed-loop.mp3",
+    );
   });
 });

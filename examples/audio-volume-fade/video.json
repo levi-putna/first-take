@@ -1,21 +1,34 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "audio-volume-fade",
   "title": "Audio Volume Fade",
   "fps": 30,
   "formats": [
-    { "id": "16x9", "aspectRatio": "16:9", "width": 1280, "height": 720 }
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1280,
+      "height": 720
+    }
   ],
   "assetsRoot": ".",
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Bed fade out then in",
-      "visualType": "component",
-      "component": "src/scenes/VolumeFade.tsx",
-      "props": {},
-      "durationInFrames": 180,
-      "transitionIn": null
+      "id": "main",
+      "title": "Main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Bed fade out then in",
+          "visualType": "component",
+          "component": "src/scenes/VolumeFade.tsx",
+          "props": {
+            "bed": "assets/audio/bed-loop.mp3"
+          },
+          "durationInFrames": 180,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }

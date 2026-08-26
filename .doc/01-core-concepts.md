@@ -62,18 +62,21 @@ These look fine in a browser tab but break frame-accurate capture:
 
 ## 4. Layer model: Component → Scene → Video
 
-Storyboard splits Remotion's flat "composition" idea into three explicit layers that match how explainers are produced.
+Storyboard splits Remotion's flat "composition" idea into explicit layers:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Video (JSON manifest)                                  │
-│  formats, fps, series audio, scene list, transitions    │
+│  formats, fps, tracks[]                                 │
+├─────────────────────────────────────────────────────────┤
+│  Track                                                  │
+│  stacked lane; index 0 paints on the bottom             │
 ├─────────────────────────────────────────────────────────┤
 │  Scene                                                  │
-│  duration, narration slice, data props, which components│
+│  duration, gap, props, which component                  │
 ├─────────────────────────────────────────────────────────┤
 │  Component (pure React)                                 │
-│  props in → frame-driven visual out; no scene coupling  │
+│  props in → frame-driven visual (and optional Audio)    │
 └─────────────────────────────────────────────────────────┘
 ```
 

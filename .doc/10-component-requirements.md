@@ -1,10 +1,10 @@
 # Component development requirements
 
-Normative requirements for React modules used as **scene entries**, **lead-in
-bumpers**, or **shared visuals** in a Storyboard video.
+Normative requirements for React modules used as **scene entries** or **shared
+visuals** in a Storyboard video.
 
 These modules are loaded from paths in [`video.json`](./06-video-json-schema.md)
-(`scenes[].component`, `leadIn.component`) and rendered once per composition
+(`tracks[].scenes[].component`) and rendered once per composition
 frame during preview, still capture, and MP4 render.
 
 Related reading:
@@ -29,7 +29,7 @@ pixels = f(localFrame, props, videoConfig)
 | Input | Source |
 |-------|--------|
 | `localFrame` | `useCurrentFrame()` — relative to the scene / sequence start |
-| `props` | From `video.json` (or playground `defaultProps`) |
+| `props` | From `video.json` (or live preview overrides) |
 | `videoConfig` | `useVideoConfig()` — `fps`, `width`, `height`, `durationInFrames`, `id` |
 
 Given the same inputs, frame *N* must always produce the same pixels. The
@@ -58,7 +58,7 @@ Components must **not**:
 | Requirement | Detail |
 |-------------|--------|
 | JSON-serialisable | Props come from JSON — strings, numbers, booleans, plain objects/arrays only |
-| Defaults | Provide sensible defaults so the playground and incomplete props still render |
+| Defaults | Provide sensible defaults so incomplete props still render |
 | Typing | Type props in TypeScript; Storyboard does not validate prop shapes at validate-time |
 | No scene coupling | Prefer generic names (`headline`, `items`) over video-specific globals |
 
@@ -222,23 +222,10 @@ For multi-beat motion within one `durationInFrames`:
 
 Each child still obeys §3.
 
-### 5.3 Playground
+### 5.3 Isolate in preview
 
-Register components in `playground.ts` for isolated preview:
-
-```ts
-export const playground = [
-  {
-    id: "Hook",
-    component: HookScene,
-    defaultProps: { headline: "…" },
-    durationInFrames: 90,
-  },
-];
-```
-
-Changing playground props restarts the local animation from frame `0` — that is
-intentional and matches the purity model.
+Double-click a timeline clip to render only that scene on a local clock.
+Sidebar prop edits are live overrides and do not write `video.json`.
 
 ---
 
@@ -246,8 +233,8 @@ intentional and matches the purity model.
 
 1. Put static media under the project `assets/` tree (or paths you pass to
    `staticFile` / media `src`).
-2. Series jingle / bed / narration are declared in `video.json` `seriesAudio`,
-   not inside every scene component.
+2. Jingle / bed / narration are `<Audio>` clips inside scenes; pass file paths
+   as props. `validate` scans string props ending in audio extensions.
 3. Scene-local SFX or overlays may use `<Audio>` / `<Img>` / `<Video>` in the
    component tree.
 4. Never leave a loading spinner as the final captured frame — use media
@@ -265,7 +252,7 @@ Components should be testable without a full MP4 encode:
 |-------|-------------|
 | Unit / RTL | Mount under a frame provider; assert text/styles at frames 0, mid, end |
 | Golden still | Project fixtures may capture known frames for pixel diffs |
-| Playground | Manual scrub with alternate props |
+| Isolate | Double-click a clip; scrub with current props |
 
 Avoid assertions that depend on wall-clock timing.
 
@@ -283,7 +270,7 @@ Authors and agents should confirm before shipping a scene module:
 - [ ] Multi-format layout uses `width` / `height` from `useVideoConfig()`
 - [ ] Media uses `@levi-putna/storyboard-media` where capture readiness matters
 - [ ] No hard dependency on global scene index or sibling scenes
-- [ ] Works in playground with `defaultProps`
+- [ ] Works when isolated from the timeline with the scene’s props
 - [ ] Documented with a short JSDoc on the component
 
 ---

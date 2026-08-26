@@ -1,21 +1,32 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "motion-basics",
   "title": "Motion Basics",
   "fps": 30,
   "formats": [
-    { "id": "16x9", "aspectRatio": "16:9", "width": 640, "height": 360 }
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 640,
+      "height": 360
+    }
   ],
   "assetsRoot": ".",
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Motion",
-      "visualType": "component",
-      "component": "src/scenes/Motion.tsx",
-      "props": {},
-      "durationInFrames": 45,
-      "transitionIn": null
+      "id": "main",
+      "title": "Main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Motion",
+          "visualType": "component",
+          "component": "src/scenes/Motion.tsx",
+          "props": {},
+          "durationInFrames": 45,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }

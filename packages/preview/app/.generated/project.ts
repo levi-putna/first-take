@@ -1,53 +1,42 @@
 import type { VideoManifest } from "@levi-putna/storyboard-schema";
-import Comp0 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Content.tsx";
-import Comp1 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Lead.tsx";
+import Comp0 from "/Users/leviputna/workspace/storyboard/examples/audio-volume-fade/src/scenes/VolumeFade.tsx";
 
 export const manifest = {
-  "schemaVersion": 1,
-  "slug": "audio-mix",
-  "title": "Audio Mix",
+  "schemaVersion": 2,
+  "slug": "audio-volume-fade",
+  "title": "Audio Volume Fade",
   "fps": 30,
   "formats": [
     {
       "id": "16x9",
       "aspectRatio": "16:9",
-      "width": 640,
-      "height": 360
+      "width": 1280,
+      "height": 720
     }
   ],
   "assetsRoot": ".",
-  "leadIn": {
-    "component": "src/scenes/Lead.tsx",
-    "props": {}
-  },
-  "seriesAudio": {
-    "leadInSeconds": 1,
-    "jingle": "assets/audio/intro-jingle.mp3",
-    "bed": "assets/audio/bed-loop.mp3",
-    "narration": "assets/audio/narration.mp3",
-    "jingleVolume": 0.55,
-    "bedVolumeUnderVo": 0.12,
-    "bedVolumeLeadIn": 0.08,
-    "jingleFadeOutSeconds": 0.3,
-    "bedFadeInSeconds": 0.2,
-    "bedFadeOutSeconds": 0.3,
-    "tailSeconds": 0.5
-  },
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Content",
-      "visualType": "component",
-      "component": "src/scenes/Content.tsx",
-      "props": {},
-      "durationInFrames": 60,
-      "transitionIn": null
+      "id": "main",
+      "title": "Main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Bed fade out then in",
+          "visualType": "component",
+          "component": "src/scenes/VolumeFade.tsx",
+          "props": {
+            "bed": "assets/audio/bed-loop.mp3"
+          },
+          "durationInFrames": 180,
+          "gapBeforeFrames": 0,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 } as VideoManifest;
 export const components = {
-  "src/scenes/Content.tsx": Comp0,
-  "src/scenes/Lead.tsx": Comp1
+  "src/scenes/VolumeFade.tsx": Comp0
 };
-export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/audio-mix/video.json";
-export const playgroundModules = import.meta.glob("/Users/leviputna/workspace/storyboard/examples/audio-mix/src/**/*.{tsx,ts}", { eager: true });
+export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/audio-volume-fade/video.json";

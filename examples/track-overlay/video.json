@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 2,
+  "slug": "track-overlay",
+  "title": "Track Overlay",
+  "fps": 30,
+  "formats": [
+    { "id": "16x9", "aspectRatio": "16:9", "width": 1280, "height": 720 }
+  ],
+  "assetsRoot": ".",
+  "tracks": [
+    {
+      "id": "background",
+      "title": "Background",
+      "scenes": [
+        {
+          "id": "bg",
+          "title": "Background",
+          "visualType": "component",
+          "component": "src/scenes/Background.tsx",
+          "props": {
+            "label": "Full-length background"
+          },
+          "durationInFrames": 240,
+          "transitionIn": null
+        }
+      ]
+    },
+    {
+      "id": "overlay",
+      "title": "Overlay",
+      "scenes": [
+        {
+          "id": "title-a",
+          "title": "Lower third A",
+          "visualType": "component",
+          "component": "src/scenes/OverlayA.tsx",
+          "props": {
+            "headline": "First callout",
+            "detail": "Fades in over empty track after a gap."
+          },
+          "durationInFrames": 60,
+          "gapBeforeFrames": 20,
+          "transitionIn": { "type": "fade", "durationInFrames": 10 }
+        },
+        {
+          "id": "title-b",
+          "title": "Lower third B",
+          "visualType": "component",
+          "component": "src/scenes/OverlayB.tsx",
+          "props": {
+            "headline": "Second callout",
+            "detail": "Another gap, then this overlay."
+          },
+          "durationInFrames": 80,
+          "gapBeforeFrames": 40,
+          "transitionIn": { "type": "fade", "durationInFrames": 10 }
+        }
+      ]
+    },
+    {
+      "id": "badge",
+      "title": "Badge",
+      "scenes": [
+        {
+          "id": "badge",
+          "title": "Corner badge",
+          "visualType": "component",
+          "component": "src/scenes/Badge.tsx",
+          "props": {
+            "label": "LIVE"
+          },
+          "durationInFrames": 120,
+          "gapBeforeFrames": 50,
+          "transitionIn": { "type": "fade", "durationInFrames": 8 }
+        }
+      ]
+    }
+  ]
+}

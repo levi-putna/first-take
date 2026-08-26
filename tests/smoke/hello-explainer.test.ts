@@ -28,7 +28,7 @@ describe("hello-explainer smoke", () => {
         name: "hello-explainer",
       });
       const { manifest } = loadValidatedManifest({ fixtureDir });
-      expect(totalDurationInFrames(manifest)).toBe(330);
+      expect(totalDurationInFrames(manifest)).toBe(315);
 
       await renderAndAssertMedia({
         fixtureDir,

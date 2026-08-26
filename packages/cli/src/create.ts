@@ -52,7 +52,7 @@ export type CreateVideoOptions = {
   outDir: string;
   /** Human-readable title. */
   title: string;
-  /** Include seriesAudio fields pointing at assets/audio placeholders. */
+  /** Include a looping bed track with in-scene Audio. */
   withAudio: boolean;
   /** Overwrite an existing non-empty directory. */
   force: boolean;
@@ -203,7 +203,7 @@ export function scaffoldVideoProject({
           noEmit: true,
           rootDir: ".",
         },
-        include: ["src", "playground.ts"],
+        include: ["src"],
       }
     : {
         compilerOptions: {
@@ -216,7 +216,7 @@ export function scaffoldVideoProject({
           rootDir: ".",
           skipLibCheck: true,
         },
-        include: ["src", "playground.ts"],
+        include: ["src"],
       };
 
   add({
@@ -224,37 +224,12 @@ export function scaffoldVideoProject({
     contents: `${JSON.stringify(tsconfig, null, 2)}\n`,
   });
 
-  const seriesAudio = withAudio
-    ? {
-        leadInSeconds: 4,
-        jingle: "assets/audio/intro-jingle.mp3",
-        bed: "assets/audio/bed-loop.mp3",
-        narration: "assets/audio/narration.mp3",
-        jingleVolume: 0.55,
-        bedVolumeUnderVo: 0.12,
-        bedVolumeLeadIn: 0.08,
-        jingleFadeOutSeconds: 0.6,
-        bedFadeInSeconds: 0.8,
-        bedFadeOutSeconds: 1.2,
-        tailSeconds: 0.5,
-      }
-    : undefined;
+  /** Intro 90f + Point 120f − 15f sequential fade. */
+  const visualDurationInFrames = 195;
 
-  const manifest = {
-    schemaVersion: 1,
-    slug,
-    title,
-    fps: 30,
-    formats: [
-      { id: "16x9", aspectRatio: "16:9", width: 1920, height: 1080 },
-      { id: "9x16", aspectRatio: "9:16", width: 1080, height: 1920 },
-    ],
-    assetsRoot: ".",
-    leadIn: {
-      component: "src/components/LeadIn.tsx",
-      props: { label: title },
-    },
-    ...(seriesAudio ? { seriesAudio } : {}),
+  const visualTrack = {
+    id: "visual",
+    title: "Visual",
     scenes: [
       {
         id: "01",
@@ -281,81 +256,40 @@ export function scaffoldVideoProject({
     ],
   };
 
+  const bedTrack = {
+    id: "bed",
+    title: "Bed",
+    scenes: [
+      {
+        id: "bed",
+        title: "Bed",
+        visualType: "component",
+        component: "src/scenes/Bed.tsx",
+        props: {
+          src: "assets/audio/bed-loop.mp3",
+        },
+        durationInFrames: visualDurationInFrames,
+        transitionIn: null,
+      },
+    ],
+  };
+
+  const manifest = {
+    schemaVersion: 2,
+    slug,
+    title,
+    fps: 30,
+    formats: [
+      { id: "16x9", aspectRatio: "16:9", width: 1920, height: 1080 },
+      { id: "9x16", aspectRatio: "9:16", width: 1080, height: 1920 },
+    ],
+    assetsRoot: ".",
+    tracks: withAudio ? [visualTrack, bedTrack] : [visualTrack],
+  };
+
   add({
     rel: "video.json",
     contents: `${JSON.stringify(manifest, null, 2)}\n`,
-  });
-
-  add({
-    rel: "playground.ts",
-    contents: `import IntroScene from "./src/scenes/01-Intro";
-import PointScene from "./src/scenes/02-Point";
-import LeadIn from "./src/components/LeadIn";
-
-/**
- * Component playground registry for preview mode.
- */
-export const playground = [
-  {
-    id: "LeadIn",
-    component: LeadIn,
-    defaultProps: { label: ${JSON.stringify(title)} },
-    durationInFrames: 120,
-  },
-  {
-    id: "Intro",
-    component: IntroScene,
-    defaultProps: { headline: "Replace this headline." },
-    durationInFrames: 90,
-  },
-  {
-    id: "Point",
-    component: PointScene,
-    defaultProps: { headline: "Add your second beat here." },
-    durationInFrames: 120,
-  },
-];
-`,
-  });
-
-  add({
-    rel: "src/components/LeadIn.tsx",
-    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
-
-/**
- * Brand hold during the series-audio lead-in (or opening bumper).
- */
-export default function LeadIn({ label = ${JSON.stringify(title)} }: { label?: string }) {
-  const frame = useCurrentFrame();
-  const { fps, width, height } = useVideoConfig();
-  const opacity = interpolate(frame, [0, 0.4 * fps], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-
-  return (
-    <AbsoluteFill
-      style={{
-        background: "linear-gradient(160deg, #0b1220 0%, #152238 100%)",
-        alignItems: "center",
-        justifyContent: "center",
-        opacity,
-      }}
-    >
-      {/* Brand mark */}
-      <div
-        style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontSize: Math.min(width, height) * 0.08,
-          color: "#f4f7ff",
-          letterSpacing: "0.04em",
-        }}
-      >
-        {label}
-      </div>
-    </AbsoluteFill>
-  );
-}
-`,
   });
 
   add({
@@ -455,6 +389,30 @@ export default function PointScene({
 `,
   });
 
+  if (withAudio) {
+    add({
+      rel: "src/scenes/Bed.tsx",
+      contents: `import { AbsoluteFill } from "@levi-putna/storyboard-core";
+import { Audio, staticFile } from "@levi-putna/storyboard-media";
+
+/**
+ * Transparent full-length bed. Duration must match the visual track.
+ */
+export default function Bed({
+  src = "assets/audio/bed-loop.mp3",
+}: {
+  src?: string;
+}) {
+  return (
+    <AbsoluteFill style={{ pointerEvents: "none" }}>
+      <Audio src={staticFile(src)} loop />
+    </AbsoluteFill>
+  );
+}
+`,
+    });
+  }
+
   add({
     rel: "assets/audio/.gitkeep",
     contents: "",
@@ -464,17 +422,15 @@ export default function PointScene({
     rel: "assets/audio/README.md",
     contents: `# Audio assets
 
-Place series audio files here when you are ready to mux sound:
+Place MP3 (or wav / m4a / aac) files here, then pass the path as a scene prop and play it with \`<Audio src={staticFile(src)} />\`.
 
-| File | Role |
-|------|------|
-| \`intro-jingle.mp3\` | Plays during the lead-in |
-| \`bed-loop.mp3\` | Soft bed under narration |
-| \`narration.mp3\` | Continuous voice-over |
+| File | Typical role |
+|------|----------------|
+| \`bed-loop.mp3\` | Looping bed on a full-length audio track |
+| \`intro-jingle.mp3\` | Short sting on the opening visual scene |
+| \`narration.mp3\` | Voice-over on the audio track (\`startFromFrame\` for delay) |
 
-Then add a \`seriesAudio\` block to \`video.json\` (or re-run \`storyboard create\` with \`--with-audio\`) and point the paths at these files.
-
-Until audio files exist, validate with:
+\`create --with-audio\` already wires \`bed-loop.mp3\` into a transparent bed scene. Until the file exists, validate with:
 
 \`\`\`bash
 ${cli} validate video.json --no-assets
@@ -496,12 +452,12 @@ Scaffolded Storyboard video project (\`${slug}\`).
 
 ## Next steps
 
-1. Edit \`src/scenes/\` and \`src/components/LeadIn.tsx\`.
-2. Adjust timeline, formats, and props in \`video.json\`.
+1. Edit \`src/scenes/\`.
+2. Adjust tracks, formats, and props in \`video.json\`.
 3. ${
       withAudio
-        ? "Drop \`intro-jingle.mp3\`, \`bed-loop.mp3\`, and \`narration.mp3\` into \`assets/audio/\` (see that folder's README)."
-        : "Optional: add audio under \`assets/audio/\` and a \`seriesAudio\` block in \`video.json\`."
+        ? "Drop \`bed-loop.mp3\` into \`assets/audio/\` (see that folder's README). Double-click a clip in preview to isolate a scene."
+        : "Optional: add audio under \`assets/audio/\` and play it with \`<Audio>\` inside a scene. Double-click a clip in preview to isolate a scene."
     }
 
 ## Commands
@@ -521,7 +477,7 @@ ${cli} render <this-folder>/video.json${withAudio ? " --silent" : ""}
 
 ${
   withAudio
-    ? "Until audio files exist, keep using `--no-assets` / `--silent`, or remove `seriesAudio` from `video.json`.\n\n"
+    ? "Until audio files exist, keep using `--no-assets` / `--silent`.\n\n"
     : ""
 }${
   inMonorepo

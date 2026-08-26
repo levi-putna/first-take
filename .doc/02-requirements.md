@@ -1,17 +1,17 @@
 # Product requirements
 
-Storyboard is the video generation engine for an explainer-video tool. Requirements below adapt Remotion's proven ideas to this project's shape: pure React components, scene + JSON assembly, CLI build, and timing compatible with `.skills/video-generate-explainer`.
+Storyboard is a general-purpose, frame-deterministic React video engine. Requirements below adapt Remotion's proven ideas: pure React components, track + JSON assembly, CLI build, and in-scene audio.
 
 ## 1. Goals
 
 | ID | Goal |
 |----|------|
-| G1 | Author explainer videos as React UI, not as generative black-box clips (clips allowed as exceptions later). |
+| G1 | Author videos as React UI, not as generative black-box clips (clips allowed as exceptions later). |
 | G2 | Guarantee frame-accurate, deterministic output so the same artefacts always produce the same file. |
-| G3 | Let designers/devs preview a single component with different parameters without assembling a full video. |
+| G3 | Let authors preview a single scene in isolation (double-click on the timeline) with live prop overrides. |
 | G4 | Assemble a full video from a declarative JSON definition plus component and media artefacts. |
 | G5 | Provide a CLI that builds video(s) from those artefacts for local and CI use. |
-| G6 | Align timing and audio layering with the explainer skill (narration-led durations, series lead-in, soft bed). |
+| G6 | Align timing and audio with in-scene `<Audio>` (Sequence-relative clips; looping beds as full-length tracks). |
 
 ## 2. Non-goals
 
@@ -37,7 +37,7 @@ Storyboard is the video generation engine for an explainer-video tool. Requireme
 |----|-------------|
 | F-C1 | Components are standard React function components with typed props. |
 | F-C2 | Components drive all motion from the engine's current-frame API (local to their sequence). |
-| F-C3 | A component can be registered for **solo preview** with default and override props; changing props restarts animation from frame 0. |
+| F-C3 | A scene can be isolated in preview; changing sidebar props is a live override and does not write `video.json`. |
 | F-C4 | Shared / kit components are importable by many scenes without forking. |
 | F-C5 | Components read `width` / `height` / `fps` from video config for multi-format layout. |
 
@@ -55,10 +55,10 @@ Storyboard is the video generation engine for an explainer-video tool. Requireme
 
 | ID | Requirement |
 |----|-------------|
-| F-V1 | One JSON file defines a single video production (slug, title, fps, formats, scenes, transitions, series audio). |
+| F-V1 | One JSON file defines a single video (`schemaVersion` 2: slug, title, fps, formats, `tracks[]`). |
 | F-V2 | Formats are an array of `{ id, aspectRatio, width, height }`; one render pass per format from the same timeline. |
-| F-V3 | Overarching audio layers are first-class: narration, intro jingle, soft bed (paths, lead-in seconds, volume defaults). |
-| F-V4 | Total `durationInFrames` is computable from lead-in + scenes − transition overlaps (+ optional tail). |
+| F-V3 | Audio is in-scene (`<Audio>` / unmuted `<Video>`); file paths typically live in props. |
+| F-V4 | Total `durationInFrames` is the longest track (gaps + scenes − sequential fade overlaps). |
 | F-V5 | The schema is versioned (`schemaVersion`) so the CLI can reject or migrate old manifests. |
 | F-V6 | Asset paths in the JSON resolve relative to a known project root / public dir. |
 
@@ -66,39 +66,36 @@ Example shape (illustrative, not final schema):
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "example-feature",
   "title": "Example feature",
   "fps": 30,
   "formats": [
     { "id": "16x9", "aspectRatio": "16:9", "width": 1920, "height": 1080 }
   ],
-  "seriesAudio": {
-    "leadInSeconds": 4,
-    "jingle": "assets/audio/intro-jingle.mp3",
-    "bed": "assets/audio/bed-loop.mp3",
-    "narration": "assets/audio/narration.mp3"
-  },
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Hook",
-      "visualType": "component",
-      "component": "scenes/01-Hook.tsx",
-      "props": { "headline": "You hit Tab. Nothing highlights." },
-      "durationInFrames": 90,
-      "audioStartSeconds": 0,
-      "audioEndSeconds": 2.8,
-      "transitionIn": null
-    },
-    {
-      "id": "02",
-      "title": "Fix",
-      "visualType": "component",
-      "component": "scenes/02-Fix.tsx",
-      "props": {},
-      "durationInFrames": 120,
-      "transitionIn": { "type": "fade", "durationInFrames": 15 }
+      "id": "visual",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Hook",
+          "visualType": "component",
+          "component": "src/scenes/01-Hook.tsx",
+          "props": { "headline": "You hit Tab. Nothing highlights." },
+          "durationInFrames": 90,
+          "transitionIn": null
+        },
+        {
+          "id": "02",
+          "title": "Fix",
+          "visualType": "component",
+          "component": "src/scenes/02-Fix.tsx",
+          "props": {},
+          "durationInFrames": 120,
+          "transitionIn": { "type": "fade", "durationInFrames": 15 }
+        }
+      ]
     }
   ]
 }
@@ -108,19 +105,19 @@ Example shape (illustrative, not final schema):
 
 | ID | Requirement |
 |----|-------------|
-| F-T1 | Scenes play in array order after optional lead-in. |
-| F-T2 | Supported transitions in v1: at least `fade` and hard cut (`null`); extensible for slide/wipe later. |
-| F-T3 | Transition duration overlaps adjacent scenes; total length subtracts overlaps. |
-| F-T4 | Optional continuous background layer can sit behind the scene series (not duplicated per scene by default). |
+| F-T1 | Scenes play in track order; later tracks paint on top. |
+| F-T2 | Supported transitions: `fade` and hard cut (`null`); fade after a gap is fade-in from empty. |
+| F-T3 | Sequential fade duration overlaps adjacent scenes on that track; total length is max(tracks). |
+| F-T4 | A continuous background is a full-length scene on a lower track (see `examples/track-overlay`). |
 
 ### 4.5 Audio
 
 | ID | Requirement |
 |----|-------------|
 | F-A1 | Support multiple simultaneous audio layers with frame-based volume envelopes. |
-| F-A2 | Narration starts at `leadInFrames` when series audio is enabled; timing fields on scenes stay relative to the narration file. |
-| F-A3 | Jingle plays from frame 0 and fades out as narration starts. |
-| F-A4 | Soft bed can loop for the full composition and duck under VO. |
+| F-A2 | Narration is an `<Audio>` clip, typically delayed with `startFromFrame` on a spanning mix scene. |
+| F-A3 | Jingle plays from the opening visual scene and fades out as narration starts. |
+| F-A4 | Soft bed can loop for a full-length scene/track and duck under VO. |
 | F-A5 | Clip-native audio for video scenes can be muted by flag (default mute under narration). |
 | F-A6 | Encode muxes all layers into the final file. |
 
@@ -129,7 +126,7 @@ Example shape (illustrative, not final schema):
 | ID | Requirement |
 |----|-------------|
 | F-P1 | Dev preview: scrub frames, play, jump to scene boundaries. |
-| F-P2 | Component playground: pick a component, edit props JSON, scrub its local timeline. |
+| F-P2 | Isolate a scene from the timeline (double-click); sidebar edits props as a live override. |
 | F-P3 | Still capture: export PNG of a given composition frame (for QA stills). |
 | F-P4 | Clear errors when a component uses non-deterministic patterns (lint / docs; automated detection where practical). |
 
@@ -159,8 +156,8 @@ Example shape (illustrative, not final schema):
 | ID | Requirement |
 |----|-------------|
 | F-E1 | Consume a scenes manifest conceptually equivalent to the skill's `scenes.json` (field mapping documented). |
-| F-E2 | Honour narration-derived `durationInFrames` and `audioStartSeconds` / `audioEndSeconds`. |
-| F-E3 | Honour `seriesAudio.leadInSeconds` (~4s default) in total runtime and mix. |
+| F-E2 | Honour narration-derived `durationInFrames` when mapping from the explainer skill. |
+| F-E3 | Opening bumper is a visual scene; mix uses in-scene `<Audio>` (not `seriesAudio`). |
 | F-E4 | One continuous narration file spanning content scenes (not one file per scene). |
 | F-E5 | Multi-format registration from the same composition component / timeline. |
 
@@ -180,7 +177,7 @@ Example shape (illustrative, not final schema):
 2. Scrubbing frame 0 and frame mid-fade in stills shows expected opacity (frame-driven motion proven).
 3. Narration + 4s jingle lead-in + ducked bed mix matches the skill's Gate 7 model.
 4. Two formats (16:9 and 9:16) from one JSON produce two correctly sized files with identical duration.
-5. Component playground can re-run the same component with different props without editing the video JSON.
+5. Isolating a scene from the timeline can re-run it with different props without editing the video JSON.
 
 ## 7. Out of scope for MVP (track for later)
 

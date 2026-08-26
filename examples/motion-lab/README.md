@@ -1,6 +1,6 @@
 # Motion Lab
 
-Example composition for checking common frame-driven animations and timeline consistency.
+Example composition for checking common frame-driven animations and timeline consistency. All eight scenes sit on one visual track with sequential fades between them.
 
 ## Scenes
 
@@ -15,13 +15,12 @@ Example composition for checking common frame-driven animations and timeline con
 | 07 | Progress bar fill |
 | 08 | Rotation + numeric counter |
 
-Every scene includes a bottom **frame timeline** (absolute frame index, seconds, progress bar) so you can verify timing across fades.
+Every scene includes a bottom **frame timeline** (absolute frame index, seconds, progress bar) so you can verify timing across fades. Double-click a clip to isolate that scene.
 
 ## Commands
 
 ```bash
-yarn install
 yarn storyboard validate examples/motion-lab/video.json
 yarn storyboard preview examples/motion-lab/video.json
-yarn storyboard render examples/motion-lab/video.json
+yarn storyboard render examples/motion-lab/video.json --format=16x9 --silent
 ```

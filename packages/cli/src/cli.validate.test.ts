@@ -44,22 +44,24 @@ describe("storyboard CLI validate", () => {
     writeFileSync(
       manifestPath,
       JSON.stringify({
-        schemaVersion: 1,
+        schemaVersion: 2,
         slug: "bad-audio",
         title: "Bad",
         fps: 30,
         formats: [{ id: "16x9", aspectRatio: "16:9", width: 640, height: 360 }],
-        seriesAudio: {
-          leadInSeconds: 1,
-          jingle: "missing.mp3",
-        },
-        scenes: [
+        tracks: [
           {
-            id: "01",
-            title: "A",
-            visualType: "component",
-            component: "a.tsx",
-            durationInFrames: 10,
+            id: "main",
+            scenes: [
+              {
+                id: "01",
+                title: "A",
+                visualType: "component",
+                component: "a.tsx",
+                durationInFrames: 10,
+                props: { bed: "missing.mp3" },
+              },
+            ],
           },
         ],
       }),

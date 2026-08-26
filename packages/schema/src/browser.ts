@@ -3,23 +3,26 @@
  */
 export {
   formatSchema,
-  leadInSchema,
-  seriesAudioSchema,
   transitionInSchema,
   sceneSchema,
+  trackSchema,
   videoManifestSchema,
   type Format,
-  type LeadIn,
-  type SeriesAudio,
   type TransitionIn,
   type Scene,
+  type Track,
   type VideoManifest,
 } from "./manifest.js";
 
 export {
-  leadInFrames,
-  contentDurationInFrames,
+  sequentialOverlapFrames,
+  trackDurationInFrames,
   totalDurationInFrames,
-  validateTransitionLengths,
+  contentDurationInFrames,
+  scenePlacements,
   sceneStartFrames,
+  listScenes,
+  validateTransitionLengths,
+  validateUniqueSceneIds,
+  type ScenePlacement,
 } from "./duration.js";

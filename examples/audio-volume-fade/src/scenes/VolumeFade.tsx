@@ -38,7 +38,11 @@ export function bedVolumeAtFrame(frame: number): number {
  * Looped bed with a mid-timeline volume dip (fade out then back in).
  * Visual meter mirrors the same envelope for manual QA.
  */
-export default function VolumeFade() {
+export default function VolumeFade({
+  bed = "assets/audio/bed-loop.mp3",
+}: {
+  bed?: string;
+}) {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const volume = bedVolumeAtFrame(frame);
@@ -56,7 +60,7 @@ export default function VolumeFade() {
     >
       {/* Timeline audio: looped bed with V-shaped volume envelope */}
       <Audio
-        src={staticFile("assets/audio/bed-loop.mp3")}
+        src={staticFile(bed)}
         startFromFrame={0}
         loop
         volume={(localFrame) => bedVolumeAtFrame(localFrame)}

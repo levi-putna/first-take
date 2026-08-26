@@ -3,8 +3,11 @@ export {
   FrameOffsetProvider,
   useCurrentFrame,
   useAbsoluteFrame,
+  useSequenceDuration,
+  usePlayback,
   useVideoConfig,
   type VideoConfig,
+  type PlaybackState,
 } from "./context.js";
 export { Sequence, type SequenceProps } from "./Sequence.js";
 export { Series } from "./Series.js";

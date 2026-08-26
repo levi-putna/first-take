@@ -13,47 +13,41 @@ import {
 } from "./index.js";
 
 const base = {
-  schemaVersion: 1 as const,
+  schemaVersion: 2 as const,
   slug: "test",
   title: "Test",
   fps: 30,
   formats: [{ id: "16x9", aspectRatio: "16:9", width: 1920, height: 1080 }],
-  scenes: [
+  tracks: [
     {
-      id: "01",
-      title: "Hook",
-      visualType: "component" as const,
-      component: "scenes/01.tsx",
-      durationInFrames: 90,
-      transitionIn: null,
-    },
-    {
-      id: "02",
-      title: "Fix",
-      visualType: "component" as const,
-      component: "scenes/02.tsx",
-      durationInFrames: 120,
-      transitionIn: { type: "fade" as const, durationInFrames: 15 },
+      id: "main",
+      scenes: [
+        {
+          id: "01",
+          title: "Hook",
+          visualType: "component" as const,
+          component: "scenes/01.tsx",
+          durationInFrames: 90,
+          transitionIn: null,
+        },
+        {
+          id: "02",
+          title: "Fix",
+          visualType: "component" as const,
+          component: "scenes/02.tsx",
+          durationInFrames: 120,
+          transitionIn: { type: "fade" as const, durationInFrames: 15 },
+        },
+      ],
     },
   ],
 };
 
 describe("sceneStartFrames", () => {
-  it("accounts for lead-in and fade overlaps", () => {
-    const manifest = parseVideoManifest({
-      ...base,
-      seriesAudio: {
-        leadInSeconds: 4,
-        jingleVolume: 0.55,
-        bedVolumeUnderVo: 0.12,
-        bedVolumeLeadIn: 0.08,
-        jingleFadeOutSeconds: 0.6,
-        bedFadeInSeconds: 0.8,
-        bedFadeOutSeconds: 1.2,
-      },
-    });
-    // lead 120; scene1 @ 120; scene2 @ 120+90-15 = 195
-    expect(sceneStartFrames(manifest)).toEqual([120, 195]);
+  it("accounts for fade overlaps on a single track", () => {
+    const manifest = parseVideoManifest(base);
+    // scene1 @ 0; scene2 @ 90-15 = 75
+    expect(sceneStartFrames(manifest)).toEqual([0, 75]);
   });
 });
 
@@ -76,35 +70,50 @@ describe("asset helpers", () => {
     ).toBe(path.resolve("/proj/src/scenes/A.tsx"));
   });
 
-  it("collects unique scene and lead-in component paths", () => {
+  it("collects unique scene component paths across tracks", () => {
     const manifest = parseVideoManifest({
       ...base,
-      leadIn: { component: "src/Lead.tsx" },
+      tracks: [
+        ...base.tracks,
+        {
+          id: "bed",
+          scenes: [
+            {
+              id: "bed",
+              title: "Bed",
+              visualType: "component" as const,
+              component: "src/scenes/Bed.tsx",
+              durationInFrames: 90,
+            },
+          ],
+        },
+      ],
     });
     expect(collectComponentPaths(manifest).sort()).toEqual(
-      ["scenes/01.tsx", "scenes/02.tsx", "src/Lead.tsx"].sort(),
+      ["scenes/01.tsx", "scenes/02.tsx", "src/scenes/Bed.tsx"].sort(),
     );
   });
 
-  it("reports missing audio assets", () => {
+  it("reports missing audio assets from scene props", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-assets-"));
     const manifestPath = path.join(dir, "video.json");
     fs.writeFileSync(manifestPath, "{}");
     const manifest = parseVideoManifest({
       ...base,
-      seriesAudio: {
-        leadInSeconds: 1,
-        jingle: "missing-jingle.mp3",
-        jingleVolume: 0.5,
-        bedVolumeUnderVo: 0.1,
-        bedVolumeLeadIn: 0.1,
-        jingleFadeOutSeconds: 0.2,
-        bedFadeInSeconds: 0.2,
-        bedFadeOutSeconds: 0.2,
-      },
+      tracks: [
+        {
+          id: "main",
+          scenes: [
+            {
+              ...base.tracks[0].scenes[0],
+              props: { bed: "missing-bed.mp3" },
+            },
+          ],
+        },
+      ],
     });
     const errors = assertAssetsExist({ manifest, manifestPath });
-    expect(errors.some((e) => e.includes("missing-jingle.mp3"))).toBe(true);
+    expect(errors.some((e) => e.includes("missing-bed.mp3"))).toBe(true);
   });
 });
 
@@ -143,7 +152,7 @@ describe("validateVideoFile", () => {
     const manifestPath = path.join(dir, "video.json");
     fs.writeFileSync(
       manifestPath,
-      JSON.stringify({ schemaVersion: 1, slug: "x" }),
+      JSON.stringify({ schemaVersion: 2, slug: "x" }),
     );
     const result = validateVideoFile({ manifestPath, checkAssets: false });
     expect(result.ok).toBe(false);
@@ -156,10 +165,15 @@ describe("validateVideoFile", () => {
       manifestPath,
       JSON.stringify({
         ...base,
-        scenes: [
+        tracks: [
           {
-            ...base.scenes[0],
-            visualType: "generated-video",
+            id: "main",
+            scenes: [
+              {
+                ...base.tracks[0].scenes[0],
+                visualType: "generated-video",
+              },
+            ],
           },
         ],
       }),

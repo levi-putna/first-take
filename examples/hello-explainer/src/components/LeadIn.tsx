@@ -1,11 +1,24 @@
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, interpolate, useCurrentFrame, useSequenceDuration, useVideoConfig } from "@levi-putna/storyboard-core";
+import { Audio, staticFile } from "@levi-putna/storyboard-media";
 
 /**
- * Brand hold during the series-audio lead-in.
+ * Brand hold during the opening bumper, with an optional jingle.
  */
-export default function LeadIn({ label = "Storyboard" }: { label?: string }) {
+export default function LeadIn({
+  label = "Storyboard",
+  jingle,
+  jingleVolume = 0.55,
+  jingleFadeOutSeconds = 0.6,
+}: {
+  label?: string;
+  jingle?: string;
+  jingleVolume?: number;
+  jingleFadeOutSeconds?: number;
+}) {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
+  const sequenceDuration = useSequenceDuration() ?? 120;
+  const fadeFrames = Math.max(1, Math.round(jingleFadeOutSeconds * fps));
   const opacity = interpolate(frame, [0, 0.4 * fps], [0, 1], {
     extrapolateRight: "clamp",
   });
@@ -19,6 +32,19 @@ export default function LeadIn({ label = "Storyboard" }: { label?: string }) {
         opacity,
       }}
     >
+      {jingle ? (
+        <Audio
+          src={staticFile(jingle)}
+          volume={(localFrame) =>
+            interpolate(
+              localFrame,
+              [sequenceDuration - fadeFrames, sequenceDuration],
+              [jingleVolume, 0],
+              { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+            )
+          }
+        />
+      ) : null}
       {/* Brand mark */}
       <div
         style={{

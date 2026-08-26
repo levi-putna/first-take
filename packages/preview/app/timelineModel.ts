@@ -1,88 +1,92 @@
 import {
-  contentDurationInFrames,
-  leadInFrames,
-  sceneStartFrames,
+  scenePlacements,
   totalDurationInFrames,
   type VideoManifest,
 } from "@levi-putna/storyboard-schema";
 
-export type TimelineSegment = {
+export type TimelineClip = {
   key: string;
-  kind: "lead-in" | "scene" | "tail";
+  sceneId: string;
   title: string;
   startFrame: number;
   durationInFrames: number;
-  audioStartSeconds?: number;
-  audioEndSeconds?: number;
-  narration?: string;
+};
+
+export type TimelineLane = {
+  trackId: string;
+  title: string;
+  clips: TimelineClip[];
 };
 
 /**
- * Flatten lead-in, scenes, and tail into timeline clips.
+ * One lane per track, clips placed by composition start frame.
  */
-export function timelineSegments({
+export function timelineLanes({
   manifest,
 }: {
   manifest: VideoManifest;
-}): TimelineSegment[] {
-  const lead = leadInFrames(manifest);
-  const starts = sceneStartFrames(manifest);
-  const total = totalDurationInFrames(manifest);
-  const content = contentDurationInFrames(manifest);
-  const segments: TimelineSegment[] = [];
-
-  if (lead > 0) {
-    segments.push({
-      key: "lead-in",
-      kind: "lead-in",
-      title: "Lead-in",
-      startFrame: 0,
-      durationInFrames: lead,
-    });
-  }
-
-  manifest.scenes.forEach((scene, index) => {
-    segments.push({
-      key: scene.id,
-      kind: "scene",
-      title: scene.title,
-      startFrame: starts[index] ?? 0,
-      durationInFrames: scene.durationInFrames,
-      audioStartSeconds: scene.audioStartSeconds,
-      audioEndSeconds: scene.audioEndSeconds,
-      narration: scene.narration,
-    });
-  });
-
-  const tail = total - (lead + content);
-  if (tail > 0) {
-    segments.push({
-      key: "tail",
-      kind: "tail",
-      title: "Tail",
-      startFrame: total - tail,
-      durationInFrames: tail,
-    });
-  }
-
-  return segments;
+}): TimelineLane[] {
+  const placements = scenePlacements(manifest);
+  return manifest.tracks.map((track) => ({
+    trackId: track.id,
+    title: track.title ?? track.id,
+    clips: placements
+      .filter((placement) => placement.trackId === track.id)
+      .map((placement) => ({
+        key: placement.scene.id,
+        sceneId: placement.scene.id,
+        title: placement.scene.title,
+        startFrame: placement.from,
+        durationInFrames: placement.durationInFrames,
+      })),
+  }));
 }
 
 /**
- * Segment under the playhead. During a fade, prefers the incoming clip.
+ * Clip covering a composition frame, preferring the topmost track.
  */
-export function segmentAtFrame({
-  segments,
+export function clipAtFrame({
+  lanes,
   frame,
 }: {
-  segments: TimelineSegment[];
+  lanes: TimelineLane[];
   frame: number;
-}): TimelineSegment | undefined {
-  const covering = segments.filter(
-    (segment) =>
-      frame >= segment.startFrame &&
-      frame < segment.startFrame + segment.durationInFrames,
-  );
-  if (covering.length > 0) return covering[covering.length - 1];
-  return segments[segments.length - 1];
+}): TimelineClip | undefined {
+  let found: TimelineClip | undefined;
+  for (const lane of lanes) {
+    for (const clip of lane.clips) {
+      if (
+        frame >= clip.startFrame &&
+        frame < clip.startFrame + clip.durationInFrames
+      ) {
+        found = clip;
+      }
+    }
+  }
+  return found;
+}
+
+/**
+ * Look up a clip by scene id.
+ */
+export function clipBySceneId({
+  lanes,
+  sceneId,
+}: {
+  lanes: TimelineLane[];
+  sceneId: string;
+}): TimelineClip | undefined {
+  for (const lane of lanes) {
+    const clip = lane.clips.find((entry) => entry.sceneId === sceneId);
+    if (clip) return clip;
+  }
+  return undefined;
+}
+
+export function compositionDuration({
+  manifest,
+}: {
+  manifest: VideoManifest;
+}): number {
+  return totalDurationInFrames(manifest);
 }

@@ -1,0 +1,3719 @@
+{
+  "schemaVersion": 2,
+  "slug": "timeline-alignment",
+  "title": "Timeline Alignment",
+  "fps": 30,
+  "formats": [
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "assetsRoot": ".",
+  "tracks": [
+    {
+      "id": "background",
+      "title": "Background",
+      "scenes": [
+        {
+          "id": "bg-01",
+          "title": "Colour 0:00",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 0,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-02",
+          "title": "Colour 0:10",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 10,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-03",
+          "title": "Colour 0:20",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 20,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-04",
+          "title": "Colour 0:30",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 30,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-05",
+          "title": "Colour 0:40",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 40,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-06",
+          "title": "Colour 0:50",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 50,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-07",
+          "title": "Colour 1:00",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 60,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-08",
+          "title": "Colour 1:10",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 70,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-09",
+          "title": "Colour 1:20",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 80,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-10",
+          "title": "Colour 1:30",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 90,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-11",
+          "title": "Colour 1:40",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 100,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-12",
+          "title": "Colour 1:50",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 110,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-13",
+          "title": "Colour 2:00",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 120,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-14",
+          "title": "Colour 2:10",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 130,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-15",
+          "title": "Colour 2:20",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 140,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-16",
+          "title": "Colour 2:30",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 150,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-17",
+          "title": "Colour 2:40",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 160,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-18",
+          "title": "Colour 2:50",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 170,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-19",
+          "title": "Colour 3:00",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 180,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-20",
+          "title": "Colour 3:10",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 190,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-21",
+          "title": "Colour 3:20",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 200,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-22",
+          "title": "Colour 3:30",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 210,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-23",
+          "title": "Colour 3:40",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 220,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-24",
+          "title": "Colour 3:50",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 230,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-25",
+          "title": "Colour 4:00",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 240,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-26",
+          "title": "Colour 4:10",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 250,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-27",
+          "title": "Colour 4:20",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 260,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-28",
+          "title": "Colour 4:30",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 270,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-29",
+          "title": "Colour 4:40",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#c0392b",
+            "startSecond": 280,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        },
+        {
+          "id": "bg-30",
+          "title": "Colour 4:50",
+          "visualType": "component",
+          "component": "src/scenes/ColourHold.tsx",
+          "props": {
+            "colour": "#1f4e79",
+            "startSecond": 290,
+            "durationSeconds": 10
+          },
+          "durationInFrames": 300,
+          "transitionIn": null
+        }
+      ]
+    },
+    {
+      "id": "counter",
+      "title": "Counter",
+      "scenes": [
+        {
+          "id": "sec-000",
+          "title": "Second 0:00",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 0
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-001",
+          "title": "Second 0:01",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 1
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-002",
+          "title": "Second 0:02",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 2
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-003",
+          "title": "Second 0:03",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 3
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-004",
+          "title": "Second 0:04",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 4
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-005",
+          "title": "Second 0:05",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 5
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-006",
+          "title": "Second 0:06",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 6
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-007",
+          "title": "Second 0:07",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 7
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-008",
+          "title": "Second 0:08",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 8
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-009",
+          "title": "Second 0:09",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 9
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-010",
+          "title": "Second 0:10",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 10
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-011",
+          "title": "Second 0:11",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 11
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-012",
+          "title": "Second 0:12",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 12
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-013",
+          "title": "Second 0:13",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 13
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-014",
+          "title": "Second 0:14",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 14
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-015",
+          "title": "Second 0:15",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 15
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-016",
+          "title": "Second 0:16",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 16
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-017",
+          "title": "Second 0:17",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 17
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-018",
+          "title": "Second 0:18",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 18
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-019",
+          "title": "Second 0:19",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 19
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-020",
+          "title": "Second 0:20",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 20
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-021",
+          "title": "Second 0:21",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 21
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-022",
+          "title": "Second 0:22",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 22
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-023",
+          "title": "Second 0:23",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 23
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-024",
+          "title": "Second 0:24",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 24
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-025",
+          "title": "Second 0:25",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 25
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-026",
+          "title": "Second 0:26",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 26
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-027",
+          "title": "Second 0:27",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 27
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-028",
+          "title": "Second 0:28",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 28
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-029",
+          "title": "Second 0:29",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 29
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-030",
+          "title": "Second 0:30",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 30
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-031",
+          "title": "Second 0:31",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 31
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-032",
+          "title": "Second 0:32",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 32
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-033",
+          "title": "Second 0:33",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 33
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-034",
+          "title": "Second 0:34",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 34
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-035",
+          "title": "Second 0:35",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 35
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-036",
+          "title": "Second 0:36",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 36
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-037",
+          "title": "Second 0:37",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 37
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-038",
+          "title": "Second 0:38",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 38
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-039",
+          "title": "Second 0:39",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 39
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-040",
+          "title": "Second 0:40",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 40
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-041",
+          "title": "Second 0:41",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 41
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-042",
+          "title": "Second 0:42",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 42
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-043",
+          "title": "Second 0:43",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 43
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-044",
+          "title": "Second 0:44",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 44
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-045",
+          "title": "Second 0:45",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 45
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-046",
+          "title": "Second 0:46",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 46
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-047",
+          "title": "Second 0:47",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 47
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-048",
+          "title": "Second 0:48",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 48
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-049",
+          "title": "Second 0:49",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 49
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-050",
+          "title": "Second 0:50",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 50
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-051",
+          "title": "Second 0:51",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 51
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-052",
+          "title": "Second 0:52",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 52
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-053",
+          "title": "Second 0:53",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 53
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-054",
+          "title": "Second 0:54",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 54
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-055",
+          "title": "Second 0:55",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 55
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-056",
+          "title": "Second 0:56",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 56
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-057",
+          "title": "Second 0:57",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 57
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-058",
+          "title": "Second 0:58",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 58
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-059",
+          "title": "Second 0:59",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 59
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-060",
+          "title": "Second 1:00",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 60
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-061",
+          "title": "Second 1:01",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 61
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-062",
+          "title": "Second 1:02",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 62
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-063",
+          "title": "Second 1:03",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 63
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-064",
+          "title": "Second 1:04",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 64
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-065",
+          "title": "Second 1:05",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 65
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-066",
+          "title": "Second 1:06",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 66
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-067",
+          "title": "Second 1:07",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 67
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-068",
+          "title": "Second 1:08",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 68
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-069",
+          "title": "Second 1:09",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 69
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-070",
+          "title": "Second 1:10",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 70
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-071",
+          "title": "Second 1:11",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 71
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-072",
+          "title": "Second 1:12",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 72
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-073",
+          "title": "Second 1:13",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 73
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-074",
+          "title": "Second 1:14",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 74
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-075",
+          "title": "Second 1:15",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 75
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-076",
+          "title": "Second 1:16",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 76
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-077",
+          "title": "Second 1:17",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 77
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-078",
+          "title": "Second 1:18",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 78
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-079",
+          "title": "Second 1:19",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 79
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-080",
+          "title": "Second 1:20",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 80
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-081",
+          "title": "Second 1:21",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 81
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-082",
+          "title": "Second 1:22",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 82
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-083",
+          "title": "Second 1:23",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 83
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-084",
+          "title": "Second 1:24",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 84
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-085",
+          "title": "Second 1:25",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 85
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-086",
+          "title": "Second 1:26",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 86
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-087",
+          "title": "Second 1:27",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 87
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-088",
+          "title": "Second 1:28",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 88
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-089",
+          "title": "Second 1:29",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 89
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-090",
+          "title": "Second 1:30",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 90
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-091",
+          "title": "Second 1:31",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 91
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-092",
+          "title": "Second 1:32",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 92
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-093",
+          "title": "Second 1:33",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 93
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-094",
+          "title": "Second 1:34",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 94
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-095",
+          "title": "Second 1:35",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 95
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-096",
+          "title": "Second 1:36",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 96
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-097",
+          "title": "Second 1:37",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 97
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-098",
+          "title": "Second 1:38",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 98
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-099",
+          "title": "Second 1:39",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 99
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-100",
+          "title": "Second 1:40",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 100
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-101",
+          "title": "Second 1:41",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 101
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-102",
+          "title": "Second 1:42",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 102
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-103",
+          "title": "Second 1:43",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 103
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-104",
+          "title": "Second 1:44",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 104
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-105",
+          "title": "Second 1:45",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 105
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-106",
+          "title": "Second 1:46",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 106
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-107",
+          "title": "Second 1:47",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 107
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-108",
+          "title": "Second 1:48",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 108
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-109",
+          "title": "Second 1:49",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 109
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-110",
+          "title": "Second 1:50",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 110
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-111",
+          "title": "Second 1:51",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 111
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-112",
+          "title": "Second 1:52",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 112
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-113",
+          "title": "Second 1:53",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 113
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-114",
+          "title": "Second 1:54",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 114
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-115",
+          "title": "Second 1:55",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 115
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-116",
+          "title": "Second 1:56",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 116
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-117",
+          "title": "Second 1:57",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 117
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-118",
+          "title": "Second 1:58",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 118
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-119",
+          "title": "Second 1:59",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 119
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-120",
+          "title": "Second 2:00",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 120
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-121",
+          "title": "Second 2:01",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 121
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-122",
+          "title": "Second 2:02",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 122
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-123",
+          "title": "Second 2:03",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 123
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-124",
+          "title": "Second 2:04",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 124
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-125",
+          "title": "Second 2:05",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 125
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-126",
+          "title": "Second 2:06",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 126
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-127",
+          "title": "Second 2:07",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 127
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-128",
+          "title": "Second 2:08",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 128
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-129",
+          "title": "Second 2:09",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 129
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-130",
+          "title": "Second 2:10",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 130
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-131",
+          "title": "Second 2:11",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 131
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-132",
+          "title": "Second 2:12",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 132
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-133",
+          "title": "Second 2:13",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 133
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-134",
+          "title": "Second 2:14",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 134
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-135",
+          "title": "Second 2:15",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 135
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-136",
+          "title": "Second 2:16",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 136
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-137",
+          "title": "Second 2:17",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 137
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-138",
+          "title": "Second 2:18",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 138
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-139",
+          "title": "Second 2:19",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 139
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-140",
+          "title": "Second 2:20",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 140
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-141",
+          "title": "Second 2:21",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 141
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-142",
+          "title": "Second 2:22",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 142
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-143",
+          "title": "Second 2:23",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 143
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-144",
+          "title": "Second 2:24",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 144
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-145",
+          "title": "Second 2:25",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 145
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-146",
+          "title": "Second 2:26",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 146
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-147",
+          "title": "Second 2:27",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 147
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-148",
+          "title": "Second 2:28",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 148
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-149",
+          "title": "Second 2:29",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 149
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-150",
+          "title": "Second 2:30",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 150
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-151",
+          "title": "Second 2:31",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 151
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-152",
+          "title": "Second 2:32",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 152
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-153",
+          "title": "Second 2:33",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 153
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-154",
+          "title": "Second 2:34",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 154
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-155",
+          "title": "Second 2:35",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 155
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-156",
+          "title": "Second 2:36",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 156
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-157",
+          "title": "Second 2:37",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 157
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-158",
+          "title": "Second 2:38",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 158
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-159",
+          "title": "Second 2:39",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 159
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-160",
+          "title": "Second 2:40",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 160
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-161",
+          "title": "Second 2:41",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 161
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-162",
+          "title": "Second 2:42",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 162
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-163",
+          "title": "Second 2:43",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 163
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-164",
+          "title": "Second 2:44",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 164
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-165",
+          "title": "Second 2:45",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 165
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-166",
+          "title": "Second 2:46",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 166
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-167",
+          "title": "Second 2:47",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 167
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-168",
+          "title": "Second 2:48",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 168
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-169",
+          "title": "Second 2:49",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 169
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-170",
+          "title": "Second 2:50",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 170
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-171",
+          "title": "Second 2:51",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 171
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-172",
+          "title": "Second 2:52",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 172
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-173",
+          "title": "Second 2:53",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 173
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-174",
+          "title": "Second 2:54",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 174
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-175",
+          "title": "Second 2:55",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 175
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-176",
+          "title": "Second 2:56",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 176
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-177",
+          "title": "Second 2:57",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 177
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-178",
+          "title": "Second 2:58",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 178
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-179",
+          "title": "Second 2:59",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 179
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-180",
+          "title": "Second 3:00",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 180
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-181",
+          "title": "Second 3:01",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 181
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-182",
+          "title": "Second 3:02",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 182
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-183",
+          "title": "Second 3:03",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 183
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-184",
+          "title": "Second 3:04",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 184
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-185",
+          "title": "Second 3:05",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 185
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-186",
+          "title": "Second 3:06",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 186
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-187",
+          "title": "Second 3:07",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 187
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-188",
+          "title": "Second 3:08",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 188
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-189",
+          "title": "Second 3:09",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 189
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-190",
+          "title": "Second 3:10",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 190
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-191",
+          "title": "Second 3:11",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 191
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-192",
+          "title": "Second 3:12",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 192
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-193",
+          "title": "Second 3:13",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 193
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-194",
+          "title": "Second 3:14",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 194
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-195",
+          "title": "Second 3:15",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 195
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-196",
+          "title": "Second 3:16",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 196
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-197",
+          "title": "Second 3:17",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 197
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-198",
+          "title": "Second 3:18",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 198
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-199",
+          "title": "Second 3:19",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 199
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-200",
+          "title": "Second 3:20",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 200
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-201",
+          "title": "Second 3:21",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 201
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-202",
+          "title": "Second 3:22",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 202
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-203",
+          "title": "Second 3:23",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 203
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-204",
+          "title": "Second 3:24",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 204
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-205",
+          "title": "Second 3:25",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 205
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-206",
+          "title": "Second 3:26",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 206
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-207",
+          "title": "Second 3:27",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 207
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-208",
+          "title": "Second 3:28",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 208
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-209",
+          "title": "Second 3:29",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 209
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-210",
+          "title": "Second 3:30",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 210
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-211",
+          "title": "Second 3:31",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 211
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-212",
+          "title": "Second 3:32",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 212
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-213",
+          "title": "Second 3:33",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 213
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-214",
+          "title": "Second 3:34",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 214
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-215",
+          "title": "Second 3:35",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 215
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-216",
+          "title": "Second 3:36",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 216
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-217",
+          "title": "Second 3:37",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 217
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-218",
+          "title": "Second 3:38",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 218
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-219",
+          "title": "Second 3:39",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 219
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-220",
+          "title": "Second 3:40",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 220
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-221",
+          "title": "Second 3:41",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 221
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-222",
+          "title": "Second 3:42",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 222
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-223",
+          "title": "Second 3:43",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 223
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-224",
+          "title": "Second 3:44",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 224
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-225",
+          "title": "Second 3:45",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 225
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-226",
+          "title": "Second 3:46",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 226
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-227",
+          "title": "Second 3:47",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 227
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-228",
+          "title": "Second 3:48",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 228
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-229",
+          "title": "Second 3:49",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 229
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-230",
+          "title": "Second 3:50",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 230
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-231",
+          "title": "Second 3:51",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 231
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-232",
+          "title": "Second 3:52",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 232
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-233",
+          "title": "Second 3:53",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 233
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-234",
+          "title": "Second 3:54",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 234
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-235",
+          "title": "Second 3:55",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 235
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-236",
+          "title": "Second 3:56",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 236
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-237",
+          "title": "Second 3:57",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 237
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-238",
+          "title": "Second 3:58",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 238
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-239",
+          "title": "Second 3:59",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 239
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-240",
+          "title": "Second 4:00",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 240
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-241",
+          "title": "Second 4:01",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 241
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-242",
+          "title": "Second 4:02",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 242
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-243",
+          "title": "Second 4:03",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 243
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-244",
+          "title": "Second 4:04",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 244
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-245",
+          "title": "Second 4:05",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 245
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-246",
+          "title": "Second 4:06",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 246
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-247",
+          "title": "Second 4:07",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 247
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-248",
+          "title": "Second 4:08",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 248
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-249",
+          "title": "Second 4:09",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 249
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-250",
+          "title": "Second 4:10",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 250
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-251",
+          "title": "Second 4:11",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 251
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-252",
+          "title": "Second 4:12",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 252
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-253",
+          "title": "Second 4:13",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 253
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-254",
+          "title": "Second 4:14",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 254
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-255",
+          "title": "Second 4:15",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 255
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-256",
+          "title": "Second 4:16",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 256
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-257",
+          "title": "Second 4:17",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 257
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-258",
+          "title": "Second 4:18",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 258
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-259",
+          "title": "Second 4:19",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 259
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-260",
+          "title": "Second 4:20",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 260
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-261",
+          "title": "Second 4:21",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 261
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-262",
+          "title": "Second 4:22",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 262
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-263",
+          "title": "Second 4:23",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 263
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-264",
+          "title": "Second 4:24",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 264
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-265",
+          "title": "Second 4:25",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 265
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-266",
+          "title": "Second 4:26",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 266
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-267",
+          "title": "Second 4:27",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 267
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-268",
+          "title": "Second 4:28",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 268
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-269",
+          "title": "Second 4:29",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 269
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-270",
+          "title": "Second 4:30",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 270
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-271",
+          "title": "Second 4:31",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 271
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-272",
+          "title": "Second 4:32",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 272
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-273",
+          "title": "Second 4:33",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 273
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-274",
+          "title": "Second 4:34",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 274
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-275",
+          "title": "Second 4:35",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 275
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-276",
+          "title": "Second 4:36",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 276
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-277",
+          "title": "Second 4:37",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 277
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-278",
+          "title": "Second 4:38",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 278
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-279",
+          "title": "Second 4:39",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 279
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-280",
+          "title": "Second 4:40",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 280
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-281",
+          "title": "Second 4:41",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 281
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-282",
+          "title": "Second 4:42",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 282
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-283",
+          "title": "Second 4:43",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 283
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-284",
+          "title": "Second 4:44",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 284
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-285",
+          "title": "Second 4:45",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 285
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-286",
+          "title": "Second 4:46",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 286
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-287",
+          "title": "Second 4:47",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 287
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-288",
+          "title": "Second 4:48",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 288
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-289",
+          "title": "Second 4:49",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 289
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-290",
+          "title": "Second 4:50",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 290
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-291",
+          "title": "Second 4:51",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 291
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-292",
+          "title": "Second 4:52",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 292
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-293",
+          "title": "Second 4:53",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 293
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-294",
+          "title": "Second 4:54",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 294
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-295",
+          "title": "Second 4:55",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 295
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-296",
+          "title": "Second 4:56",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 296
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-297",
+          "title": "Second 4:57",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 297
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-298",
+          "title": "Second 4:58",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 298
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        },
+        {
+          "id": "sec-299",
+          "title": "Second 4:59",
+          "visualType": "component",
+          "component": "src/scenes/SecondCounter.tsx",
+          "props": {
+            "second": 299
+          },
+          "durationInFrames": 30,
+          "transitionIn": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,30 +1,41 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "clip-hard-cut",
   "title": "Clip Hard Cut",
   "fps": 30,
   "formats": [
-    { "id": "16x9", "aspectRatio": "16:9", "width": 1280, "height": 720 }
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1280,
+      "height": 720
+    }
   ],
   "assetsRoot": ".",
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "B-roll",
-      "visualType": "component",
-      "component": "src/scenes/ClipA.tsx",
-      "props": {},
-      "durationInFrames": 150,
-      "transitionIn": null
-    },
-    {
-      "id": "02",
-      "title": "Second clip",
-      "visualType": "component",
-      "component": "src/scenes/ClipB.tsx",
-      "props": {},
-      "durationInFrames": 150,
-      "transitionIn": null
+      "id": "main",
+      "title": "Main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "B-roll",
+          "visualType": "component",
+          "component": "src/scenes/ClipA.tsx",
+          "props": {},
+          "durationInFrames": 150,
+          "transitionIn": null
+        },
+        {
+          "id": "02",
+          "title": "Second clip",
+          "visualType": "component",
+          "component": "src/scenes/ClipB.tsx",
+          "props": {},
+          "durationInFrames": 150,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }

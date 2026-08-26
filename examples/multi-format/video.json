@@ -1,22 +1,38 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "multi-format",
   "title": "Multi Format",
   "fps": 30,
   "formats": [
-    { "id": "16x9", "aspectRatio": "16:9", "width": 640, "height": 360 },
-    { "id": "9x16", "aspectRatio": "9:16", "width": 360, "height": 640 }
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 640,
+      "height": 360
+    },
+    {
+      "id": "9x16",
+      "aspectRatio": "9:16",
+      "width": 360,
+      "height": 640
+    }
   ],
   "assetsRoot": ".",
-  "scenes": [
+  "tracks": [
     {
-      "id": "01",
-      "title": "Green",
-      "visualType": "component",
-      "component": "src/scenes/Green.tsx",
-      "props": {},
-      "durationInFrames": 30,
-      "transitionIn": null
+      "id": "main",
+      "title": "Main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Green",
+          "visualType": "component",
+          "component": "src/scenes/Green.tsx",
+          "props": {},
+          "durationInFrames": 30,
+          "transitionIn": null
+        }
+      ]
     }
   ]
 }

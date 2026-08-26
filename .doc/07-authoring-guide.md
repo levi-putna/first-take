@@ -38,7 +38,6 @@ export default function TitleCard({ headline }: { headline: string }) {
 ```
 my-video/
   video.json
-  playground.ts          # optional — component playground entries
   src/
     scenes/
     components/
@@ -63,22 +62,9 @@ yarn storyboard preview my-video/video.json
 ```
 
 By default, render/still print progress and errors only. Pass `--verbose` (global) for FFmpeg output and detailed phase logs. `--silent` / `--no-audio` mute audio in the encode — they do not quiet logging.
-## Playground
+## Isolate a scene
 
-Export `playground` from `playground.ts`:
-
-```ts
-export const playground = [
-  {
-    id: "TitleCard",
-    component: TitleCard,
-    defaultProps: { headline: "Hello" },
-    durationInFrames: 90,
-  },
-];
-```
-
-Applying new props in the preview UI resets the local frame to `0` and re-runs the animation.
+Double-click a clip on the preview timeline. That mounts only that scene on a local clock. The sidebar inspector edits props as a live override (it does not write `video.json`). Back restores the full multi-lane timeline.
 
 ## Sequences
 

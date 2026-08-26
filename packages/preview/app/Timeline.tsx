@@ -1,48 +1,53 @@
 import { useEffect, useRef, type MouseEvent } from "react";
-import { Pause, Play, SkipBack } from "lucide-react";
-import { formatSeconds, formatTimecode } from "./timecode";
-import {
-  segmentAtFrame,
-  type TimelineSegment,
-} from "./timelineModel";
+import { ArrowLeft, Pause, Play, SkipBack, Volume2, VolumeX } from "lucide-react";
+import { formatFlooredTimecode, formatTimecode, majorRulerStepFrames } from "./timecode";
+import type { TimelineLane } from "./timelineModel";
+
+const LABEL_WIDTH = 96;
+const RULER_HEIGHT = 28;
 
 /**
- * Bottom editor dock: transport, current scene / VO window, and a clip track.
+ * Bottom editor dock: transport, time ruler, and one lane per track.
  */
 export function Timeline({
   frame,
   durationInFrames,
   fps,
   playing,
+  muted,
   onPlayingChange,
+  onMutedChange,
   onFrameChange,
-  segments,
+  lanes,
+  selectedSceneId,
+  onSelectScene,
+  onIsolateScene,
+  isolated,
+  onBack,
 }: {
   frame: number;
   durationInFrames: number;
   fps: number;
   playing: boolean;
+  muted: boolean;
   onPlayingChange: (next: boolean) => void;
+  onMutedChange: (next: boolean) => void;
   onFrameChange: (next: number) => void;
-  segments: TimelineSegment[];
+  lanes: TimelineLane[];
+  selectedSceneId: string;
+  onSelectScene: (sceneId: string) => void;
+  onIsolateScene: (sceneId: string) => void;
+  isolated: boolean;
+  onBack: () => void;
 }) {
   const last = Math.max(0, durationInFrames - 1);
-  const current = segmentAtFrame({ segments, frame });
-  const localFrame = current ? frame - current.startFrame : frame;
-  const playheadPct = last === 0 ? 0 : (frame / last) * 100;
-  const trackRef = useRef<HTMLDivElement>(null);
+  const span = Math.max(1, durationInFrames);
+  const playheadPct = (frame / span) * 100;
+  const rulerRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
-  const audioLabel =
-    current?.audioStartSeconds != null && current.audioEndSeconds != null
-      ? `VO ${formatSeconds({ seconds: current.audioStartSeconds })}–${formatSeconds({ seconds: current.audioEndSeconds })}`
-      : current?.kind === "lead-in"
-        ? "Jingle / lead-in"
-        : current?.kind === "tail"
-          ? "Tail"
-          : null;
 
   const seekFromClientX = (clientX: number) => {
-    const rect = trackRef.current?.getBoundingClientRect();
+    const rect = rulerRef.current?.getBoundingClientRect();
     if (!rect || rect.width === 0) return;
     const t = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
     onFrameChange(Math.round(t * last));
@@ -69,10 +74,26 @@ export function Timeline({
     };
   }, [last, onFrameChange]);
 
+  const majorStep = majorRulerStepFrames({ durationInFrames, fps });
+  const ticks: number[] = [];
+  for (let f = 0; f <= durationInFrames; f += majorStep) {
+    ticks.push(f);
+  }
+
   return (
     <div className="sb-dock">
-      {/* Play / pause + timecode + scene chip */}
+      {/* Play / pause + timecode */}
       <div className="sb-transport">
+        {isolated ? (
+          <button
+            type="button"
+            className="sb-icon-btn"
+            aria-label="Back to full timeline"
+            onClick={onBack}
+          >
+            <ArrowLeft size={16} />
+          </button>
+        ) : null}
         <button
           type="button"
           className="sb-icon-btn"
@@ -93,75 +114,127 @@ export function Timeline({
         >
           {playing ? <Pause size={16} /> : <Play size={16} />}
         </button>
+        <button
+          type="button"
+          className="sb-icon-btn"
+          aria-pressed={muted}
+          aria-label={muted ? "Unmute" : "Mute"}
+          onClick={() => onMutedChange(!muted)}
+        >
+          {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
         <span className="sb-mono">
           {formatTimecode({ frame, fps })} / {formatTimecode({ frame: last, fps })}
         </span>
         <span className="sb-mono">f{frame}</span>
-        {current ? (
-          <span className="sb-chip" title={current.narration}>
-            {current.title}
-            <span className="sb-mono" style={{ color: "var(--muted)" }}>
-              {localFrame}/{current.durationInFrames - 1}
-            </span>
-            {audioLabel ? <em>{audioLabel}</em> : null}
-          </span>
-        ) : null}
       </div>
 
-      {/* Scene track */}
-      <div
-        ref={trackRef}
-        className="sb-track"
-        onMouseDown={seekFromEvent}
-        role="slider"
-        aria-label="Timeline"
-        aria-valuemin={0}
-        aria-valuemax={last}
-        aria-valuenow={frame}
-        tabIndex={0}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowLeft") {
-            event.preventDefault();
-            onFrameChange(Math.max(0, frame - 1));
-          }
-          if (event.key === "ArrowRight") {
-            event.preventDefault();
-            onFrameChange(Math.min(last, frame + 1));
-          }
-        }}
-      >
-        <div className="sb-track-row">
-          {segments.map((segment, index) => (
+      {/* Ruler + lanes */}
+      <div className="sb-timeline-panel">
+        <div className="sb-timeline">
+          <div className="sb-timeline-labels" style={{ width: LABEL_WIDTH }}>
             <div
-              key={segment.key}
-              className={`sb-clip${current?.key === segment.key ? " is-current" : ""}`}
-              style={{
-                flexGrow: Math.max(1, segment.durationInFrames),
-                background: clipTone({ kind: segment.kind, index }),
-              }}
-              title={`${segment.title} · ${segment.durationInFrames}f`}
-            >
-              {segment.title}
+              className="sb-timeline-label-gutter"
+              style={{ height: RULER_HEIGHT }}
+            />
+            {lanes.map((lane) => (
+              <div key={lane.trackId} className="sb-timeline-label">
+                {lane.title}
+              </div>
+            ))}
+          </div>
+
+          <div className="sb-timeline-scroll">
+            <div className="sb-timeline-stack">
+              {/* Time ruler */}
+              <div
+                ref={rulerRef}
+                className="sb-ruler"
+                style={{ height: RULER_HEIGHT }}
+                onMouseDown={seekFromEvent}
+                role="slider"
+                aria-label="Timeline"
+                aria-valuemin={0}
+                aria-valuemax={last}
+                aria-valuenow={frame}
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "ArrowLeft") {
+                    event.preventDefault();
+                    onFrameChange(Math.max(0, frame - 1));
+                  }
+                  if (event.key === "ArrowRight") {
+                    event.preventDefault();
+                    onFrameChange(Math.min(last, frame + 1));
+                  }
+                }}
+              >
+                {ticks.map((tick) => (
+                  <div
+                    key={tick}
+                    className="sb-ruler-tick"
+                    style={{
+                      left: `${(tick / span) * 100}%`,
+                    }}
+                  >
+                    <span>{formatFlooredTimecode({ frame: tick, fps })}</span>
+                  </div>
+                ))}
+              </div>
+
+              {lanes.map((lane, laneIndex) => (
+                <div key={lane.trackId} className="sb-lane">
+                  {lane.clips.map((clip) => {
+                    const left = (clip.startFrame / span) * 100;
+                    const width = (clip.durationInFrames / span) * 100;
+                    return (
+                      <button
+                        key={clip.key}
+                        type="button"
+                        className={`sb-clip${selectedSceneId === clip.sceneId ? " is-current" : ""}`}
+                        style={{
+                          left: `${left}%`,
+                          width: `${width}%`,
+                          background: clipTone(laneIndex),
+                        }}
+                        title={`${clip.title} · ${clip.durationInFrames}f`}
+                        onClick={() => onSelectScene(clip.sceneId)}
+                        onDoubleClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          onIsolateScene(clip.sceneId);
+                        }}
+                      >
+                        {clip.title}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+
+              {/* Playhead overlay: diamond in ruler, stem through lanes */}
+              <div className="sb-playhead" style={{ left: `${playheadPct}%` }}>
+                <div
+                  className="sb-playhead-diamond"
+                  style={{ top: RULER_HEIGHT }}
+                  onMouseDown={seekFromEvent}
+                />
+                <div
+                  className="sb-playhead-stem"
+                  style={{ top: RULER_HEIGHT }}
+                />
+              </div>
             </div>
-          ))}
+          </div>
         </div>
-        <div className="sb-playhead" style={{ left: `${playheadPct}%` }} />
       </div>
     </div>
   );
 }
 
 /**
- * Distinct but quiet colours per clip kind.
+ * Quiet alternating lane colours.
  */
-function clipTone({
-  kind,
-  index,
-}: {
-  kind: TimelineSegment["kind"];
-  index: number;
-}): string {
-  if (kind === "lead-in") return "var(--lead)";
-  if (kind === "tail") return "var(--tail)";
-  return index % 2 === 0 ? "var(--scene-a)" : "var(--scene-b)";
+function clipTone(laneIndex: number): string {
+  return laneIndex % 2 === 0 ? "var(--scene-a)" : "var(--scene-b)";
 }

@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { VideoManifest } from "./manifest.js";
+import { listScenes } from "./duration.js";
+
+const AUDIO_EXT = /\.(mp3|wav|m4a|aac)$/i;
 
 /**
  * Resolve an asset path relative to the video.json directory and assetsRoot.
@@ -20,14 +23,39 @@ export function resolveAssetPath({
 }
 
 /**
- * Collect audio (and lead-in component is not an asset file) paths that must exist.
+ * Recursively collect string values that look like audio file paths.
+ */
+function collectAudioPropPaths({
+  value,
+  out,
+}: {
+  value: unknown;
+  out: string[];
+}): void {
+  if (typeof value === "string") {
+    if (AUDIO_EXT.test(value)) out.push(value);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) collectAudioPropPaths({ value: item, out });
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const item of Object.values(value as Record<string, unknown>)) {
+      collectAudioPropPaths({ value: item, out });
+    }
+  }
+}
+
+/**
+ * Audio paths declared as scene props (best-effort; not a full asset graph).
  */
 export function listRequiredAudioAssets(manifest: VideoManifest): string[] {
-  const audio = manifest.seriesAudio;
-  if (!audio) return [];
-  return [audio.jingle, audio.bed, audio.narration].filter(
-    (p): p is string => typeof p === "string" && p.length > 0,
-  );
+  const paths: string[] = [];
+  for (const scene of listScenes(manifest)) {
+    collectAudioPropPaths({ value: scene.props, out: paths });
+  }
+  return [...new Set(paths)];
 }
 
 /**
@@ -57,7 +85,7 @@ export function assertAssetsExist({
 }
 
 /**
- * Resolve a scene/lead-in component module path relative to the manifest file.
+ * Resolve a scene component module path relative to the manifest file.
  */
 export function resolveComponentPath({
   manifestPath,
@@ -75,11 +103,8 @@ export function resolveComponentPath({
  */
 export function collectComponentPaths(manifest: VideoManifest): string[] {
   const paths = new Set<string>();
-  for (const scene of manifest.scenes) {
+  for (const scene of listScenes(manifest)) {
     paths.add(scene.component);
-  }
-  if (manifest.leadIn?.component) {
-    paths.add(manifest.leadIn.component);
   }
   return [...paths];
 }

@@ -77,7 +77,7 @@ describe("short fixture renders", () => {
         name: "audio-mix",
       });
       const exp = loadExpectations({ fixtureDir });
-      expect(exp.durationInFrames).toBe(105);
+      expect(exp.durationInFrames).toBe(90);
 
       await renderAndAssertMedia({
         fixtureDir,
@@ -106,6 +106,25 @@ describe("short fixture renders", () => {
       await renderAndAssertMedia({
         fixtureDir,
         fixtureName: "motion-basics",
+        formatId: "16x9",
+        silent: true,
+      });
+    },
+    300_000,
+  );
+
+  it(
+    "track-overlay silent MP4",
+    async () => {
+      const fixtureDir = fixtureRoot({
+        repoRoot: REPO_ROOT,
+        name: "track-overlay",
+      });
+      const { manifest } = loadValidatedManifest({ fixtureDir });
+      expect(totalDurationInFrames(manifest)).toBe(240);
+      await renderAndAssertMedia({
+        fixtureDir,
+        fixtureName: "track-overlay",
         formatId: "16x9",
         silent: true,
       });

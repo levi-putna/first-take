@@ -17,18 +17,23 @@ const repoRoot = path.resolve(
 );
 
 const minimalManifest = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   slug: "solo",
   title: "Solo Video",
   fps: 30,
   formats: [{ id: "16x9", aspectRatio: "16:9", width: 640, height: 360 }],
-  scenes: [
+  tracks: [
     {
-      id: "01",
-      title: "Hold",
-      visualType: "component",
-      component: "src/A.tsx",
-      durationInFrames: 10,
+      id: "main",
+      scenes: [
+        {
+          id: "01",
+          title: "Hold",
+          visualType: "component",
+          component: "src/A.tsx",
+          durationInFrames: 10,
+        },
+      ],
     },
   ],
 };

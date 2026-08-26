@@ -9,6 +9,7 @@ import {
   delayRender,
   useAbsoluteFrame,
   useCurrentFrame,
+  usePlayback,
   useVideoConfig,
 } from "@levi-putna/storyboard-core";
 import {
@@ -170,6 +171,7 @@ export function Video({
   const id = useId();
   const frame = useCurrentFrame();
   const absoluteFrame = useAbsoluteFrame();
+  const playback = usePlayback();
   const { fps, durationInFrames: totalFrames } = useVideoConfig();
 
   const compositionStartFrame = absoluteFrame - frame;
@@ -261,7 +263,8 @@ export function Video({
         endAtSeconds: endAt,
         playbackRate,
       })}
-      muted={muted}
+      muted={muted || playback.muted}
+      playing={playback.playing && !muted}
       style={mergedStyle}
       className={className}
     />
@@ -313,12 +316,14 @@ function Html5VideoFrame({
   src,
   mediaTime,
   muted,
+  playing,
   style,
   className,
 }: {
   src: string;
   mediaTime: number;
   muted: boolean;
+  playing: boolean;
   style?: CSSProperties;
   className?: string;
 }) {
@@ -350,15 +355,27 @@ function Html5VideoFrame({
           });
         }
         if (cancelled) return;
-        node.pause();
-        node.currentTime = mediaTime;
-        await new Promise<void>((resolve) => {
-          const onSeeked = () => {
-            node.removeEventListener("seeked", onSeeked);
-            resolve();
-          };
-          node.addEventListener("seeked", onSeeked);
-        });
+        const drift = Math.abs(node.currentTime - mediaTime);
+        if (!playing) {
+          node.pause();
+          node.currentTime = mediaTime;
+          await new Promise<void>((resolve) => {
+            const onSeeked = () => {
+              node.removeEventListener("seeked", onSeeked);
+              resolve();
+            };
+            node.addEventListener("seeked", onSeeked);
+          });
+        } else {
+          if (drift > 0.45) {
+            node.currentTime = mediaTime;
+          }
+          if (node.paused) {
+            await node.play().catch(() => {
+              // Autoplay may be blocked until the user hits Play
+            });
+          }
+        }
       } catch {
         // continue even if seek fails so capture does not hang
       } finally {
@@ -371,7 +388,7 @@ function Html5VideoFrame({
       cancelled = true;
       continueRender(handle);
     };
-  }, [node, mediaTime, src, handle]);
+  }, [node, mediaTime, src, handle, playing]);
 
   return (
     <video
