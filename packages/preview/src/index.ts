@@ -1,13 +1,22 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { createServer } from "vite";
-import type { VideoManifest } from "@storyboard/schema";
+import { createRequire } from "node:module";
+import { createServer, type ViteDevServer } from "vite";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
 import {
   collectComponentPaths,
   resolveComponentPath,
+  resolveReactPackageRoot,
+  resolveStoryboardPackageRoot,
+  storyboardViteAliases,
   validateVideoFile,
-} from "@storyboard/schema";
+} from "@levi-putna/storyboard-schema";
+import {
+  discoverPreviewProjects,
+  isAllowedPreviewProject,
+  sameManifestPath,
+} from "./discover-projects.js";
+import { previewApiPlugin } from "./preview-api.js";
 
 export type StartPreviewOptions = {
   manifestPath: string;
@@ -15,6 +24,8 @@ export type StartPreviewOptions = {
   port?: number;
   /** Open the system browser (default true). Set false for embedded hosts. */
   open?: boolean;
+  /** Directory used when scanning for neighbouring videos (default process.cwd()). */
+  cwd?: string;
 };
 
 export type PreviewServerHandle = {
@@ -33,41 +44,56 @@ export async function startPreview({
   manifest,
   port = 3333,
   open = true,
+  cwd = process.cwd(),
 }: StartPreviewOptions): Promise<PreviewServerHandle> {
-  const thisDir = path.dirname(fileURLToPath(import.meta.url));
-  const previewPkgRoot = path.resolve(thisDir, "..");
-  const appRoot = path.join(previewPkgRoot, "app");
-  const packagesRoot = path.resolve(previewPkgRoot, "..");
-  const repoRoot = path.resolve(packagesRoot, "..");
-
-  const resolvedManifestPath = path.resolve(manifestPath);
-  const projectDir = path.dirname(resolvedManifestPath);
-
-  // Monorepo: storyboard/node_modules. Consumer file: installs: <project>/node_modules.
-  const depSearchRoots = [
-    repoRoot,
-    path.dirname(packagesRoot),
-    projectDir,
-    process.cwd(),
-  ];
-  const reactDir = resolveDepPackage({ name: "react", searchRoots: depSearchRoots });
-  const reactDomDir = resolveDepPackage({
-    name: "react-dom",
-    searchRoots: depSearchRoots,
+  const here = import.meta.url;
+  const previewPkgRoot = resolveStoryboardPackageRoot({
+    pkg: "preview",
+    from: here,
   });
+  const appRoot = path.join(previewPkgRoot, "app");
+
+  let resolvedManifestPath = path.resolve(manifestPath);
+  let projectDir = path.dirname(resolvedManifestPath);
+  const resolvedCwd = path.resolve(cwd);
+
+  const reactDir = resolveReactPackageRoot({ name: "react", from: here });
+  const reactDomDir = resolveReactPackageRoot({
+    name: "react-dom",
+    from: here,
+  });
+  const require = createRequire(import.meta.url);
+  let lucideEntry = "lucide-react";
+  try {
+    lucideEntry = require.resolve("lucide-react");
+  } catch {
+    // Fall through to Vite default resolution.
+  }
+  const storyboardAliases = storyboardViteAliases({ from: here });
   const generatedDir = path.join(appRoot, ".generated");
   fs.mkdirSync(generatedDir, { recursive: true });
 
   let currentManifest = manifest;
 
-  const writeGeneratedModules = (next: VideoManifest) => {
+  /**
+   * Write Vite modules for the open video (manifest, component map, playground).
+   */
+  const writeGeneratedModules = ({
+    next,
+    manifestFile,
+    videoDir,
+  }: {
+    next: VideoManifest;
+    manifestFile: string;
+    videoDir: string;
+  }) => {
     currentManifest = next;
-    const assetsRoot = path.resolve(projectDir, next.assetsRoot ?? ".");
+    const nextAssetsRoot = path.resolve(videoDir, next.assetsRoot ?? ".");
     const componentPaths = collectComponentPaths(next);
     const importLines = componentPaths
       .map((rel, i) => {
         const abs = resolveComponentPath({
-          manifestPath: resolvedManifestPath,
+          manifestPath: manifestFile,
           componentPath: rel,
         });
         if (!fs.existsSync(abs)) {
@@ -82,22 +108,22 @@ export async function startPreview({
 
     fs.writeFileSync(
       path.join(generatedDir, "project.ts"),
-      `import type { VideoManifest } from "@storyboard/schema";
+      `import type { VideoManifest } from "@levi-putna/storyboard-schema";
 ${importLines}
 
 export const manifest = ${JSON.stringify(next, null, 2)} as VideoManifest;
 export const components = {
 ${mapEntries}
 };
-export const manifestPath = ${JSON.stringify(resolvedManifestPath)};
+export const manifestPath = ${JSON.stringify(manifestFile)};
 export const playgroundModules = import.meta.glob(${JSON.stringify(
-        path.join(projectDir, "src/**/*.{tsx,ts}").replace(/\\/g, "/"),
+        path.join(videoDir, "src/**/*.{tsx,ts}").replace(/\\/g, "/"),
       )}, { eager: true });
 `,
       "utf8",
     );
 
-    const playgroundPath = path.join(projectDir, "playground.ts");
+    const playgroundPath = path.join(videoDir, "playground.ts");
     const hasPlayground = fs.existsSync(playgroundPath);
     fs.writeFileSync(
       path.join(generatedDir, "playground-entry.ts"),
@@ -107,44 +133,13 @@ export const playgroundModules = import.meta.glob(${JSON.stringify(
       "utf8",
     );
 
-    return assetsRoot;
+    return nextAssetsRoot;
   };
 
-  let assetsRoot = writeGeneratedModules(manifest);
-
-  const server = await createServer({
-    configFile: false,
-    root: appRoot,
-    publicDir: assetsRoot,
-    // file: installs copy package tsconfigs that extend the monorepo base — force
-    // automatic JSX so consumer previews do not fall back to classic React.createElement.
-    esbuild: {
-      jsx: "automatic",
-    },
-    server: {
-      port,
-      host: "127.0.0.1",
-      open,
-      strictPort: false,
-    },
-    define: {
-      "window.__STORYBOARD_ASSET_BASE__": JSON.stringify("/"),
-    },
-    resolve: {
-      alias: {
-        "@storyboard/core": path.join(packagesRoot, "core/src/index.ts"),
-        "@storyboard/media": path.join(packagesRoot, "media/src/index.ts"),
-        "@storyboard/schema": path.join(packagesRoot, "schema/src/browser.ts"),
-        "@storyboard/transitions": path.join(
-          packagesRoot,
-          "transitions/src/index.ts",
-        ),
-        "react/jsx-runtime": path.join(reactDir, "jsx-runtime.js"),
-        "react/jsx-dev-runtime": path.join(reactDir, "jsx-dev-runtime.js"),
-        react: reactDir,
-        "react-dom": reactDomDir,
-      },
-    },
+  let assetsRoot = writeGeneratedModules({
+    next: manifest,
+    manifestFile: resolvedManifestPath,
+    videoDir: projectDir,
   });
 
   const reloadFromDisk = () => {
@@ -159,12 +154,11 @@ export const playgroundModules = import.meta.glob(${JSON.stringify(
         );
         return;
       }
-      const nextAssets = writeGeneratedModules(result.manifest);
-      if (nextAssets !== assetsRoot) {
-        console.warn(
-          "[storyboard preview] assetsRoot changed — restart preview to apply",
-        );
-      }
+      assetsRoot = writeGeneratedModules({
+        next: result.manifest,
+        manifestFile: resolvedManifestPath,
+        videoDir: projectDir,
+      });
       // Touch so Vite invalidates the module graph for HMR clients.
       const projectModule = path.join(generatedDir, "project.ts");
       const now = new Date();
@@ -184,31 +178,155 @@ export const playgroundModules = import.meta.glob(${JSON.stringify(
   };
 
   const watchers: fs.FSWatcher[] = [];
-  try {
-    watchers.push(fs.watch(resolvedManifestPath, scheduleReload));
-  } catch {
-    // ignore missing watch support
-  }
-  const overlaysDir = path.join(projectDir, "overlays");
-  if (fs.existsSync(overlaysDir)) {
+
+  /**
+   * Watch the open video.json (and overlays/) so disk edits hot-reload.
+   */
+  const attachWatchers = () => {
+    for (const watcher of watchers) watcher.close();
+    watchers.length = 0;
     try {
-      watchers.push(fs.watch(overlaysDir, { recursive: true }, scheduleReload));
+      watchers.push(fs.watch(resolvedManifestPath, scheduleReload));
     } catch {
+      // ignore missing watch support
+    }
+    const overlaysDir = path.join(projectDir, "overlays");
+    if (fs.existsSync(overlaysDir)) {
       try {
-        watchers.push(fs.watch(overlaysDir, scheduleReload));
+        watchers.push(fs.watch(overlaysDir, { recursive: true }, scheduleReload));
       } catch {
-        // ignore
+        try {
+          watchers.push(fs.watch(overlaysDir, scheduleReload));
+        } catch {
+          // ignore
+        }
       }
     }
-  }
+  };
+
+  attachWatchers();
+
+  let viteServer: ViteDevServer | undefined;
+
+  const server = await createServer({
+    configFile: false,
+    root: appRoot,
+    publicDir: false,
+    plugins: [
+      previewApiPlugin({
+        session: {
+          getManifestPath: () => resolvedManifestPath,
+          getAssetsRoot: () => assetsRoot,
+          listProjects: () =>
+            discoverPreviewProjects({
+              manifestPath: resolvedManifestPath,
+              cwd: resolvedCwd,
+            }),
+          openProject: ({ manifestPath: nextPath }) => {
+            const resolved = path.resolve(nextPath);
+            if (
+              !isAllowedPreviewProject({
+                candidatePath: resolved,
+                currentManifestPath: resolvedManifestPath,
+                cwd: resolvedCwd,
+              })
+            ) {
+              return {
+                ok: false,
+                errors: ["That video is not in the current workspace"],
+              };
+            }
+            if (
+              sameManifestPath({
+                left: resolved,
+                right: resolvedManifestPath,
+              })
+            ) {
+              return { ok: true };
+            }
+            const result = validateVideoFile({
+              manifestPath: resolved,
+              checkAssets: false,
+            });
+            if (!result.ok) return result;
+
+            const previousPath = resolvedManifestPath;
+            const previousDir = projectDir;
+            const previousAssets = assetsRoot;
+            const previousManifest = currentManifest;
+            try {
+              const nextDir = path.dirname(resolved);
+              const nextAssets = writeGeneratedModules({
+                next: result.manifest,
+                manifestFile: resolved,
+                videoDir: nextDir,
+              });
+              resolvedManifestPath = resolved;
+              projectDir = nextDir;
+              assetsRoot = nextAssets;
+              attachWatchers();
+              viteServer?.moduleGraph.invalidateAll();
+              return { ok: true };
+            } catch (err) {
+              resolvedManifestPath = previousPath;
+              projectDir = previousDir;
+              assetsRoot = previousAssets;
+              try {
+                writeGeneratedModules({
+                  next: previousManifest,
+                  manifestFile: previousPath,
+                  videoDir: previousDir,
+                });
+              } catch {
+                // Keep the rolled-back paths even if rewrite fails.
+              }
+              attachWatchers();
+              return {
+                ok: false,
+                errors: [
+                  err instanceof Error ? err.message : String(err),
+                ],
+              };
+            }
+          },
+        },
+      }),
+    ],
+    // file: installs copy package tsconfigs that extend the monorepo base — force
+    // automatic JSX so consumer previews do not fall back to classic React.createElement.
+    esbuild: {
+      jsx: "automatic",
+    },
+    server: {
+      port,
+      host: "127.0.0.1",
+      open,
+      strictPort: false,
+    },
+    define: {
+      "window.__STORYBOARD_ASSET_BASE__": JSON.stringify("/"),
+    },
+    resolve: {
+      alias: {
+        ...storyboardAliases,
+        "react/jsx-runtime": path.join(reactDir, "jsx-runtime.js"),
+        "react/jsx-dev-runtime": path.join(reactDir, "jsx-dev-runtime.js"),
+        react: reactDir,
+        "react-dom": reactDomDir,
+        "lucide-react": lucideEntry,
+      },
+    },
+    optimizeDeps: {
+      include: ["lucide-react"],
+    },
+  });
+
+  viteServer = server;
 
   await server.listen();
   const info = server.resolvedUrls;
   const url = info?.local?.[0] ?? `http://127.0.0.1:${port}`;
   console.log(`Storyboard preview: ${url}`);
-
-  // Keep a reference so unused-var lint stays quiet when callers only need URL.
-  void currentManifest;
 
   return {
     url,
@@ -218,29 +336,4 @@ export const playgroundModules = import.meta.glob(${JSON.stringify(
       await server.close();
     },
   };
-}
-
-/**
- * Resolve a dependency package directory for Vite aliases.
- * Supports the Storyboard monorepo and consumer projects that install via `file:`.
- */
-function resolveDepPackage({
-  name,
-  searchRoots,
-}: {
-  name: string;
-  searchRoots: string[];
-}): string {
-  const candidates = searchRoots.flatMap((root) => [
-    path.join(root, "node_modules", name),
-    path.join(root, name),
-  ]);
-  for (const candidate of candidates) {
-    if (fs.existsSync(path.join(candidate, "package.json"))) {
-      return candidate;
-    }
-  }
-  throw new Error(
-    `Could not resolve package "${name}". Searched:\n${candidates.join("\n")}`,
-  );
 }

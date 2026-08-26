@@ -9,7 +9,7 @@ import {
   loadExpectations,
   loadValidatedManifest,
 } from "../helpers/index.js";
-import { renderStill } from "@storyboard/renderer";
+import { renderStill } from "@levi-putna/storyboard-renderer";
 
 const FIXTURES = [
   "solid-frames",

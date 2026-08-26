@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { VideoManifest } from "@storyboard/schema";
-import { totalDurationInFrames } from "@storyboard/schema";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
+import { totalDurationInFrames } from "@levi-putna/storyboard-schema";
 import { bundleComposition } from "./bundle.js";
 import { captureFrames, captureStill } from "./capture.js";
 import { stitchFramesToVideo, assertFfmpeg } from "./ffmpeg.js";
@@ -23,6 +23,8 @@ export type RenderOptions = {
   /** Encode without audio (mute). Not the same as quiet logging. */
   silent?: boolean;
   chromiumPath?: string;
+  ffmpegPath?: string;
+  ffprobePath?: string;
   workDir?: string;
 } & RenderObservers;
 
@@ -38,12 +40,14 @@ export async function renderMedia({
   keepFrames = false,
   silent = false,
   chromiumPath,
+  ffmpegPath,
+  ffprobePath,
   workDir,
   verbose = false,
   onProgress,
   onWarn,
 }: RenderOptions): Promise<{ outputPath: string }> {
-  await assertFfmpeg();
+  await assertFfmpeg({ ffmpegPath, ffprobePath });
 
   const root =
     workDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "storyboard-render-"));
@@ -73,6 +77,7 @@ export async function renderMedia({
         framesDir,
         concurrency,
         chromiumPath,
+        ffmpegPath,
         imageFormat: "jpeg",
         onProgress,
       });
@@ -93,6 +98,8 @@ export async function renderMedia({
         durationInFrames,
         silent,
         verbose,
+        ffmpegPath,
+        ffprobePath,
         onWarn,
       });
 
@@ -121,6 +128,7 @@ export type StillOptions = {
   frame: number;
   outputPath: string;
   chromiumPath?: string;
+  ffmpegPath?: string;
 } & RenderObservers;
 
 /**
@@ -133,6 +141,7 @@ export async function renderStill({
   frame,
   outputPath,
   chromiumPath,
+  ffmpegPath,
   verbose = false,
   onProgress,
   onWarn,
@@ -171,6 +180,7 @@ export async function renderStill({
         frame,
         outPath: outputPath,
         chromiumPath,
+        ffmpegPath,
       });
       emitProgress({
         onProgress,
@@ -196,8 +206,9 @@ export async function renderStill({
 export { bundleComposition } from "./bundle.js";
 export { captureFrames, captureStill } from "./capture.js";
 export { stitchFramesToVideo, assertFfmpeg } from "./ffmpeg.js";
+export { getFfmpegPath, getFfprobePath, resolveBinaryPath } from "./binaries.js";
 export { serveDirectory } from "./serve.js";
-export { collectComponentPaths } from "@storyboard/schema";
+export { collectComponentPaths } from "@levi-putna/storyboard-schema";
 export type {
   RenderObservers,
   RenderPhase,

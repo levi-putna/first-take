@@ -1,12 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathToFileURL } from "node:url";
 import { build as viteBuild } from "vite";
-import type { VideoManifest } from "@storyboard/schema";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
 import {
   collectComponentPaths,
   resolveComponentPath,
-} from "@storyboard/schema";
+  resolveReactPackageRoot,
+  storyboardViteAliases,
+} from "@levi-putna/storyboard-schema";
 
 /**
  * Bundle the composition with Vite into an output directory.
@@ -52,7 +54,7 @@ export async function bundleComposition({
 
   const manifestJson = JSON.stringify(manifest);
   const entrySource = `
-import { mountStoryboard } from "@storyboard/renderer/client";
+import { mountStoryboard } from "@levi-putna/storyboard-renderer/client";
 ${importLines}
 
 const manifest = ${manifestJson} as const;
@@ -74,24 +76,13 @@ mountStoryboard({
     manifest.assetsRoot ?? ".",
   );
 
-  const thisDir = path.dirname(fileURLToPath(import.meta.url));
-  const rendererRoot = path.resolve(thisDir, "..");
-  const packagesRoot = path.resolve(rendererRoot, "..");
-  const repoRoot = path.resolve(packagesRoot, "..");
-  const projectRoot = path.dirname(path.resolve(manifestPath));
-
-  // Monorepo: storyboard/node_modules. Consumer file: installs: <project>/node_modules.
-  const depSearchRoots = [
-    repoRoot,
-    path.dirname(packagesRoot),
-    projectRoot,
-    process.cwd(),
-  ];
-  const reactDir = resolveDepPackage({ name: "react", searchRoots: depSearchRoots });
-  const reactDomDir = resolveDepPackage({
+  const here = import.meta.url;
+  const reactDir = resolveReactPackageRoot({ name: "react", from: here });
+  const reactDomDir = resolveReactPackageRoot({
     name: "react-dom",
-    searchRoots: depSearchRoots,
+    from: here,
   });
+  const storyboardAliases = storyboardViteAliases({ from: here });
 
   await viteBuild({
     configFile: false,
@@ -118,17 +109,7 @@ mountStoryboard({
     },
     resolve: {
       alias: {
-        "@storyboard/renderer/client": path.join(
-          packagesRoot,
-          "renderer/src/client.tsx",
-        ),
-        "@storyboard/core": path.join(packagesRoot, "core/src/index.ts"),
-        "@storyboard/media": path.join(packagesRoot, "media/src/index.ts"),
-        "@storyboard/schema": path.join(packagesRoot, "schema/src/browser.ts"),
-        "@storyboard/transitions": path.join(
-          packagesRoot,
-          "transitions/src/index.ts",
-        ),
+        ...storyboardAliases,
         "react/jsx-runtime": path.join(reactDir, "jsx-runtime.js"),
         "react/jsx-dev-runtime": path.join(reactDir, "jsx-dev-runtime.js"),
         react: reactDir,
@@ -180,27 +161,3 @@ function copyDir(src: string, dest: string): void {
   }
 }
 
-/**
- * Resolve a dependency package directory for Vite aliases.
- * Supports the Storyboard monorepo and consumer projects that install via `file:`.
- */
-function resolveDepPackage({
-  name,
-  searchRoots,
-}: {
-  name: string;
-  searchRoots: string[];
-}): string {
-  const candidates = searchRoots.flatMap((root) => [
-    path.join(root, "node_modules", name),
-    path.join(root, name),
-  ]);
-  for (const candidate of candidates) {
-    if (fs.existsSync(path.join(candidate, "package.json"))) {
-      return candidate;
-    }
-  }
-  throw new Error(
-    `Could not resolve package "${name}". Searched:\n${candidates.join("\n")}`,
-  );
-}

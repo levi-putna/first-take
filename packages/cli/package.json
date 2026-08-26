@@ -1,26 +1,62 @@
 {
-  "name": "@storyboard/cli",
+  "name": "@levi-putna/storyboard",
   "version": "0.1.0",
   "type": "module",
   "bin": {
     "storyboard": "./dist/cli.js"
   },
   "main": "./dist/cli.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "storyboard": "node ./dist/cli.js"
   },
   "dependencies": {
-    "@storyboard/preview": "0.1.0",
-    "@storyboard/renderer": "0.1.0",
-    "@storyboard/schema": "0.1.0",
+    "@levi-putna/storyboard-preview": "0.1.0",
+    "@levi-putna/storyboard-renderer": "0.1.0",
+    "@levi-putna/storyboard-schema": "0.1.0",
     "commander": "^13.1.0",
-    "consola": "^3.4.2"
+    "consola": "^3.4.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "typescript": "^5.8.3",
     "tsup": "^8.4.0"
+  },
+  "description": "CLI to create, validate, preview, and render Storyboard videos",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levi-putna/storyboard.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/levi-putna/storyboard#readme",
+  "bugs": {
+    "url": "https://github.com/levi-putna/storyboard/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "storyboard",
+    "video",
+    "react",
+    "ffmpeg",
+    "explainer",
+    "npx"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/cli.js",
+      "default": "./dist/cli.js"
+    },
+    "./package.json": "./package.json"
   }
 }

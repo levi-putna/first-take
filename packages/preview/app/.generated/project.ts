@@ -1,142 +1,53 @@
-import type { VideoManifest } from "@storyboard/schema";
-import Comp0 from "/Users/leviputna/Movies/First Take/2026-08-05 at 16.11.55/storyboard/scenes/ScreenComposite.tsx";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
+import Comp0 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Content.tsx";
+import Comp1 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Lead.tsx";
 
 export const manifest = {
   "schemaVersion": 1,
-  "slug": "first-take-edit",
-  "title": "2026-08-05 at 16.11.55",
+  "slug": "audio-mix",
+  "title": "Audio Mix",
   "fps": 30,
   "formats": [
     {
-      "id": "export",
+      "id": "16x9",
       "aspectRatio": "16:9",
-      "width": 1920,
-      "height": 1080
+      "width": 640,
+      "height": 360
     }
   ],
-  "assetsRoot": "..",
+  "assetsRoot": ".",
+  "leadIn": {
+    "component": "src/scenes/Lead.tsx",
+    "props": {}
+  },
+  "seriesAudio": {
+    "leadInSeconds": 1,
+    "jingle": "assets/audio/intro-jingle.mp3",
+    "bed": "assets/audio/bed-loop.mp3",
+    "narration": "assets/audio/narration.mp3",
+    "jingleVolume": 0.55,
+    "bedVolumeUnderVo": 0.12,
+    "bedVolumeLeadIn": 0.08,
+    "jingleFadeOutSeconds": 0.3,
+    "bedFadeInSeconds": 0.2,
+    "bedFadeOutSeconds": 0.3,
+    "tailSeconds": 0.5
+  },
   "scenes": [
     {
-      "id": "composite",
-      "title": "Screen composite",
+      "id": "01",
+      "title": "Content",
       "visualType": "component",
-      "component": "scenes/ScreenComposite.tsx",
-      "props": {
-        "animations": {
-          "cursorStyle": "smooth",
-          "motionBlur": 0.4,
-          "screenStyle": "focused"
-        },
-        "audio": {
-          "improveMicrophone": true,
-          "micMuted": false,
-          "systemMuted": false
-        },
-        "camera": {
-          "mirror": false,
-          "position": "bottomTrailing",
-          "presentation": "pictureInPicture",
-          "roundness": 0.35,
-          "shape": "original",
-          "size": 0.28,
-          "visible": true
-        },
-        "captions": {
-          "cues": [],
-          "language": "auto",
-          "prompt": "",
-          "whisperModel": "small"
-        },
-        "cursor": {
-          "clickEffect": "ripple",
-          "clickEffectEnabled": true,
-          "clickSound": "click",
-          "clickSoundEnabled": false,
-          "hideWhenStatic": true,
-          "hideWhenStaticIdleSeconds": 2,
-          "loopToStart": false,
-          "size": 1,
-          "style": "pointer",
-          "useCustomCursor": false,
-          "visible": true
-        },
-        "leadInDuration": 0,
-        "overlays": [
-          {
-            "component": "BouncingBall",
-            "durationSeconds": 8.2,
-            "id": "ov_85DEC6",
-            "mode": "overlay",
-            "name": "Bouncing Ball Animation",
-            "props": {},
-            "sourceFile": "overlays/BouncingBall.tsx",
-            "startSeconds": 0
-          }
-        ],
-        "screenVisible": true,
-        "shortcuts": {
-          "labelSize": 1,
-          "show": true,
-          "showSingleKeys": false,
-          "timelineVisible": true
-        },
-        "slices": [
-          {
-            "cursor": {
-              "disableSmoothing": false,
-              "hide": false
-            },
-            "id": "slice_1",
-            "micGain": 1,
-            "sourceIn": 0,
-            "sourceOut": 8.201666666666666,
-            "speed": 1,
-            "systemGain": 1
-          }
-        ],
-        "sources": {
-          "camera": "camera.mov",
-          "hasKeyboardInput": true,
-          "hasMouseInput": true,
-          "inputEvents": "input.jsonl",
-          "inputMeta": "input.meta.json",
-          "microphone": "audio.m4a",
-          "screen": "screen.mov"
-        },
-        "timelineScenes": [
-          {
-            "end": 8.201666666666666,
-            "id": "scene_1",
-            "name": "Scene 1",
-            "overlays": [
-              {
-                "component": "BouncingBall",
-                "durationSeconds": 8.2,
-                "id": "ov_85DEC6",
-                "mode": "overlay",
-                "name": "Bouncing Ball Animation",
-                "props": {},
-                "sourceFile": "overlays/BouncingBall.tsx",
-                "startOffset": 0
-              }
-            ],
-            "start": 0
-          }
-        ],
-        "tracks": {
-          "layouts": [],
-          "masks": [],
-          "shortcuts": [],
-          "zoom": []
-        }
-      },
-      "durationInFrames": 246,
+      "component": "src/scenes/Content.tsx",
+      "props": {},
+      "durationInFrames": 60,
       "transitionIn": null
     }
   ]
 } as VideoManifest;
 export const components = {
-  "scenes/ScreenComposite.tsx": Comp0
+  "src/scenes/Content.tsx": Comp0,
+  "src/scenes/Lead.tsx": Comp1
 };
-export const manifestPath = "/Users/leviputna/Movies/First Take/2026-08-05 at 16.11.55/storyboard/video.json";
-export const playgroundModules = import.meta.glob("/Users/leviputna/Movies/First Take/2026-08-05 at 16.11.55/storyboard/src/**/*.{tsx,ts}", { eager: true });
+export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/audio-mix/video.json";
+export const playgroundModules = import.meta.glob("/Users/leviputna/workspace/storyboard/examples/audio-mix/src/**/*.{tsx,ts}", { eager: true });

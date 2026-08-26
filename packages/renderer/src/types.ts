@@ -1,5 +1,5 @@
-import type { AudioClipDescriptor, VideoClipDescriptor } from "@storyboard/media";
-import type { VideoManifest } from "@storyboard/schema";
+import type { AudioClipDescriptor, VideoClipDescriptor } from "@levi-putna/storyboard-media";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
 
 export type StoryboardBridge = {
   version: 1;

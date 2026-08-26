@@ -3,13 +3,13 @@ import {
   AbsoluteFill,
   Sequence,
   interpolate,
-} from "@storyboard/core";
+} from "@levi-putna/storyboard-core";
 import {
   leadInFrames,
   totalDurationInFrames,
   type VideoManifest,
-} from "@storyboard/schema";
-import { Audio, staticFile } from "@storyboard/media";
+} from "@levi-putna/storyboard-schema";
+import { Audio, staticFile } from "@levi-putna/storyboard-media";
 import { TransitionSeries, type ComponentMap } from "./TransitionSeries.js";
 
 /**

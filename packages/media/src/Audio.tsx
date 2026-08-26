@@ -1,5 +1,5 @@
 import { useEffect, useId } from "react";
-import { useVideoConfig } from "@storyboard/core";
+import { useVideoConfig } from "@levi-putna/storyboard-core";
 
 export type AudioClipDescriptor = {
   id: string;

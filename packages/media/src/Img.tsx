@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties, type ImgHTMLAttributes } from "react";
-import { continueRender, delayRender } from "@storyboard/core";
+import { continueRender, delayRender } from "@levi-putna/storyboard-core";
 
 /**
  * Image that blocks frame capture until loaded and decoded.

@@ -1,4 +1,4 @@
-import { AbsoluteFill, useCurrentFrame } from "@storyboard/core";
+import { AbsoluteFill, useCurrentFrame } from "@levi-putna/storyboard-core";
 
 /**
  * Solid colour that steps every 15 frames for deterministic golden stills.

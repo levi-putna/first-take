@@ -1,5 +1,5 @@
 {
-  "name": "@storyboard/core",
+  "name": "@levi-putna/storyboard-core",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -7,12 +7,16 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --external react --external react-dom --external @storyboard/schema --external @storyboard/transitions --external @storyboard/media",
+    "build": "tsup src/index.ts --format esm --dts --clean --external react --external react-dom --external @levi-putna/storyboard-schema --external @levi-putna/storyboard-transitions --external @levi-putna/storyboard-media",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
@@ -20,12 +24,29 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@storyboard/schema": "0.1.0"
+    "@levi-putna/storyboard-schema": "0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.8.3",
     "tsup": "^8.4.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
+  },
+  "description": "Frame context, Sequence, interpolate, spring, and composition primitives",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levi-putna/storyboard.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/levi-putna/storyboard#readme",
+  "bugs": {
+    "url": "https://github.com/levi-putna/storyboard/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

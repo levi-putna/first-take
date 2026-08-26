@@ -1,25 +1,31 @@
 import path from "node:path";
+import { createRequire } from "node:module";
 import { Command } from "commander";
 import { consola } from "consola";
 import {
   validateVideoFile,
   totalDurationInFrames,
-} from "@storyboard/schema";
-import { renderMedia, renderStill } from "@storyboard/renderer";
-import { startPreview } from "@storyboard/preview";
+} from "@levi-putna/storyboard-schema";
+import { renderMedia, renderStill } from "@levi-putna/storyboard-renderer";
+import { startPreview } from "@levi-putna/storyboard-preview";
 import {
+  isStoryboardMonorepo,
   resolveDefaultOutDir,
   scaffoldVideoProject,
+  storyboardCliCommand,
   titleFromSlug,
 } from "./create.js";
 import { createCliProgress } from "./progress.js";
+
+const require = createRequire(import.meta.url);
+const { version } = require("../package.json") as { version: string };
 
 const program = new Command();
 
 program
   .name("storyboard")
   .description("Frame-deterministic React video engine")
-  .version("0.1.0")
+  .version(version)
   .option(
     "--verbose",
     "Show detailed logs (FFmpeg output, phase detail)",
@@ -81,11 +87,14 @@ program
           force: opts.force,
         });
         consola.success(`Created ${written.length} files in ${outDir}`);
+        const cli = storyboardCliCommand();
+        const maybeInstall = isStoryboardMonorepo()
+          ? "  yarn install\n"
+          : "  npm install   # or yarn, if you prefer\n";
         consola.info(`Next:
-  yarn install
-  yarn storyboard validate ${path.join(outDir, "video.json")}${opts.withAudio ? " --no-assets" : ""}
-  yarn storyboard preview ${path.join(outDir, "video.json")}
-  yarn storyboard render ${path.join(outDir, "video.json")}`);
+${maybeInstall}  ${cli} validate ${path.join(outDir, "video.json")}${opts.withAudio ? " --no-assets" : ""}
+  ${cli} preview ${path.join(outDir, "video.json")}
+  ${cli} render ${path.join(outDir, "video.json")}`);
       } catch (err) {
         consola.error(err instanceof Error ? err.message : err);
         process.exit(1);
@@ -120,6 +129,7 @@ program
   .option("--format <id>", "Format id (default: first format)")
   .option("--out <path>", "Output PNG path", "out/still.png")
   .option("--chromium-path <path>", "Custom Chromium executable")
+  .option("--ffmpeg-path <path>", "Custom ffmpeg executable")
   .action(
     async (
       videoJson: string,
@@ -128,6 +138,7 @@ program
         format?: string;
         out: string;
         chromiumPath?: string;
+        ffmpegPath?: string;
       },
     ) => {
       const verbose = isVerbose();
@@ -149,6 +160,7 @@ program
           frame: opts.frame,
           outputPath: outPath,
           chromiumPath: opts.chromiumPath,
+          ffmpegPath: opts.ffmpegPath,
           verbose,
           onProgress: progress.onProgress,
           onWarn: progress.onWarn,
@@ -175,6 +187,8 @@ program
   )
   .option("--no-audio", "Alias for --silent (encode without audio)")
   .option("--chromium-path <path>", "Custom Chromium executable")
+  .option("--ffmpeg-path <path>", "Custom ffmpeg executable")
+  .option("--ffprobe-path <path>", "Custom ffprobe executable")
   .action(
     async (
       videoJson: string,
@@ -186,6 +200,8 @@ program
         silent?: boolean;
         audio?: boolean;
         chromiumPath?: string;
+        ffmpegPath?: string;
+        ffprobePath?: string;
       },
     ) => {
       const verbose = isVerbose();
@@ -225,6 +241,8 @@ program
             keepFrames: opts.keepFrames,
             silent: muteAudio,
             chromiumPath: opts.chromiumPath,
+            ffmpegPath: opts.ffmpegPath,
+            ffprobePath: opts.ffprobePath,
             verbose,
             onProgress: progress.onProgress,
             onWarn: progress.onWarn,

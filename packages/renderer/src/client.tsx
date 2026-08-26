@@ -5,16 +5,16 @@ import {
   resetDelayRenderState,
   waitForRenderReady,
   type VideoConfig,
-} from "@storyboard/core";
-import { collectAudioClips, collectVideoClips } from "@storyboard/media";
+} from "@levi-putna/storyboard-core";
+import { collectAudioClips, collectVideoClips } from "@levi-putna/storyboard-media";
 import {
   totalDurationInFrames,
   type VideoManifest,
-} from "@storyboard/schema";
+} from "@levi-putna/storyboard-schema";
 import {
   CompositionFromManifest,
   type ComponentMap,
-} from "@storyboard/transitions";
+} from "@levi-putna/storyboard-transitions";
 import type { StoryboardBridge, StoryboardWindow } from "./types.js";
 
 export type { StoryboardBridge } from "./types.js";

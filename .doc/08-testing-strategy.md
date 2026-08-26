@@ -13,7 +13,7 @@ Normative testing strategy for Storyboard. Complements the stub in [03-technical
 | Schema / asset validation fails fast | F-CLI4, F-CLI6 |
 | Frame-driven motion APIs behave correctly | F-C2 |
 
-Coverage is **requirement-mapped**, not a raw percentage target. Every public export in `@storyboard/core`, `@storyboard/schema`, and `@storyboard/transitions` should have at least one unit or component test.
+Coverage is **requirement-mapped**, not a raw percentage target. Every public export in `@levi-putna/storyboard-core`, `@levi-putna/storyboard-schema`, and `@levi-putna/storyboard-transitions` should have at least one unit or component test.
 
 ## 2. Test pyramid
 
@@ -101,7 +101,7 @@ Golden still filenames are `still-frame-<formatId>-<n>.png` (for example `still-
 - Node.js 22+
 - Yarn 1.x
 - FFmpeg + ffprobe on `PATH`
-- Chromium via `yarn workspace @storyboard/renderer exec playwright install chromium`
+- Chromium via `yarn workspace @levi-putna/storyboard-renderer exec playwright install chromium`
 
 Suggested CI matrix: `yarn test` on every PR; `yarn test:render` on every PR; `yarn test:smoke` optional / nightly (slower).
 

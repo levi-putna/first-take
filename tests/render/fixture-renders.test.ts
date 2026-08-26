@@ -6,7 +6,7 @@ import {
   loadValidatedManifest,
   renderAndAssertMedia,
 } from "../helpers/index.js";
-import { totalDurationInFrames } from "@storyboard/schema";
+import { totalDurationInFrames } from "@levi-putna/storyboard-schema";
 
 describe("short fixture renders", () => {
   it(

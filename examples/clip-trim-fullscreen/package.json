@@ -1,5 +1,5 @@
 {
-  "name": "@storyboard/clip-trim-fullscreen",
+  "name": "@levi-putna/storyboardp-trim-fullscreen",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,8 +8,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@storyboard/core": "0.1.0",
-    "@storyboard/media": "0.1.0"
+    "@levi-putna/storyboard-core": "0.1.0",
+    "@levi-putna/storyboard-media": "0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.8.3",

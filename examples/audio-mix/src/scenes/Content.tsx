@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "@storyboard/core";
+import { AbsoluteFill } from "@levi-putna/storyboard-core";
 
 /**
  * Content scene for audio-mix (solid teal).

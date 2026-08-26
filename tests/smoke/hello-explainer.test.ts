@@ -7,7 +7,7 @@ import {
   loadValidatedManifest,
   renderAndAssertMedia,
 } from "../helpers/index.js";
-import { totalDurationInFrames } from "@storyboard/schema";
+import { totalDurationInFrames } from "@levi-putna/storyboard-schema";
 
 describe("hello-explainer smoke", () => {
   it("CLI validate succeeds", async () => {

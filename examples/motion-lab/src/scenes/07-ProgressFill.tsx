@@ -3,7 +3,7 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@storyboard/core";
+} from "@levi-putna/storyboard-core";
 import { SceneShell } from "../components/SceneShell";
 
 /**

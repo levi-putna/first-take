@@ -1,4 +1,4 @@
-import { interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+import { interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 import { SceneShell } from "../components/SceneShell";
 
 const ITEMS = [

@@ -4,8 +4,8 @@ import { fileURLToPath } from "node:url";
 import {
   validateVideoFile,
   totalDurationInFrames,
-} from "@storyboard/schema";
-import { renderMedia, renderStill } from "@storyboard/renderer";
+} from "@levi-putna/storyboard-schema";
+import { renderMedia, renderStill } from "@levi-putna/storyboard-renderer";
 import {
   fixtureManifestPath,
   goldenStillPath,

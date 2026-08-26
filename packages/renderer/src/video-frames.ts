@@ -2,8 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { execa } from "execa";
-import type { VideoClipDescriptor } from "@storyboard/media";
-import { videoClipCacheKey, videoClipDurationInFrames } from "@storyboard/media";
+import type { VideoClipDescriptor } from "@levi-putna/storyboard-media";
+import { videoClipCacheKey, videoClipDurationInFrames } from "@levi-putna/storyboard-media";
+import { getFfmpegPath } from "./binaries.js";
 
 export type ExtractedVideoFrames = {
   cacheKey: string;
@@ -35,11 +36,13 @@ export async function extractVideoClipFrames({
   fps,
   serveDir,
   workDir,
+  ffmpegPath,
 }: {
   clip: VideoClipDescriptor;
   fps: number;
   serveDir: string;
   workDir: string;
+  ffmpegPath?: string;
 }): Promise<ExtractedVideoFrames> {
   const cacheKey = videoClipCacheKey({
     src: clip.src,
@@ -107,7 +110,7 @@ export async function extractVideoClipFrames({
     outputPattern,
   );
 
-  await execa("ffmpeg", args, { stdio: "pipe" });
+  await execa(getFfmpegPath({ ffmpegPath }), args, { stdio: "pipe" });
 
   // FFmpeg %06d is 1-based by default — rename to 0-based for localFrame indexing
   const written = fs
@@ -157,11 +160,13 @@ export async function extractAllVideoClips({
   fps,
   serveDir,
   workDir,
+  ffmpegPath,
 }: {
   clips: VideoClipDescriptor[];
   fps: number;
   serveDir: string;
   workDir: string;
+  ffmpegPath?: string;
 }): Promise<Record<string, { basePath: string; frameCount: number }>> {
   const unique = new Map<string, VideoClipDescriptor>();
   for (const clip of clips) {
@@ -182,6 +187,7 @@ export async function extractAllVideoClips({
       fps,
       serveDir,
       workDir,
+      ffmpegPath,
     });
     map[extracted.cacheKey] = {
       basePath: extracted.basePath,

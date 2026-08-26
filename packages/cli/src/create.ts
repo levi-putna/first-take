@@ -1,5 +1,49 @@
 import fs from "node:fs";
 import path from "node:path";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+
+/**
+ * Read this CLI package's version (used to pin scaffolded workspace deps).
+ */
+export function cliPackageVersion(): string {
+  return (require("../package.json") as { version: string }).version;
+}
+
+/**
+ * True when cwd is the Storyboard yarn workspaces repo (not a consumer project).
+ */
+export function isStoryboardMonorepo({
+  cwd = process.cwd(),
+}: {
+  cwd?: string;
+} = {}): boolean {
+  const pkgPath = path.join(cwd, "package.json");
+  if (!fs.existsSync(pkgPath)) return false;
+  try {
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8")) as {
+      name?: string;
+      workspaces?: unknown;
+    };
+    return pkg.name === "storyboard" && Boolean(pkg.workspaces);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Command prefix for follow-up docs: local yarn script vs npx.
+ */
+export function storyboardCliCommand({
+  cwd = process.cwd(),
+}: {
+  cwd?: string;
+} = {}): string {
+  return isStoryboardMonorepo({ cwd })
+    ? "yarn storyboard"
+    : "npx @levi-putna/storyboard";
+}
 
 export type CreateVideoOptions = {
   /** Project slug (folder name and video.json slug). */
@@ -100,6 +144,9 @@ export function scaffoldVideoProject({
   force,
 }: CreateVideoOptions): string[] {
   const pkgName = packageNameFromSlug({ slug });
+  const engineVersion = cliPackageVersion();
+  const cli = storyboardCliCommand();
+  const inMonorepo = isStoryboardMonorepo();
 
   if (fs.existsSync(outDir)) {
     const entries = fs.readdirSync(outDir);
@@ -131,9 +178,9 @@ export function scaffoldVideoProject({
           typecheck: "tsc --noEmit -p tsconfig.json",
         },
         dependencies: {
-          "@storyboard/core": "0.1.0",
-          "@storyboard/media": "0.1.0",
-          "@storyboard/transitions": "0.1.0",
+          "@levi-putna/storyboard-core": engineVersion,
+          "@levi-putna/storyboard-media": engineVersion,
+          "@levi-putna/storyboard-transitions": engineVersion,
         },
         devDependencies: {
           typescript: "^5.8.3",
@@ -273,7 +320,7 @@ export const playground = [
 
   add({
     rel: "src/components/LeadIn.tsx",
-    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 
 /**
  * Brand hold during the series-audio lead-in (or opening bumper).
@@ -313,7 +360,7 @@ export default function LeadIn({ label = ${JSON.stringify(title)} }: { label?: s
 
   add({
     rel: "src/scenes/01-Intro.tsx",
-    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 
 /**
  * Opening scene — headline fades in.
@@ -364,7 +411,7 @@ export default function IntroScene({
 
   add({
     rel: "src/scenes/02-Point.tsx",
-    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 
 /**
  * Second beat — supporting headline after a fade transition.
@@ -430,13 +477,13 @@ Then add a \`seriesAudio\` block to \`video.json\` (or re-run \`storyboard creat
 Until audio files exist, validate with:
 
 \`\`\`bash
-yarn storyboard validate video.json --no-assets
+${cli} validate video.json --no-assets
 \`\`\`
 
 Or render silently:
 
 \`\`\`bash
-yarn storyboard render video.json --silent
+${cli} render video.json --silent
 \`\`\`
 `,
   });
@@ -459,20 +506,28 @@ Scaffolded Storyboard video project (\`${slug}\`).
 
 ## Commands
 
-From the monorepo root:
+${
+  inMonorepo
+    ? "From the monorepo root:"
+    : "From this folder (Node 22+):"
+}
 
 \`\`\`bash
-yarn storyboard validate <this-folder>/video.json${withAudio ? " --no-assets" : ""}
-yarn storyboard preview <this-folder>/video.json
-yarn storyboard still <this-folder>/video.json --frame=0 --out=out/still.png
-yarn storyboard render <this-folder>/video.json${withAudio ? " --silent" : ""}
+${cli} validate <this-folder>/video.json${withAudio ? " --no-assets" : ""}
+${cli} preview <this-folder>/video.json
+${cli} still <this-folder>/video.json --frame=0 --out=out/still.png
+${cli} render <this-folder>/video.json${withAudio ? " --silent" : ""}
 \`\`\`
 
 ${
   withAudio
     ? "Until audio files exist, keep using `--no-assets` / `--silent`, or remove `seriesAudio` from `video.json`.\n\n"
     : ""
-}See the root [authoring guide](../../.doc/07-authoring-guide.md).
+}${
+  inMonorepo
+    ? "See the root [authoring guide](../../.doc/07-authoring-guide.md).\n"
+    : ""
+}
 `,
   });
 

@@ -3,12 +3,14 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  isStoryboardMonorepo,
   packageNameFromSlug,
   resolveDefaultOutDir,
   scaffoldVideoProject,
+  storyboardCliCommand,
   titleFromSlug,
 } from "./create.js";
-import { validateVideoFile } from "@storyboard/schema";
+import { validateVideoFile } from "@levi-putna/storyboard-schema";
 
 describe("create helpers", () => {
   it("builds a package name from a slug", () => {
@@ -26,6 +28,16 @@ describe("create helpers", () => {
     fs.mkdirSync(path.join(root, "examples"));
     expect(resolveDefaultOutDir({ slug: "demo", cwd: root })).toBe(
       path.join(root, "examples", "demo"),
+    );
+  });
+
+  it("detects the monorepo vs npx CLI command", () => {
+    expect(isStoryboardMonorepo({ cwd: process.cwd() })).toBe(true);
+    expect(storyboardCliCommand({ cwd: process.cwd() })).toBe("yarn storyboard");
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "sb-not-mono-"));
+    expect(isStoryboardMonorepo({ cwd: tmp })).toBe(false);
+    expect(storyboardCliCommand({ cwd: tmp })).toBe(
+      "npx @levi-putna/storyboard",
     );
   });
 });

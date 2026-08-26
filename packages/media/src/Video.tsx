@@ -10,7 +10,7 @@ import {
   useAbsoluteFrame,
   useCurrentFrame,
   useVideoConfig,
-} from "@storyboard/core";
+} from "@levi-putna/storyboard-core";
 import {
   buildVolumePerFrame,
   getAudioRegistry,

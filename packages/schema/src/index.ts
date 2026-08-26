@@ -34,3 +34,12 @@ export {
   parseVideoManifest,
   type ValidateVideoResult,
 } from "./validate.js";
+
+export {
+  STORYBOARD_PACKAGES,
+  resolveStoryboardPackageRoot,
+  resolveStoryboardAliasTarget,
+  storyboardViteAliases,
+  resolveReactPackageRoot,
+  type StoryboardPackageId,
+} from "./package-resolve.js";

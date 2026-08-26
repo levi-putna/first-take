@@ -4,8 +4,8 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
-} from "@storyboard/core";
-import { staticFile, Video } from "@storyboard/media";
+} from "@levi-putna/storyboard-core";
+import { staticFile, Video } from "@levi-putna/storyboard-media";
 
 /**
  * Full-screen video with animated shapes composited on top.

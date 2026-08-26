@@ -1,5 +1,5 @@
 {
-  "name": "@storyboard/renderer",
+  "name": "@levi-putna/storyboard-renderer",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -7,24 +7,31 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./client": {
       "types": "./dist/client.d.ts",
-      "import": "./dist/client.js"
-    }
+      "import": "./dist/client.js",
+      "default": "./dist/client.js"
+    },
+    "./package.json": "./package.json"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts src/client.tsx --format esm --dts --clean --external react --external react-dom --external @storyboard/core --external @storyboard/schema --external @storyboard/media --external @storyboard/transitions",
+    "build": "tsup src/index.ts src/client.tsx --format esm --dts --clean --external react --external react-dom --external @levi-putna/storyboard-core --external @levi-putna/storyboard-schema --external @levi-putna/storyboard-media --external @levi-putna/storyboard-transitions --external ffmpeg-static --external ffprobe-static",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@storyboard/core": "0.1.0",
-    "@storyboard/media": "0.1.0",
-    "@storyboard/schema": "0.1.0",
-    "@storyboard/transitions": "0.1.0",
+    "@levi-putna/storyboard-core": "0.1.0",
+    "@levi-putna/storyboard-media": "0.1.0",
+    "@levi-putna/storyboard-schema": "0.1.0",
+    "@levi-putna/storyboard-transitions": "0.1.0",
     "execa": "^9.5.2",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
     "playwright": "^1.52.0",
     "sirv": "^3.0.1",
     "vite": "^6.3.5"
@@ -34,9 +41,26 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
-    "tsup": "^8.4.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  },
+  "description": "Vite bundle, Playwright capture, and FFmpeg encode for Storyboard",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levi-putna/storyboard.git",
+    "directory": "packages/renderer"
+  },
+  "homepage": "https://github.com/levi-putna/storyboard#readme",
+  "bugs": {
+    "url": "https://github.com/levi-putna/storyboard/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

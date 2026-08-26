@@ -44,13 +44,13 @@ Prefer a small monorepo so the core API can be imported by CLI and preview witho
 
 | Package | Role |
 |---------|------|
-| `@storyboard/core` | Frame context, `useCurrentFrame`, `useVideoConfig`, `Sequence`, `Series`, `interpolate`, `spring`, `Easing`, `AbsoluteFill`, delay-render hooks |
-| `@storyboard/media` | `Img`, `Audio`, `Video` (off-thread or seek-accurate strategy), `staticFile` helpers |
-| `@storyboard/transitions` | Fade (v1); slide/wipe later |
-| `@storyboard/renderer` | Bundle orchestration, Chromium control, frame capture, FFmpeg stitch, stills |
-| `@storyboard/cli` | `storyboard` binary: render, still, preview, validate |
-| `@storyboard/preview` | Local studio / component playground UI |
-| `@storyboard/schema` | Zod (or similar) schemas for `video.json`; types shared with CLI |
+| `@levi-putna/storyboard-core` | Frame context, `useCurrentFrame`, `useVideoConfig`, `Sequence`, `Series`, `interpolate`, `spring`, `Easing`, `AbsoluteFill`, delay-render hooks |
+| `@levi-putna/storyboard-media` | `Img`, `Audio`, `Video` (off-thread or seek-accurate strategy), `staticFile` helpers |
+| `@levi-putna/storyboard-transitions` | Fade (v1); slide/wipe later |
+| `@levi-putna/storyboard-renderer` | Bundle orchestration, Chromium control, frame capture, FFmpeg stitch, stills |
+| `@levi-putna/storyboard` | `storyboard` binary: render, still, preview, validate |
+| `@levi-putna/storyboard-preview` | Local studio / component playground UI |
+| `@levi-putna/storyboard-schema` | Zod (or similar) schemas for `video.json`; types shared with CLI |
 
 Application / demo package (optional early): `examples/hello-explainer` with sample components + JSON.
 
@@ -178,7 +178,7 @@ Content projects (e.g. a Next.js app) may later vendor Storyboard and keep produ
 
 ## 8. video.json technical rules
 
-- Validate with `@storyboard/schema` before render.
+- Validate with `@levi-putna/storyboard-schema` before render.
 - Resolve component paths relative to the JSON file or a configured `rootDir`.
 - Compute:
 
@@ -209,7 +209,7 @@ totalFrames = leadInFrames + contentFrames + optionalTailFrames
 - Vite-based app loading the same components as render.
 - Timeline scrubber bound to `currentFrame` state (not wall-clock alone - play mode advances frame by `fps`).
 - Component playground route: `/component/:id` with props editor.
-- Must use the same `@storyboard/core` hooks so preview matches render.
+- Must use the same `@levi-putna/storyboard-core` hooks so preview matches render.
 
 ## 11. Testing strategy
 

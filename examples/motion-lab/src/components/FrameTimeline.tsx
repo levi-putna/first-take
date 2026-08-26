@@ -2,7 +2,7 @@ import {
   AbsoluteFill,
   useAbsoluteFrame,
   useVideoConfig,
-} from "@storyboard/core";
+} from "@levi-putna/storyboard-core";
 
 const TIMELINE_HEIGHT = 48;
 

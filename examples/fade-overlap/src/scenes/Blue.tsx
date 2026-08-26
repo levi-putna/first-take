@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "@storyboard/core";
+import { AbsoluteFill } from "@levi-putna/storyboard-core";
 
 /**
  * Solid blue scene for fade overlap fixture.

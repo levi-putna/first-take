@@ -1,8 +1,8 @@
 import { describe, expect, it, afterEach } from "vitest";
 import { cleanup, render } from "@testing-library/react";
-import { AbsoluteFill, StoryboardProvider } from "@storyboard/core";
+import { AbsoluteFill, StoryboardProvider } from "@levi-putna/storyboard-core";
 import { computeScenePlacements, TransitionSeries } from "./TransitionSeries.js";
-import type { Scene } from "@storyboard/schema";
+import type { Scene } from "@levi-putna/storyboard-schema";
 
 afterEach(() => {
   cleanup();

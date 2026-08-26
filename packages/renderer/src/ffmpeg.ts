@@ -1,22 +1,31 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execa } from "execa";
-import type { AudioClipDescriptor } from "@storyboard/media";
-import type { VideoManifest } from "@storyboard/schema";
-import { resolveAssetPath } from "@storyboard/schema";
+import type { AudioClipDescriptor } from "@levi-putna/storyboard-media";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
+import { resolveAssetPath } from "@levi-putna/storyboard-schema";
 import { emitWarn } from "./progress.js";
 import { volumeFilterFromEnvelope } from "./volume-envelope.js";
+import { getFfmpegPath, getFfprobePath } from "./binaries.js";
 
 /**
- * Check ffmpeg / ffprobe are on PATH.
+ * Check that ffmpeg and ffprobe can run (packaged binaries by default).
  */
-export async function assertFfmpeg(): Promise<void> {
+export async function assertFfmpeg({
+  ffmpegPath,
+  ffprobePath,
+}: {
+  ffmpegPath?: string;
+  ffprobePath?: string;
+} = {}): Promise<void> {
+  const ffmpeg = getFfmpegPath({ ffmpegPath });
+  const ffprobe = getFfprobePath({ ffprobePath });
   try {
-    await execa("ffmpeg", ["-version"]);
-    await execa("ffprobe", ["-version"]);
+    await execa(ffmpeg, ["-version"]);
+    await execa(ffprobe, ["-version"]);
   } catch {
     throw new Error(
-      "ffmpeg/ffprobe not found. Install with: brew install ffmpeg",
+      `ffmpeg/ffprobe not found (tried ${ffmpeg} and ${ffprobe}). Reinstall @levi-putna/storyboard-renderer so the bundled binaries download, or set STORYBOARD_FFMPEG and STORYBOARD_FFPROBE.`,
     );
   }
 }
@@ -27,16 +36,19 @@ export async function assertFfmpeg(): Promise<void> {
 async function runFfmpeg({
   args,
   verbose = false,
+  ffmpegPath,
 }: {
   args: string[];
   verbose?: boolean;
+  ffmpegPath?: string;
 }): Promise<void> {
   const quietArgs = verbose
     ? args
     : ["-hide_banner", "-loglevel", "error", ...args];
+  const binary = getFfmpegPath({ ffmpegPath });
 
   try {
-    await execa("ffmpeg", quietArgs, {
+    await execa(binary, quietArgs, {
       stdio: verbose ? "inherit" : "pipe",
     });
   } catch (err) {
@@ -64,6 +76,8 @@ export async function stitchFramesToVideo({
   durationInFrames,
   silent = false,
   verbose = false,
+  ffmpegPath,
+  ffprobePath,
   onWarn,
 }: {
   framesDir: string;
@@ -77,9 +91,11 @@ export async function stitchFramesToVideo({
   durationInFrames: number;
   silent?: boolean;
   verbose?: boolean;
+  ffmpegPath?: string;
+  ffprobePath?: string;
   onWarn?: (message: string) => void;
 }): Promise<void> {
-  await assertFfmpeg();
+  await assertFfmpeg({ ffmpegPath, ffprobePath });
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
   const durationSec = durationInFrames / fps;
@@ -112,7 +128,7 @@ export async function stitchFramesToVideo({
       }
       // Skip video files (or other inputs) that have no audio stream
       try {
-        const probe = await execa("ffprobe", [
+        const probe = await execa(getFfprobePath({ ffprobePath }), [
           "-v",
           "error",
           "-select_streams",
@@ -155,7 +171,7 @@ export async function stitchFramesToVideo({
       "-an",
       outputPath,
     );
-    await runFfmpeg({ args, verbose });
+    await runFfmpeg({ args, verbose, ffmpegPath });
     return;
   }
 
@@ -225,7 +241,7 @@ export async function stitchFramesToVideo({
       String(durationSec),
       outputPath,
     );
-    await runFfmpeg({ args, verbose });
+    await runFfmpeg({ args, verbose, ffmpegPath });
     return;
   }
 
@@ -254,5 +270,5 @@ export async function stitchFramesToVideo({
     outputPath,
   );
 
-  await runFfmpeg({ args, verbose });
+  await runFfmpeg({ args, verbose, ffmpegPath });
 }

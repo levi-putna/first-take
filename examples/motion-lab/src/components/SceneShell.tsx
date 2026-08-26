@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { AbsoluteFill } from "@storyboard/core";
+import { AbsoluteFill } from "@levi-putna/storyboard-core";
 import { FrameTimeline, TIMELINE_HEIGHT } from "./FrameTimeline";
 
 /**

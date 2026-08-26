@@ -4,13 +4,31 @@
   "title": "Hello Explainer",
   "fps": 30,
   "formats": [
-    { "id": "16x9", "aspectRatio": "16:9", "width": 1920, "height": 1080 },
-    { "id": "9x16", "aspectRatio": "9:16", "width": 1080, "height": 1920 }
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "9x16",
+      "aspectRatio": "9:16",
+      "width": 1080,
+      "height": 1920
+    },
+    {
+      "id": "1x1",
+      "aspectRatio": "1:1",
+      "width": 1080,
+      "height": 1080
+    }
   ],
   "assetsRoot": ".",
   "leadIn": {
     "component": "src/components/LeadIn.tsx",
-    "props": { "label": "Storyboard" }
+    "props": {
+      "label": "Storyboard"
+    }
   },
   "seriesAudio": {
     "leadInSeconds": 4,
@@ -52,7 +70,10 @@
       "audioStartSeconds": 2.8,
       "audioEndSeconds": 6.5,
       "narration": "Focus rings make the path obvious.",
-      "transitionIn": { "type": "fade", "durationInFrames": 15 }
+      "transitionIn": {
+        "type": "fade",
+        "durationInFrames": 15
+      }
     }
   ]
 }

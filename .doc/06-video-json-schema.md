@@ -3,7 +3,7 @@
 Normative specification for the Storyboard **video definition file** — the JSON
 manifest that drives validation, preview, still capture, and MP4 render.
 
-Validated by `@storyboard/schema` (`videoManifestSchema`). Current
+Validated by `@levi-putna/storyboard-schema` (`videoManifestSchema`). Current
 `schemaVersion` is **`1`**.
 
 Companion docs:
@@ -146,7 +146,7 @@ Each scene is one beat on the timeline.
 | `generated-video` | Reserved — rejected in MVP validation |
 | `real-video` | Reserved — rejected in MVP validation |
 
-Real footage is embedded **inside** a component via `@storyboard/media` `<Video />`,
+Real footage is embedded **inside** a component via `@levi-putna/storyboard-media` `<Video />`,
 not via `visualType: "real-video"`. See [09-video-clips.md](./09-video-clips.md).
 
 ### 4.2 transitionIn
@@ -226,7 +226,7 @@ for each scene i:
   cursor += scene.durationInFrames
 ```
 
-Implemented in `@storyboard/schema` as `leadInFrames`, `contentDurationInFrames`,
+Implemented in `@levi-putna/storyboard-schema` as `leadInFrames`, `contentDurationInFrames`,
 `totalDurationInFrames`, and `sceneStartFrames`.
 
 ---
@@ -305,7 +305,7 @@ anywhere relative to the manifest (or under `assetsRoot` for audio).
 | Change | Guidance |
 |--------|----------|
 | Add optional root/scene fields | Prefer backward-compatible additions; keep `schemaVersion: 1` until a break |
-| Rename/remove fields or change types | Bump `schemaVersion` and update this doc + `@storyboard/schema` |
+| Rename/remove fields or change types | Bump `schemaVersion` and update this doc + `@levi-putna/storyboard-schema` |
 | New transition types | Extend `transitionInSchema`; document here |
 | Implement `generated-video` / `real-video` | Remove MVP rejection in `validate.ts` and document behaviour |
 

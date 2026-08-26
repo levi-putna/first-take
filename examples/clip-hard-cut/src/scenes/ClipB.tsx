@@ -1,5 +1,5 @@
-import { AbsoluteFill } from "@storyboard/core";
-import { staticFile, Video } from "@storyboard/media";
+import { AbsoluteFill } from "@levi-putna/storyboard-core";
+import { staticFile, Video } from "@levi-putna/storyboard-media";
 
 /**
  * Second shot — hard cut from b-roll, plays 5 seconds of the second clip.

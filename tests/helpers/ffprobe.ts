@@ -1,4 +1,5 @@
 import { execa } from "execa";
+import { getFfprobePath } from "@levi-putna/storyboard-renderer";
 
 export type FfprobeStream = {
   codec_type?: string;
@@ -25,7 +26,7 @@ export async function ffprobeJson({
 }: {
   filePath: string;
 }): Promise<FfprobeResult> {
-  const { stdout } = await execa("ffprobe", [
+  const { stdout } = await execa(getFfprobePath(), [
     "-v",
     "error",
     "-show_entries",

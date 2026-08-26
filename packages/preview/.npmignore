@@ -1,0 +1,5 @@
+app/.generated
+src
+*.test.ts
+*.test.tsx
+tsconfig.json

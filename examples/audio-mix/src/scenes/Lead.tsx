@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "@storyboard/core";
+import { AbsoluteFill } from "@levi-putna/storyboard-core";
 
 /**
  * Lead-in bumper for audio-mix (solid dark teal).

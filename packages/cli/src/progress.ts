@@ -1,7 +1,7 @@
 import { consola } from "consola";
 
 /**
- * Progress event shape mirrored from @storyboard/renderer (keep in sync).
+ * Progress event shape mirrored from @levi-putna/storyboard-renderer (keep in sync).
  */
 type ProgressEvent = {
   phase: "bundling" | "extracting" | "capturing" | "encoding" | "done";

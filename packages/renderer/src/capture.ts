@@ -2,9 +2,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { chromium, type Browser, type Page } from "playwright";
-import type { VideoManifest } from "@storyboard/schema";
-import { sceneStartFrames, totalDurationInFrames } from "@storyboard/schema";
-import type { AudioClipDescriptor, VideoClipDescriptor } from "@storyboard/media";
+import type { VideoManifest } from "@levi-putna/storyboard-schema";
+import { sceneStartFrames, totalDurationInFrames } from "@levi-putna/storyboard-schema";
+import type { AudioClipDescriptor, VideoClipDescriptor } from "@levi-putna/storyboard-media";
 import { prepareFramesDir } from "./serve.js";
 import { extractAllVideoClips } from "./video-frames.js";
 import type { StoryboardWindow } from "./types.js";
@@ -25,6 +25,7 @@ export type CaptureOptions = {
   imageFormat?: "jpeg" | "png";
   jpegQuality?: number;
   chromiumPath?: string;
+  ffmpegPath?: string;
   keepBrowserOpen?: boolean;
   onProgress?: (event: RenderProgressEvent) => void;
 };
@@ -104,6 +105,7 @@ export async function captureFrames({
   imageFormat = "jpeg",
   jpegQuality = 80,
   chromiumPath,
+  ffmpegPath,
   onProgress,
 }: CaptureOptions): Promise<CaptureResult> {
   const format =
@@ -195,6 +197,7 @@ export async function captureFrames({
         fps: manifest.fps,
         serveDir,
         workDir: extractWorkDir,
+        ffmpegPath,
       });
       emitProgress({
         onProgress,
@@ -328,6 +331,7 @@ export async function captureStill({
   frame,
   outPath,
   chromiumPath,
+  ffmpegPath,
 }: {
   serveUrl: string;
   serveDir: string;
@@ -337,6 +341,7 @@ export async function captureStill({
   frame: number;
   outPath: string;
   chromiumPath?: string;
+  ffmpegPath?: string;
 }): Promise<void> {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "storyboard-still-"));
   try {
@@ -352,6 +357,7 @@ export async function captureStill({
       frameEnd: frame,
       imageFormat: "png",
       chromiumPath,
+      ffmpegPath,
     });
     const src = path.join(tmp, `frame-${String(frame).padStart(6, "0")}.png`);
     fs.mkdirSync(path.dirname(outPath), { recursive: true });

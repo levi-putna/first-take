@@ -1,4 +1,4 @@
-import { spring, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+import { spring, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 import { SceneShell } from "../components/SceneShell";
 
 /**

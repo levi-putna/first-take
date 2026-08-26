@@ -74,12 +74,12 @@ export default function HookScene({
 
 ### 2.3 Layout root
 
-Prefer wrapping the scene in `AbsoluteFill` from `@storyboard/core` so the
+Prefer wrapping the scene in `AbsoluteFill` from `@levi-putna/storyboard-core` so the
 component fills the composition (`width` × `height`) without depending on
 parent layout.
 
 ```tsx
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 
 export default function Scene(props: { title: string }) {
   const frame = useCurrentFrame();
@@ -153,7 +153,7 @@ inputs — parallel workers will thrash and diverge.
 
 ## 4. APIs you should use
 
-### 4.1 `@storyboard/core`
+### 4.1 `@levi-putna/storyboard-core`
 
 | API | Use |
 |-----|-----|
@@ -168,7 +168,7 @@ inputs — parallel workers will thrash and diverge.
 | `Series` | Sequential children |
 | `delayRender` / `continueRender` / `cancelRender` | Async readiness handshake |
 
-### 4.2 `@storyboard/media`
+### 4.2 `@levi-putna/storyboard-media`
 
 | API | Use |
 |-----|-----|
@@ -180,7 +180,7 @@ inputs — parallel workers will thrash and diverge.
 Prefer these over raw `<img>` / `<video>` / `<audio>` when the asset must be
 frame-accurate in render.
 
-### 4.3 `@storyboard/transitions`
+### 4.3 `@levi-putna/storyboard-transitions`
 
 Use only when composing multi-part visuals **inside** a component. Scene-to-scene
 fades belong in `video.json` as `transitionIn`, not duplicated ad hoc unless you
@@ -281,7 +281,7 @@ Authors and agents should confirm before shipping a scene module:
 - [ ] All motion derived from `useCurrentFrame()` / pure helpers
 - [ ] No CSS / Tailwind / rAF / wall-clock animation for motion
 - [ ] Multi-format layout uses `width` / `height` from `useVideoConfig()`
-- [ ] Media uses `@storyboard/media` where capture readiness matters
+- [ ] Media uses `@levi-putna/storyboard-media` where capture readiness matters
 - [ ] No hard dependency on global scene index or sibling scenes
 - [ ] Works in playground with `defaultProps`
 - [ ] Documented with a short JSDoc on the component

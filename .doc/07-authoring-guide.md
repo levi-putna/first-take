@@ -10,7 +10,7 @@ Practical how-to for writing videos. Normative contracts:
 Every animated value must come from `useCurrentFrame()` (or a pure function of it). Remotion-style rules apply — see [01-core-concepts.md](./01-core-concepts.md) and the full checklist in [10-component-requirements.md](./10-component-requirements.md).
 
 ```tsx
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@storyboard/core";
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 
 export default function TitleCard({ headline }: { headline: string }) {
   const frame = useCurrentFrame();

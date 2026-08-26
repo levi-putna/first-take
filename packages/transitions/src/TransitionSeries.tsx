@@ -4,8 +4,8 @@ import {
   Sequence,
   interpolate,
   useCurrentFrame,
-} from "@storyboard/core";
-import type { Scene } from "@storyboard/schema";
+} from "@levi-putna/storyboard-core";
+import type { Scene } from "@levi-putna/storyboard-schema";
 
 export type ComponentMap = Record<string, ComponentType<Record<string, unknown>>>;
 
