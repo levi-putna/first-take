@@ -1,16 +1,15 @@
 ---
 name: development-prepare-release
 id: 09440bb4-561c-4c5b-b1d0-29e6a1c813d8
-version: 1.0.0
+version: 1.1.0
 author: Levi Putna
 repo: https://github.com/levi-putna/storyboard
 description: >-
   Prepare a Storyboard npm release: run the code-review and docs-readiness
   checks, confirm the semver bump and changelog, lockstep-version all
-  @levi-putna/storyboard* packages, verify git is shippable, and hand back
-  the exact yarn publish:npm --otp= command. Use when asked to cut a
-  release, publish to npm, bump version, or get this ready for npx
-  @levi-putna/storyboard.
+  @levi-putna/storyboard* packages, and verify git is shippable. Stops before
+  the registry; publishing is development-release-npm. Use when asked to cut a
+  release, prepare a release, bump version, or get this ready to publish.
 dependencies:
   - type: cli
     name: yarn
@@ -22,7 +21,7 @@ dependencies:
     required: true
     description: >-
       Used to check the published version (`npm view @levi-putna/storyboard
-      version`) and for the user-run publish command.
+      version`). Publishing itself is development-release-npm.
     instructions: Install Node.js (bundles npm) from https://nodejs.org.
   - type: cli
     name: gh
@@ -40,8 +39,8 @@ requires:
 
 Orchestrates the two check skills, decides the version bump, updates the
 changelog, locksteps every publishable package, verifies nothing is
-stranded locally, and **stops short of the one step that needs a human:
-publishing to npm**.
+stranded locally, and **stops short of publishing**. Hand off to
+`development-release-npm` for the registry (browser 2FA in Safari, no typed OTP).
 
 Same shape as `dot-skills` (`development-prepare-release`) and the same
 confirm-each-gate style as MarkDoc. The publish target is public npm so
@@ -56,7 +55,7 @@ Release progress:
 - [ ] 5. Quality gates
 - [ ] 6. Bump lockstep versions
 - [ ] 7. Verify git is shippable
-- [ ] 8. Hand back the publish command (do not run it)
+- [ ] 8. Hand off to development-release-npm (do not publish here)
 ```
 
 ## Naming
@@ -71,7 +70,8 @@ Release progress:
 
 - Use **yarn**, not npm, for install/build/test in this repo.
 - **Never** run `yarn publish:npm`, `yarn workspace … publish`, or `npm publish`
-  yourself, with or without `--otp`. Never guess or fabricate an OTP.
+  from this skill. Publishing is `development-release-npm`. Never guess or
+  fabricate an OTP.
 - **Never** publish the root workspace or any `examples/*` package.
 - Do **not** create a git commit or push unless the user explicitly asks.
 - Keep package versions **in lockstep**. Use `yarn set-version <ver>` —
@@ -185,29 +185,20 @@ runtime — do not hardcode it in `cli.ts`.
 - Suggested commit message if they ask you to commit: `release: vX.Y.Z`
 - Suggested annotated tag (only if they ask): `git tag -a vX.Y.Z -m "vX.Y.Z"`
 
-## 8. Hand back the publish command — do not run it
+## 8. Hand off to development-release-npm — do not publish here
 
-Once everything above is clean, give the user **exactly**:
+Once everything above is clean, **do not** print an `--otp=` command and
+**do not** run `yarn publish:npm`. Tell the user prepare-release is done
+and continue with `development-release-npm` (or wait if they only asked
+to prepare).
 
-```sh
-yarn publish:npm --otp=<code-from-your-authenticator>
-```
-
-That script publishes the seven packages in dependency order (schema →
-core → media → transitions → renderer → preview → CLI). An npm
-**Automation** token can omit `--otp`.
-
-After they publish, they should smoke-check:
-
-```bash
-npx @levi-putna/storyboard@<ver> --help
-```
-
-First-time npm: they must be logged in to an account that can publish
-the `@levi-putna` scope (`npm whoami`, `npm login`).
+That skill stages the README for npmjs.com, opens the default browser
+for npm web 2FA, and publishes the seven packages in dependency order
+(schema → core → media → transitions → renderer → preview → CLI).
 
 ## 9. Summarise
 
 Old version → new version, the changelog entry, git clean/pushed status,
-the publish command from step 8, and the npx verify command. Do not open
-a PR or create CI unless asked.
+and that publishing is the next skill. Do not open a PR or create CI
+unless asked.
+

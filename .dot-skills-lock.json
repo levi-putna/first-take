@@ -10,7 +10,7 @@
         "cursor"
       ],
       "installedAt": "2026-07-30T05:25:33.739Z",
-      "updatedAt": "2026-08-26T06:14:11.271Z"
+      "updatedAt": "2026-08-27T22:57:49.507Z"
     },
     "dotskills-import-skill": {
       "source": "bundled",
@@ -22,7 +22,7 @@
         "cursor"
       ],
       "installedAt": "2026-07-30T05:25:33.740Z",
-      "updatedAt": "2026-08-26T06:14:11.272Z"
+      "updatedAt": "2026-08-27T22:57:49.507Z"
     },
     "designing-training-videos": {
       "source": "local",
@@ -34,7 +34,7 @@
         "cursor"
       ],
       "installedAt": "2026-07-30T05:27:59.472Z",
-      "updatedAt": "2026-08-26T06:14:11.269Z"
+      "updatedAt": "2026-08-27T22:57:49.504Z"
     },
     "video-generate-explainer": {
       "source": "local",
@@ -46,7 +46,7 @@
         "cursor"
       ],
       "installedAt": "2026-07-30T05:27:59.474Z",
-      "updatedAt": "2026-08-26T06:14:11.272Z"
+      "updatedAt": "2026-08-27T22:57:49.508Z"
     },
     "development-check-release-readiness": {
       "source": "local",
@@ -58,7 +58,7 @@
         "cursor"
       ],
       "installedAt": "2026-08-26T06:14:11.271Z",
-      "updatedAt": "2026-08-26T06:14:11.271Z"
+      "updatedAt": "2026-08-27T22:57:49.506Z"
     },
     "development-prepare-release": {
       "source": "local",
@@ -70,7 +70,7 @@
         "cursor"
       ],
       "installedAt": "2026-08-26T06:14:11.271Z",
-      "updatedAt": "2026-08-26T06:14:11.271Z"
+      "updatedAt": "2026-08-27T22:57:49.506Z"
     },
     "development-review-code": {
       "source": "local",
@@ -82,7 +82,19 @@
         "cursor"
       ],
       "installedAt": "2026-08-26T06:14:11.271Z",
-      "updatedAt": "2026-08-26T06:14:11.271Z"
+      "updatedAt": "2026-08-27T22:57:49.506Z"
+    },
+    "development-release-npm": {
+      "source": "local",
+      "branch": null,
+      "version": null,
+      "contentHash": null,
+      "linkedAgents": [
+        "claude",
+        "cursor"
+      ],
+      "installedAt": "2026-08-27T22:57:49.506Z",
+      "updatedAt": "2026-08-27T22:57:49.506Z"
     }
   }
 }

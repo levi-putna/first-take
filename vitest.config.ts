@@ -8,7 +8,11 @@ export default defineConfig({
         test: {
           name: "unit",
           environment: "jsdom",
-          include: ["packages/**/*.test.ts", "packages/**/*.test.tsx"],
+          include: [
+            "packages/**/*.test.ts",
+            "packages/**/*.test.tsx",
+            "scripts/**/*.test.ts",
+          ],
         },
       },
       {
