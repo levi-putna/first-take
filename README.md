@@ -95,7 +95,7 @@ Agent playbook (read this first): [`AGENT-README.md`](./AGENT-README.md).
 Authoring detail: [`.doc/07-authoring-guide.md`](.doc/07-authoring-guide.md).  
 Component contract: [`.doc/10-component-requirements.md`](.doc/10-component-requirements.md).  
 Real footage (trim, PIP, overlays): [`.doc/09-video-clips.md`](.doc/09-video-clips.md).  
-Three.js / WebGL (frame-seeked mixer, not a wall-clock loop): [`examples/three-robot`](./examples/three-robot/README.md).
+Three.js / WebGL (frame-seeked mixer, not a wall-clock loop): [`examples/three-robot`](https://github.com/levi-putna/storyboard/tree/main/examples/three-robot).
 
 ## Preview
 
@@ -103,7 +103,7 @@ Three.js / WebGL (frame-seeked mixer, not a wall-clock loop): [`examples/three-r
 
 ![Storyboard preview studio showing the track-overlay example: composition stage, scene sidebar, and multi-lane timeline](./img/preview-studio.png)
 
-The screenshot is [`track-overlay`](./examples/track-overlay/README.md): a full-length background, two lower thirds with a gap between them, and a corner badge on its own track.
+The screenshot is [`track-overlay`](https://github.com/levi-putna/storyboard/tree/main/examples/track-overlay): a full-length background, two lower thirds with a gap between them, and a corner badge on its own track.
 
 The studio is split into three panes:
 
@@ -169,7 +169,7 @@ yarn build
 
 ### Examples
 
-Compositions in [`examples/`](./examples/README.md) are workspaces. Each example README embeds a playable `preview.mp4` (16:9, plus 9:16 where the composition has both). After install and build, preview or render any of them:
+Compositions in [`examples/`](https://github.com/levi-putna/storyboard/tree/main/examples) are workspaces. Each example README embeds a playable `preview.mp4` (16:9, plus 9:16 where the composition has both). After install and build, preview or render any of them:
 
 ```bash
 npx @levi-putna/storyboard validate examples/hello-explainer/video.json
@@ -182,26 +182,26 @@ npx @levi-putna/storyboard render examples/hello-explainer/video.json
 
 | Example | What it does |
 |---------|----------------|
-| [`hello-explainer`](./examples/hello-explainer/README.md) | Dual-format explainer: visual track + spanning mix (jingle, bed, narration) |
-| [`track-overlay`](./examples/track-overlay/README.md) | Long background, gapped transparent overlays, corner badge for z-order |
-| [`many-tracks`](./examples/many-tracks/README.md) | Thirty stacked tracks for timeline scroll and multi-lane UI testing |
-| [`first-take-kit`](./examples/first-take-kit/README.md) | `TitleCard` scene used by the First Take macOS editor |
-| [`motion-basics`](./examples/motion-basics/README.md) | Frame-driven `interpolate` and `spring` on a simple block |
-| [`motion-lab`](./examples/motion-lab/README.md) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |
-| [`solid-frames`](./examples/solid-frames/README.md) | Solid colour hold (deterministic paint fixture) |
-| [`fade-overlap`](./examples/fade-overlap/README.md) | Two tracks with a 10-frame in-scene crossfade (50 frames total) |
-| [`circle-wipe`](./examples/circle-wipe/README.md) | Iris wipe on a higher track between two colour holds |
-| [`multi-format`](./examples/multi-format/README.md) | Same composition rendered in 16:9 and 9:16 |
-| [`audio-mix`](./examples/audio-mix/README.md) | Visual track plus in-scene jingle / looping bed / narration |
-| [`audio-volume-fade`](./examples/audio-volume-fade/README.md) | Looped bed with a V-shaped volume envelope (fade out, then back in) |
-| [`clip-trim-fullscreen`](./examples/clip-trim-fullscreen/README.md) | Full-screen clip trimmed with `startFrom` / `endAt` |
-| [`clip-pip-presenter`](./examples/clip-pip-presenter/README.md) | Presenter picture-in-picture in the corner over motion graphics |
-| [`clip-overlay-shapes`](./examples/clip-overlay-shapes/README.md) | Full-screen clip with animated shapes on top |
-| [`clip-zoom-presenter`](./examples/clip-zoom-presenter/README.md) | Ken Burns zoom in, hold, then zoom out on presenter footage |
-| [`clip-hard-cut`](./examples/clip-hard-cut/README.md) | Two clips back-to-back with no transition |
-| [`clip-sound-move`](./examples/clip-sound-move/README.md) | Sound-on clip that drifts around the frame |
-| [`timeline-alignment`](./examples/timeline-alignment/README.md) | 5-minute fixture: colour holds every 10s plus a per-second counter overlay |
-| [`three-robot`](./examples/three-robot/README.md) | Three.js / WebGL: RobotExpressive walk, seeked from `useCurrentFrame()`; camera pull-out in the second half |
+| [`hello-explainer`](https://github.com/levi-putna/storyboard/tree/main/examples/hello-explainer) | Dual-format explainer: visual track + spanning mix (jingle, bed, narration) |
+| [`track-overlay`](https://github.com/levi-putna/storyboard/tree/main/examples/track-overlay) | Long background, gapped transparent overlays, corner badge for z-order |
+| [`many-tracks`](https://github.com/levi-putna/storyboard/tree/main/examples/many-tracks) | Thirty stacked tracks for timeline scroll and multi-lane UI testing |
+| [`first-take-kit`](https://github.com/levi-putna/storyboard/tree/main/examples/first-take-kit) | `TitleCard` scene used by the First Take macOS editor |
+| [`motion-basics`](https://github.com/levi-putna/storyboard/tree/main/examples/motion-basics) | Frame-driven `interpolate` and `spring` on a simple block |
+| [`motion-lab`](https://github.com/levi-putna/storyboard/tree/main/examples/motion-lab) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |
+| [`solid-frames`](https://github.com/levi-putna/storyboard/tree/main/examples/solid-frames) | Solid colour hold (deterministic paint fixture) |
+| [`fade-overlap`](https://github.com/levi-putna/storyboard/tree/main/examples/fade-overlap) | Two tracks with a 10-frame in-scene crossfade (50 frames total) |
+| [`circle-wipe`](https://github.com/levi-putna/storyboard/tree/main/examples/circle-wipe) | Iris wipe on a higher track between two colour holds |
+| [`multi-format`](https://github.com/levi-putna/storyboard/tree/main/examples/multi-format) | Same composition rendered in 16:9 and 9:16 |
+| [`audio-mix`](https://github.com/levi-putna/storyboard/tree/main/examples/audio-mix) | Visual track plus in-scene jingle / looping bed / narration |
+| [`audio-volume-fade`](https://github.com/levi-putna/storyboard/tree/main/examples/audio-volume-fade) | Looped bed with a V-shaped volume envelope (fade out, then back in) |
+| [`clip-trim-fullscreen`](https://github.com/levi-putna/storyboard/tree/main/examples/clip-trim-fullscreen) | Full-screen clip trimmed with `startFrom` / `endAt` |
+| [`clip-pip-presenter`](https://github.com/levi-putna/storyboard/tree/main/examples/clip-pip-presenter) | Presenter picture-in-picture in the corner over motion graphics |
+| [`clip-overlay-shapes`](https://github.com/levi-putna/storyboard/tree/main/examples/clip-overlay-shapes) | Full-screen clip with animated shapes on top |
+| [`clip-zoom-presenter`](https://github.com/levi-putna/storyboard/tree/main/examples/clip-zoom-presenter) | Ken Burns zoom in, hold, then zoom out on presenter footage |
+| [`clip-hard-cut`](https://github.com/levi-putna/storyboard/tree/main/examples/clip-hard-cut) | Two clips back-to-back with no transition |
+| [`clip-sound-move`](https://github.com/levi-putna/storyboard/tree/main/examples/clip-sound-move) | Sound-on clip that drifts around the frame |
+| [`timeline-alignment`](https://github.com/levi-putna/storyboard/tree/main/examples/timeline-alignment) | 5-minute fixture: colour holds every 10s plus a per-second counter overlay |
+| [`three-robot`](https://github.com/levi-putna/storyboard/tree/main/examples/three-robot) | Three.js / WebGL: RobotExpressive walk, seeked from `useCurrentFrame()`; camera pull-out in the second half |
 
 ### Tests
 
@@ -219,11 +219,11 @@ Full strategy, fixture catalogue, and accuracy contract: [`.doc/08-testing-strat
 
 After intentional visual changes, run `yarn test:update-goldens`, inspect the PNGs under `examples/*/expected/`, and commit them with the code.
 
-Golden stills and render fixtures live under [`examples/`](./examples/README.md). `motion-lab` also re-renders sampled frames twice and pixel-compares them for determinism. Regenerate synthetic audio for `audio-mix` with `yarn generate:fixture-audio`.
+Golden stills and render fixtures live under [`examples/`](https://github.com/levi-putna/storyboard/tree/main/examples). `motion-lab` also re-renders sampled frames twice and pixel-compares them for determinism. Regenerate synthetic audio for `audio-mix` with `yarn generate:fixture-audio`.
 
 ### Documentation
 
-Architecture, requirements, and the timing model live in [`.doc/`](.doc/). Playable examples: [`examples/README.md`](./examples/README.md). Agent playbook: [`AGENT-README.md`](./AGENT-README.md). Explainer production skill: [`.claude/skills/video-generate-explainer/SKILL.md`](.claude/skills/video-generate-explainer/SKILL.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md).
+Architecture, requirements, and the timing model live in [`.doc/`](.doc/). Playable examples: [`examples/README.md`](https://github.com/levi-putna/storyboard/tree/main/examples). Agent playbook: [`AGENT-README.md`](./AGENT-README.md). Explainer production skill: [`.claude/skills/video-generate-explainer/SKILL.md`](.claude/skills/video-generate-explainer/SKILL.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md).
 
 Issues and pull requests: [github.com/levi-putna/storyboard](https://github.com/levi-putna/storyboard).
 
