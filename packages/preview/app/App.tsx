@@ -878,6 +878,11 @@ export function App() {
           onAddTrack={() => {
             setWorkingManifest((current) => addTrack({ manifest: current }));
           }}
+          onReorderTracks={({ trackIds }) => {
+            setWorkingManifest((current) =>
+              reorderTracks({ manifest: current, trackIds }),
+            );
+          }}
           sceneAudio={sceneAudio}
         />
       </div>

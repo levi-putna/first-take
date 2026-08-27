@@ -5,11 +5,13 @@ import {
   useMemo,
   useRef,
   useState,
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
   ArrowLeft,
+  GripVertical,
   Pause,
   Play,
   Plus,
@@ -17,7 +19,11 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { formatFlooredTimecode, formatTimecode } from "./timecode";
+import {
+  decimalsForTickFrames,
+  formatFlooredTimecode,
+  formatTimecode,
+} from "./timecode";
 import {
   TimelineFocusBar,
   type TimelineFocusChangeReason,
@@ -35,8 +41,10 @@ import {
   viewportFromScroll,
   type TimelineViewport,
 } from "./timelineZoom";
+import { moveIndex, targetIndexFromDelta } from "./timelineEdit";
 
 const LABEL_WIDTH = 96;
+const LABEL_WIDTH_WITH_HANDLE = 112;
 const RULER_HEIGHT = 28;
 const DRAG_THRESHOLD_PX = 4;
 const TRIM_HANDLE_PX = 7;
@@ -56,6 +64,16 @@ type ClipDragState = {
   previewStart: number;
   previewDuration: number;
   targetTrackId: string;
+};
+
+type TrackReorderState = {
+  trackId: string;
+  fromIndex: number;
+  originY: number;
+  originOrder: string[];
+  previewOrder: string[];
+  laneHeight: number;
+  moved: boolean;
 };
 
 /**
@@ -84,6 +102,7 @@ export function Timeline({
   dropTargetTrackId = null,
   onDropTargetTrackChange,
   onAddTrack,
+  onReorderTracks,
   sceneAudio = {},
 }: {
   frame: number;
@@ -115,6 +134,7 @@ export function Timeline({
   dropTargetTrackId?: string | null;
   onDropTargetTrackChange?: (trackId: string | null) => void;
   onAddTrack?: () => void;
+  onReorderTracks?: (args: { trackIds: string[] }) => void;
   /** Audio sources detected for each scene, used to paint clip waveforms. */
   sceneAudio?: Record<string, SceneAudioClip[]>;
 }) {
@@ -133,15 +153,20 @@ export function Timeline({
   >(() => {});
   const dragging = useRef(false);
   const clipDragRef = useRef<ClipDragState | null>(null);
+  const trackReorderRef = useRef<TrackReorderState | null>(null);
   const onMoveSceneRef = useRef(onMoveScene);
   const onTrimSceneRef = useRef(onTrimScene);
   const onDropTargetTrackChangeRef = useRef(onDropTargetTrackChange);
   const onSelectSceneRef = useRef(onSelectScene);
+  const onSelectTrackRef = useRef(onSelectTrack);
+  const onReorderTracksRef = useRef(onReorderTracks);
   const lanesRef = useRef(lanes);
   onMoveSceneRef.current = onMoveScene;
   onTrimSceneRef.current = onTrimScene;
   onDropTargetTrackChangeRef.current = onDropTargetTrackChange;
   onSelectSceneRef.current = onSelectScene;
+  onSelectTrackRef.current = onSelectTrack;
+  onReorderTracksRef.current = onReorderTracks;
   lanesRef.current = lanes;
 
   const [pixelsPerFrame, setPixelsPerFrame] = useState(1);
@@ -155,6 +180,20 @@ export function Timeline({
     startFrame: number;
     durationInFrames: number;
   } | null>(null);
+  const [trackOrderPreview, setTrackOrderPreview] = useState<string[] | null>(
+    null,
+  );
+
+  const canReorderTracks = editable && !isolated && lanes.length > 1;
+  const labelWidth = canReorderTracks ? LABEL_WIDTH_WITH_HANDLE : LABEL_WIDTH;
+  const displayLanes = useMemo(() => {
+    if (!trackOrderPreview) return lanes;
+    const byId = new Map(lanes.map((lane) => [lane.trackId, lane]));
+    return trackOrderPreview.flatMap((trackId) => {
+      const lane = byId.get(trackId);
+      return lane ? [lane] : [];
+    });
+  }, [lanes, trackOrderPreview]);
 
   const trackWidth = scrollMetrics.clientWidth;
   const contentWidth = durationInFrames * pixelsPerFrame;
@@ -315,6 +354,7 @@ export function Timeline({
      * Drag or trim a clip while the pointer is down.
      */
     function handlePointerMove(event: PointerEvent) {
+      if (trackReorderRef.current) return;
       const drag = clipDragRef.current;
       if (!drag) return;
 
@@ -394,6 +434,66 @@ export function Timeline({
     };
   }, [editable, pixelsPerFrame, trackIdFromClientY]);
 
+  useEffect(() => {
+    if (!editable) return;
+
+    /**
+     * Live-preview track order from pointer travel against equal-height lanes.
+     */
+    function handlePointerMove(event: PointerEvent) {
+      const drag = trackReorderRef.current;
+      if (!drag) return;
+
+      const deltaY = event.clientY - drag.originY;
+      if (!drag.moved && Math.abs(deltaY) < DRAG_THRESHOLD_PX) {
+        return;
+      }
+      drag.moved = true;
+
+      const toIndex = targetIndexFromDelta({
+        fromIndex: drag.fromIndex,
+        deltaY,
+        itemHeight: drag.laneHeight,
+        count: drag.originOrder.length,
+      });
+      const nextOrder = moveIndex({
+        items: drag.originOrder,
+        fromIndex: drag.fromIndex,
+        toIndex,
+      });
+      drag.previewOrder = nextOrder;
+      setTrackOrderPreview(nextOrder);
+    }
+
+    /**
+     * Commit the previewed track order, or select the track on a click.
+     */
+    function finishPointer() {
+      const drag = trackReorderRef.current;
+      trackReorderRef.current = null;
+      setTrackOrderPreview(null);
+
+      if (!drag) return;
+
+      if (!drag.moved) {
+        onSelectTrackRef.current(drag.trackId);
+        return;
+      }
+
+      if (sameTrackOrder(drag.originOrder, drag.previewOrder)) return;
+      onReorderTracksRef.current?.({ trackIds: drag.previewOrder });
+    }
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", finishPointer);
+    window.addEventListener("pointercancel", finishPointer);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", finishPointer);
+      window.removeEventListener("pointercancel", finishPointer);
+    };
+  }, [editable]);
+
   /**
    * Starts a clip move or trim interaction.
    */
@@ -409,6 +509,7 @@ export function Timeline({
     mode: ClipDragMode;
   }) {
     if (!editable) return;
+    if (trackReorderRef.current) return;
     if (
       isClipTooSmall({
         durationInFrames: clip.durationInFrames,
@@ -431,6 +532,65 @@ export function Timeline({
       previewDuration: clip.durationInFrames,
       targetTrackId: lane.trackId,
     };
+  }
+
+  /**
+   * Starts a vertical track reorder from the left-edge grip.
+   */
+  function beginTrackReorder({
+    event,
+    trackId,
+  }: {
+    event: ReactPointerEvent<HTMLElement>;
+    trackId: string;
+  }) {
+    if (!canReorderTracks) return;
+    if (event.button !== 0) return;
+    event.stopPropagation();
+    event.currentTarget.focus();
+
+    const originOrder = lanesRef.current.map((lane) => lane.trackId);
+    const fromIndex = originOrder.indexOf(trackId);
+    if (fromIndex < 0) return;
+
+    const laneEl = laneRefs.current.get(trackId);
+    const laneHeight = laneEl?.getBoundingClientRect().height || 32;
+
+    trackReorderRef.current = {
+      trackId,
+      fromIndex,
+      originY: event.clientY,
+      originOrder,
+      previewOrder: originOrder,
+      laneHeight,
+      moved: false,
+    };
+    onSelectTrack(trackId);
+  }
+
+  /**
+   * Keyboard alternative to dragging: move the focused track one slot.
+   */
+  function handleReorderKey({
+    event,
+    trackId,
+  }: {
+    event: ReactKeyboardEvent<HTMLButtonElement>;
+    trackId: string;
+  }) {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    const originOrder = lanes.map((lane) => lane.trackId);
+    const fromIndex = originOrder.indexOf(trackId);
+    const toIndex = event.key === "ArrowUp" ? fromIndex - 1 : fromIndex + 1;
+    const nextOrder = moveIndex({
+      items: originOrder,
+      fromIndex,
+      toIndex,
+    });
+    if (sameTrackOrder(originOrder, nextOrder)) return;
+    onSelectTrack(trackId);
+    onReorderTracks?.({ trackIds: nextOrder });
   }
 
   /**
@@ -587,8 +747,13 @@ export function Timeline({
   for (let f = 0; f <= durationInFrames; f += majorStep) {
     ticks.push(f);
   }
+  const tickDecimals = decimalsForTickFrames({ frames: ticks, fps });
 
   const playheadLeft = frame * pixelsPerFrame;
+  const reorderingTrackId =
+    trackOrderPreview && trackReorderRef.current?.moved
+      ? trackReorderRef.current.trackId
+      : null;
 
   /**
    * Render a clip with optional trim handle and drag preview.
@@ -740,33 +905,58 @@ export function Timeline({
       {/* Ruler + lanes (scroll vertically when dock is short) */}
       <div className="sb-timeline-body">
         <div className="sb-timeline-panel">
-          <div className="sb-timeline">
-            <div className="sb-timeline-labels" style={{ width: LABEL_WIDTH }}>
+          <div className={`sb-timeline${reorderingTrackId ? " is-reordering-tracks" : ""}`}>
+            {/* Track titles sit left of the scrollport; grip only when reorderable */}
+            <div className="sb-timeline-labels" style={{ width: labelWidth }}>
               <div
                 className="sb-timeline-label-gutter"
                 style={{ height: RULER_HEIGHT }}
               />
-              {lanes.map((lane) =>
-                isolated ? (
-                  <div
-                    key={lane.trackId}
-                    className={`sb-timeline-label${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
-                    title={lane.description}
-                  >
-                    {lane.title}
+              {displayLanes.map((lane) => {
+                const isCurrent = selectedTrackId === lane.trackId;
+                const isDropTarget = dropTargetTrackId === lane.trackId;
+                const isReordering = reorderingTrackId === lane.trackId;
+                const rowClass = `sb-timeline-label-row${canReorderTracks ? " has-reorder" : ""}${isCurrent ? " is-current" : ""}${isDropTarget ? " is-drop-target" : ""}${isReordering ? " is-reordering" : ""}`;
+
+                return (
+                  <div key={lane.trackId} className={rowClass}>
+                    {canReorderTracks ? (
+                      <button
+                        type="button"
+                        className="sb-timeline-reorder-handle"
+                        aria-label={`Reorder ${lane.title}`}
+                        aria-grabbed={isReordering}
+                        title="Drag to reorder"
+                        onPointerDown={(event) => {
+                          beginTrackReorder({ event, trackId: lane.trackId });
+                        }}
+                        onKeyDown={(event) => {
+                          handleReorderKey({ event, trackId: lane.trackId });
+                        }}
+                      >
+                        <GripVertical size={14} aria-hidden />
+                      </button>
+                    ) : null}
+                    {isolated ? (
+                      <div
+                        className="sb-timeline-label"
+                        title={lane.description}
+                      >
+                        {lane.title}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="sb-timeline-label"
+                        title={lane.description}
+                        onClick={() => onSelectTrack(lane.trackId)}
+                      >
+                        {lane.title}
+                      </button>
+                    )}
                   </div>
-                ) : (
-                  <button
-                    key={lane.trackId}
-                    type="button"
-                    className={`sb-timeline-label${selectedTrackId === lane.trackId ? " is-current" : ""}${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
-                    title={lane.description}
-                    onClick={() => onSelectTrack(lane.trackId)}
-                  >
-                    {lane.title}
-                  </button>
-                ),
-              )}
+                );
+              })}
             </div>
 
             {/* Scrollport: native scrollbar hidden; focus bar is the scroll UI */}
@@ -806,19 +996,25 @@ export function Timeline({
                       })}`}
                       style={{ left: tick * pixelsPerFrame }}
                     >
-                      <span>{formatFlooredTimecode({ frame: tick, fps })}</span>
+                      <span>
+                        {formatFlooredTimecode({
+                          frame: tick,
+                          fps,
+                          decimals: tickDecimals,
+                        })}
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                {lanes.map((lane, laneIndex) => (
+                {displayLanes.map((lane, laneIndex) => (
                   <div
                     key={lane.trackId}
                     ref={(node) => {
                       if (node) laneRefs.current.set(lane.trackId, node);
                       else laneRefs.current.delete(lane.trackId);
                     }}
-                    className={`sb-lane${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
+                    className={`sb-lane${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}${reorderingTrackId === lane.trackId ? " is-reordering" : ""}`}
                     data-track-id={lane.trackId}
                   >
                     {lane.clips.map((clip) =>
@@ -849,7 +1045,7 @@ export function Timeline({
               <button
                 type="button"
                 className="sb-timeline-add-label"
-                style={{ width: LABEL_WIDTH }}
+                style={{ width: labelWidth }}
                 aria-label="Add track"
                 onClick={() => onAddTrack?.()}
               >
@@ -888,6 +1084,15 @@ export function Timeline({
  */
 function clipTone(laneIndex: number): string {
   return laneIndex % 2 === 0 ? "var(--scene-a)" : "var(--scene-b)";
+}
+
+/**
+ * Whether two track-id lists are in the same order.
+ */
+function sameTrackOrder(left: string[], right: string[]): boolean {
+  return (
+    left.length === right.length && left.every((id, index) => id === right[index])
+  );
 }
 
 /**

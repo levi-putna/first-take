@@ -6,6 +6,13 @@ uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Preview timeline ruler uses scale-aware decimal precision (up to three
+  places, e.g. `0.025`) so zoomed-in ticks stay unique instead of collapsing
+  to the same hundredths label. Zoom-in now reaches a 0.25s window so
+  millisecond-scale times can appear when the tick spacing allows.
+
 ### Added
 
 - `three-robot` example: an 11-second frame-seeked Three.js walk (RobotExpressive), with a camera pull-out in the second half.

@@ -1,35 +1,72 @@
 import type { VideoManifest } from "@levi-putna/storyboard-schema";
-import Comp0 from "/Users/leviputna/workspace/storyboard/examples/three-robot/src/scenes/RobotWalk.tsx";
+import Comp0 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Lead.tsx";
+import Comp1 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Content.tsx";
+import Comp2 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Mix.tsx";
 
 export const manifest = {
   "schemaVersion": 2,
-  "slug": "three-robot",
-  "title": "Three Robot",
+  "slug": "audio-mix",
+  "title": "Audio Mix",
   "fps": 30,
   "formats": [
     {
       "id": "16x9",
       "aspectRatio": "16:9",
-      "width": 1280,
-      "height": 720
+      "width": 640,
+      "height": 360
     }
   ],
   "assetsRoot": ".",
   "tracks": [
     {
-      "id": "main",
-      "title": "Main",
+      "id": "visual",
+      "title": "Visual",
       "scenes": [
         {
-          "id": "01",
-          "title": "Walk",
+          "id": "lead",
+          "title": "Lead",
           "visualType": "component",
-          "component": "src/scenes/RobotWalk.tsx",
+          "component": "src/scenes/Lead.tsx",
           "props": {
-            "clipName": "Walking",
-            "metresPerSecond": 1.15
+            "jingle": "assets/audio/intro-jingle.mp3",
+            "jingleVolume": 0.55,
+            "jingleFadeOutSeconds": 0.3
           },
-          "durationInFrames": 330,
+          "durationInFrames": 30,
+          "gapBeforeFrames": 0,
+          "transitionIn": null
+        },
+        {
+          "id": "content",
+          "title": "Content",
+          "visualType": "component",
+          "component": "src/scenes/Content.tsx",
+          "props": {},
+          "durationInFrames": 60,
+          "gapBeforeFrames": 0,
+          "transitionIn": null
+        }
+      ]
+    },
+    {
+      "id": "audio",
+      "title": "Audio",
+      "scenes": [
+        {
+          "id": "mix",
+          "title": "Mix",
+          "visualType": "component",
+          "component": "src/scenes/Mix.tsx",
+          "props": {
+            "bed": "assets/audio/bed-loop.mp3",
+            "narration": "assets/audio/narration.mp3",
+            "voStartFrame": 30,
+            "bedVolumeUnderVo": 0.12,
+            "bedVolumeLeadIn": 0.08,
+            "bedFadeInSeconds": 0.2,
+            "bedFadeOutSeconds": 0.3
+          },
+          "durationInFrames": 90,
           "gapBeforeFrames": 0,
           "transitionIn": null
         }
@@ -38,6 +75,8 @@ export const manifest = {
   ]
 } as VideoManifest;
 export const components = {
-  "src/scenes/RobotWalk.tsx": Comp0
+  "src/scenes/Lead.tsx": Comp0,
+  "src/scenes/Content.tsx": Comp1,
+  "src/scenes/Mix.tsx": Comp2
 };
-export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/three-robot/video.json";
+export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/audio-mix/video.json";

@@ -3,10 +3,12 @@ import { parseVideoManifest, scenePlacements } from "@levi-putna/storyboard-sche
 import {
   addTrack,
   canPlaceClip,
+  moveIndex,
   moveScene,
   reorderTracks,
   scenesFromStartFrames,
   snapFrame,
+  targetIndexFromDelta,
   timelineStructureEqual,
   trackPlacements,
   trimSceneEnd,
@@ -272,6 +274,58 @@ describe("timelineEdit", () => {
       "overlay",
       "background",
     ]);
+  });
+
+  it("moves an item between indices", () => {
+    expect(
+      moveIndex({
+        items: ["a", "b", "c"],
+        fromIndex: 0,
+        toIndex: 2,
+      }),
+    ).toEqual(["b", "c", "a"]);
+    expect(
+      moveIndex({
+        items: ["a", "b", "c"],
+        fromIndex: 2,
+        toIndex: 0,
+      }),
+    ).toEqual(["c", "a", "b"]);
+    const same = ["a", "b"];
+    expect(
+      moveIndex({
+        items: same,
+        fromIndex: 0,
+        toIndex: 0,
+      }),
+    ).toBe(same);
+  });
+
+  it("maps pointer travel to a lane index", () => {
+    expect(
+      targetIndexFromDelta({
+        fromIndex: 1,
+        deltaY: 32,
+        itemHeight: 32,
+        count: 3,
+      }),
+    ).toBe(2);
+    expect(
+      targetIndexFromDelta({
+        fromIndex: 1,
+        deltaY: -20,
+        itemHeight: 32,
+        count: 3,
+      }),
+    ).toBe(0);
+    expect(
+      targetIndexFromDelta({
+        fromIndex: 0,
+        deltaY: -80,
+        itemHeight: 32,
+        count: 3,
+      }),
+    ).toBe(0);
   });
 
   it("detects structural timeline changes", () => {

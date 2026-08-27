@@ -4,7 +4,7 @@
  */
 
 /** Maximum pixels per frame when zoomed all the way in. */
-export const TIMELINE_MAX_PIXELS_PER_FRAME = 8;
+export const TIMELINE_MAX_PIXELS_PER_FRAME = 80;
 
 /** Minimum major-tick spacing in pixels before the ruler steps up. */
 export const TIMELINE_MIN_MAJOR_TICK_PX = 64;
@@ -13,11 +13,15 @@ export const TIMELINE_MIN_MAJOR_TICK_PX = 64;
 export const TIMELINE_DEFAULT_VISIBLE_SECONDS = 45;
 
 /** Minimum visible duration when zoomed in (seconds). */
-export const TIMELINE_MIN_VISIBLE_SECONDS = 2;
+export const TIMELINE_MIN_VISIBLE_SECONDS = 0.25;
 
 const NICE_SECONDS = [
+  0.025,
+  0.05,
   1 / 30,
+  0.1,
   2 / 30,
+  0.25,
   5 / 30,
   10 / 30,
   0.5,
@@ -40,7 +44,7 @@ const NICE_SECONDS = [
 
 /** Visible-seconds ladder for toolbar zoom buttons. */
 export const TIMELINE_ZOOM_LADDER_SECONDS = [
-  2, 5, 10, 15, 30, 45, 60, 120, 300, 600, 900, 1800, 3600, 7200,
+  0.25, 0.5, 1, 2, 5, 10, 15, 30, 45, 60, 120, 300, 600, 900, 1800, 3600, 7200,
 ] as const;
 
 export type TimelineViewport = {

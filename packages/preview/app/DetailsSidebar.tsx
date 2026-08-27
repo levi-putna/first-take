@@ -290,26 +290,16 @@ function TrackDetails({
           onChange={(event) => onDescriptionChange(event.target.value)}
         />
       </div>
-      <div className="sb-track-actions sb-details-track-actions">
-        <button
-          type="button"
-          className="sb-icon-btn"
-          aria-label="Move track up"
-          disabled={trackIndex <= 0}
-          onClick={onMoveUp}
-        >
-          <ChevronUp size={14} aria-hidden />
-        </button>
-        <button
-          type="button"
-          className="sb-icon-btn"
-          aria-label="Move track down"
-          disabled={trackIndex < 0 || trackIndex >= trackCount - 1}
-          onClick={onMoveDown}
-        >
-          <ChevronDown size={14} aria-hidden />
-        </button>
-      </div>
+
+      {/* Timeline order: labelled stepper so drag is not the only way to rearrange */}
+      <TrackOrderField
+        trackId={trackId}
+        trackTitle={title}
+        trackIndex={trackIndex}
+        trackCount={trackCount}
+        onMoveUp={onMoveUp}
+        onMoveDown={onMoveDown}
+      />
     </div>
   );
 }
@@ -395,8 +385,126 @@ function SceneDetails({
 }
 
 /**
- * One read-only label/value pair in the details panel.
+ * Labelled timeline-order field with a readout and Move up / Move down actions.
  */
+function TrackOrderField({
+  trackId,
+  trackTitle,
+  trackIndex,
+  trackCount,
+  onMoveUp,
+  onMoveDown,
+}: {
+  trackId: string;
+  trackTitle: string;
+  trackIndex: number;
+  trackCount: number;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+}) {
+  const copy = trackOrderCopy({ trackIndex, trackCount });
+  const labelId = `track-order-${trackId}`;
+  const hintId = `track-order-hint-${trackId}`;
+
+  return (
+    <div className="sb-field">
+      <label id={labelId}>Timeline order</label>
+      <div
+        className="sb-order-control"
+        role="group"
+        aria-labelledby={labelId}
+        aria-describedby={hintId}
+      >
+        {/* Current position, in timeline terms rather than paint jargon */}
+        <div className="sb-order-control-readout" aria-live="polite">
+          <span className="sb-order-control-value">{copy.summary}</span>
+          <span className="sb-order-control-meta">{copy.place}</span>
+        </div>
+        <div className="sb-order-control-buttons">
+          <button
+            type="button"
+            className="sb-order-control-btn"
+            aria-label={`Move ${trackTitle} up the timeline`}
+            title={copy.upDisabledReason ?? `Move ${trackTitle} up the timeline`}
+            disabled={copy.upDisabledReason != null}
+            onClick={onMoveUp}
+          >
+            <ChevronUp size={14} aria-hidden />
+            Move up
+          </button>
+          <button
+            type="button"
+            className="sb-order-control-btn"
+            aria-label={`Move ${trackTitle} down the timeline`}
+            title={copy.downDisabledReason ?? `Move ${trackTitle} down the timeline`}
+            disabled={copy.downDisabledReason != null}
+            onClick={onMoveDown}
+          >
+            <ChevronDown size={14} aria-hidden />
+            Move down
+          </button>
+        </div>
+      </div>
+      <p id={hintId} className="sb-field-hint">
+        {copy.hint}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Inspector copy for a track's position in the timeline stack.
+ */
+function trackOrderCopy({
+  trackIndex,
+  trackCount,
+}: {
+  trackIndex: number;
+  trackCount: number;
+}): {
+  summary: string;
+  place: string;
+  hint: string;
+  upDisabledReason: string | null;
+  downDisabledReason: string | null;
+} {
+  const canReorder = trackCount > 1;
+  const isFirst = trackIndex <= 0;
+  const isLast = trackIndex >= trackCount - 1;
+  const position = Math.max(1, trackIndex + 1);
+  const summary = `${position} of ${trackCount}`;
+
+  if (!canReorder) {
+    return {
+      summary,
+      place: "Only lane",
+      hint: "Add another track to change the order.",
+      upDisabledReason: "Add another track to change the order",
+      downDisabledReason: "Add another track to change the order",
+    };
+  }
+
+  let place = `Lane ${position}`;
+  let hint =
+    "Moves this lane on the timeline. Earlier tracks paint behind later ones.";
+  if (isFirst) {
+    place = "Top of the timeline";
+    hint =
+      "At the top of the timeline. This track paints behind the lanes below.";
+  } else if (isLast) {
+    place = "Bottom of the timeline";
+    hint =
+      "At the bottom of the timeline. This track paints in front of the lanes above.";
+  }
+
+  return {
+    summary,
+    place,
+    hint,
+    upDisabledReason: isFirst ? "Already at the top of the timeline" : null,
+    downDisabledReason: isLast ? "Already at the bottom of the timeline" : null,
+  };
+}
 function DetailRow({
   label,
   value,

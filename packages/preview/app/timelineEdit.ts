@@ -649,6 +649,52 @@ export function updateScene({
 }
 
 /**
+ * Move an item from one index to another, returning a new array.
+ */
+export function moveIndex<T>({
+  items,
+  fromIndex,
+  toIndex,
+}: {
+  items: T[];
+  fromIndex: number;
+  toIndex: number;
+}): T[] {
+  if (
+    fromIndex === toIndex ||
+    fromIndex < 0 ||
+    toIndex < 0 ||
+    fromIndex >= items.length ||
+    toIndex >= items.length
+  ) {
+    return items;
+  }
+  const next = [...items];
+  const [item] = next.splice(fromIndex, 1);
+  next.splice(toIndex, 0, item);
+  return next;
+}
+
+/**
+ * Target index for an equal-height list drag, based on pointer travel.
+ */
+export function targetIndexFromDelta({
+  fromIndex,
+  deltaY,
+  itemHeight,
+  count,
+}: {
+  fromIndex: number;
+  deltaY: number;
+  itemHeight: number;
+  count: number;
+}): number {
+  if (count <= 0 || itemHeight <= 0) return 0;
+  const steps = Math.round(deltaY / itemHeight);
+  return Math.max(0, Math.min(count - 1, fromIndex + steps));
+}
+
+/**
  * Reorder tracks (render / paint order).
  */
 export function reorderTracks({
