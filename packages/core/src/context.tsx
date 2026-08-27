@@ -42,6 +42,7 @@ const PlaybackContext = createContext<PlaybackState>({
   playing: false,
   muted: true,
 });
+const SceneIdContext = createContext<string | null>(null);
 
 /**
  * Root provider that injects absolute frame and video config.
@@ -97,6 +98,28 @@ export function FrameOffsetProvider({
       {children}
     </FrameContext.Provider>
   );
+}
+
+/**
+ * Tags Audio/Video descendants with the scene that mounted them.
+ */
+export function SceneProvider({
+  sceneId,
+  children,
+}: {
+  sceneId: string;
+  children: ReactNode;
+}) {
+  return (
+    <SceneIdContext.Provider value={sceneId}>{children}</SceneIdContext.Provider>
+  );
+}
+
+/**
+ * Id of the scene currently mounting this subtree, if any.
+ */
+export function useSceneId(): string | null {
+  return useContext(SceneIdContext);
 }
 
 /**

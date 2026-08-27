@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   Pause,
   Play,
+  Plus,
   SkipBack,
   Volume2,
   VolumeX,
@@ -22,6 +23,8 @@ import {
   type TimelineFocusChangeReason,
 } from "./TimelineFocusBar";
 import type { TimelineClip, TimelineLane } from "./timelineModel";
+import type { SceneAudioClip } from "../src/scene-audio-parse";
+import { ClipWaveform } from "./ClipWaveform";
 import {
   clampPixelsPerFrame,
   defaultPixelsPerFrame,
@@ -76,6 +79,8 @@ export function Timeline({
   onTrimScene,
   dropTargetTrackId = null,
   onDropTargetTrackChange,
+  onAddTrack,
+  sceneAudio = {},
 }: {
   frame: number;
   durationInFrames: number;
@@ -103,6 +108,9 @@ export function Timeline({
   }) => void;
   dropTargetTrackId?: string | null;
   onDropTargetTrackChange?: (trackId: string | null) => void;
+  onAddTrack?: () => void;
+  /** Audio sources detected for each scene, used to paint clip waveforms. */
+  sceneAudio?: Record<string, SceneAudioClip[]>;
 }) {
   const last = Math.max(0, durationInFrames - 1);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -589,6 +597,8 @@ export function Timeline({
       : clip.durationInFrames;
     const isDragging =
       clipDragRef.current?.sceneId === clip.sceneId && isPreview;
+    const audioClips = sceneAudio[clip.sceneId] ?? [];
+    const clipWidth = duration * pixelsPerFrame;
 
     return (
       <div
@@ -596,14 +606,18 @@ export function Timeline({
         className={`sb-clip-wrap${selectedSceneId === clip.sceneId ? " is-current" : ""}${isDragging ? " is-dragging" : ""}`}
         style={{
           left: startFrame * pixelsPerFrame,
-          width: duration * pixelsPerFrame,
+          width: clipWidth,
         }}
       >
         <button
           type="button"
           className="sb-clip"
           style={{ background: clipTone(laneIndex) }}
-          title={`${clip.title} · ${duration}f`}
+          title={
+            audioClips.length > 0
+              ? `${clip.title} · ${duration}f · audio`
+              : `${clip.title} · ${duration}f`
+          }
           onPointerDown={(event) => {
             if (!editable) {
               onSelectScene(clip.sceneId);
@@ -625,7 +639,18 @@ export function Timeline({
             onIsolateScene(clip.sceneId);
           }}
         >
-          {clip.title}
+          {/* Waveform sits behind the title so the clip still reads as a scene */}
+          {audioClips.length > 0 ? (
+            <span className="sb-clip-wave" aria-hidden>
+              <ClipWaveform
+                clips={audioClips}
+                width={clipWidth}
+                durationInFrames={duration}
+                fps={fps}
+              />
+            </span>
+          ) : null}
+          <span className="sb-clip-title">{clip.title}</span>
         </button>
         {editable ? (
           <div
@@ -779,6 +804,30 @@ export function Timeline({
               </div>
             </div>
           </div>
+
+          {/* Add-track row: full width below lanes, expands on hover */}
+          {editable ? (
+            <div className="sb-timeline-add-bar">
+              <button
+                type="button"
+                className="sb-timeline-add-label"
+                style={{ width: LABEL_WIDTH }}
+                aria-label="Add track"
+                onClick={() => onAddTrack?.()}
+              >
+                <Plus size={14} aria-hidden />
+                Add
+              </button>
+              <button
+                type="button"
+                className="sb-timeline-add-lane"
+                aria-label="Add track"
+                onClick={() => onAddTrack?.()}
+              >
+                <Plus size={14} aria-hidden />
+              </button>
+            </div>
+          ) : null}
         </div>
 
         {/* Focus bar: full-width pan/zoom overview pinned to the dock bottom */}

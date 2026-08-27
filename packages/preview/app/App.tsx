@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { Save } from "lucide-react";
 import {
+  SceneProvider,
   Sequence,
   StoryboardProvider,
   type VideoConfig,
@@ -19,6 +20,7 @@ import { FormatSwitcher } from "./FormatSwitcher";
 import { ProjectSwitcher } from "./ProjectSwitcher";
 import { PropFields } from "./PropFields";
 import { Timeline } from "./Timeline";
+import { useSceneAudio } from "./useSceneAudio";
 import {
   clampDockHeight,
   clampSidebarWidth,
@@ -118,6 +120,12 @@ export function App() {
   const isolatedClip = isolatedSceneId
     ? clipBySceneId({ lanes: fullLanes, sceneId: isolatedSceneId })
     : undefined;
+
+  const sceneAudio = useSceneAudio({
+    manifest: workingManifest,
+    lanes: fullLanes,
+    isolated: Boolean(isolatedSceneId),
+  });
 
   const duration = isolatedScene
     ? isolatedScene.durationInFrames
@@ -624,11 +632,13 @@ export function App() {
         >
           {isolatedScene && Isolated ? (
             <Sequence from={0} durationInFrames={isolatedScene.durationInFrames}>
-              <Isolated
-                {...(propOverrides[isolatedScene.id] ??
-                  isolatedScene.props ??
-                  {})}
-              />
+              <SceneProvider sceneId={isolatedScene.id}>
+                <Isolated
+                  {...(propOverrides[isolatedScene.id] ??
+                    isolatedScene.props ??
+                    {})}
+                />
+              </SceneProvider>
             </Sequence>
           ) : (
             <CompositionFromManifest
@@ -841,6 +851,10 @@ export function App() {
           onTrimScene={applyTrimScene}
           dropTargetTrackId={dropTargetTrackId}
           onDropTargetTrackChange={setDropTargetTrackId}
+          onAddTrack={() => {
+            setWorkingManifest((current) => addTrack({ manifest: current }));
+          }}
+          sceneAudio={sceneAudio}
         />
       </div>
     </div>

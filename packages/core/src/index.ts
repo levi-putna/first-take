@@ -1,11 +1,13 @@
 export {
   StoryboardProvider,
   FrameOffsetProvider,
+  SceneProvider,
   useCurrentFrame,
   useAbsoluteFrame,
   useSequenceDuration,
   usePlayback,
   useVideoConfig,
+  useSceneId,
   type VideoConfig,
   type PlaybackState,
 } from "./context.js";

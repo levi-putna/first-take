@@ -630,10 +630,46 @@ button {
   font-size: 11px;
   font-weight: 600;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   cursor: grab;
   text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.sb-clip-wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70%;
+  z-index: 0;
+  pointer-events: none;
+  color: var(--audio);
+  opacity: 0.38;
+  overflow: hidden;
+  line-height: 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.sb-clip-wrap.is-current .sb-clip-wave {
+  opacity: 0.58;
+}
+
+.sb-clip-wave-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sb-clip-title {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
 }
 
 .sb-clip:active {
@@ -714,6 +750,83 @@ button {
   flex-direction: column;
   gap: 2px;
   padding-top: 2px;
+}
+
+.sb-timeline-add-bar {
+  display: flex;
+  flex-shrink: 0;
+  min-height: 20px;
+  height: 20px;
+  overflow: hidden;
+  transition: height 0.12s ease;
+  border-top: 1px solid transparent;
+}
+
+.sb-timeline-panel:has(.sb-lane:last-of-type:hover) .sb-timeline-add-bar,
+.sb-timeline-panel:has(.sb-timeline-label:last-of-type:hover) .sb-timeline-add-bar,
+.sb-timeline-add-bar:hover,
+.sb-timeline-add-bar:focus-within {
+  height: 32px;
+  border-top-color: var(--border);
+}
+
+.sb-timeline-add-label,
+.sb-timeline-add-lane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.sb-timeline-add-lane {
+  flex: 1;
+  min-width: 0;
+}
+
+.sb-timeline-panel:has(.sb-lane:last-of-type:hover) .sb-timeline-add-bar .sb-timeline-add-label,
+.sb-timeline-panel:has(.sb-lane:last-of-type:hover) .sb-timeline-add-bar .sb-timeline-add-lane,
+.sb-timeline-panel:has(.sb-timeline-label:last-of-type:hover) .sb-timeline-add-bar .sb-timeline-add-label,
+.sb-timeline-panel:has(.sb-timeline-label:last-of-type:hover) .sb-timeline-add-bar .sb-timeline-add-lane,
+.sb-timeline-add-bar:hover .sb-timeline-add-label,
+.sb-timeline-add-bar:hover .sb-timeline-add-lane,
+.sb-timeline-add-bar:focus-within .sb-timeline-add-label,
+.sb-timeline-add-bar:focus-within .sb-timeline-add-lane {
+  opacity: 1;
+}
+
+.sb-timeline-add-label {
+  justify-content: flex-start;
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.sb-timeline-add-lane {
+  border-bottom: 1px dashed var(--border);
+  background: color-mix(in srgb, var(--panel-2) 55%, transparent);
+}
+
+.sb-timeline-add-label:hover,
+.sb-timeline-add-lane:hover,
+.sb-timeline-add-label:focus-visible,
+.sb-timeline-add-lane:focus-visible {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+.sb-timeline-add-lane:hover,
+.sb-timeline-add-lane:focus-visible {
+  border-bottom-color: var(--accent);
 }
 
 .sb-playhead {

@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import {
   AbsoluteFill,
+  SceneProvider,
   Sequence,
   interpolate,
   useCurrentFrame,
@@ -114,12 +115,14 @@ export function TransitionSeries({
             durationInFrames={placement.durationInFrames}
             name={placement.scene.title}
           >
-            <FadeScene
-              scene={placement.scene}
-              Component={Comp}
-              overlapIn={overlapIn}
-              overlapOut={overlapOut}
-            />
+            <SceneProvider sceneId={placement.scene.id}>
+              <FadeScene
+                scene={placement.scene}
+                Component={Comp}
+                overlapIn={overlapIn}
+                overlapOut={overlapOut}
+              />
+            </SceneProvider>
           </Sequence>
         );
       })}

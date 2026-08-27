@@ -104,6 +104,22 @@ describe("timelineEdit", () => {
     expect(scenes[1].gapBeforeFrames).toBe(40);
   });
 
+  it("shrinks sequential fade overlap to match a preserved start frame", () => {
+    const scenes = scenesFromStartFrames({
+      placements: [
+        {
+          scene: { ...fadeManifest.tracks[0].scenes[0], durationInFrames: 25 },
+          from: 0,
+        },
+        { scene: fadeManifest.tracks[0].scenes[1], from: 20 },
+      ],
+    });
+    expect(scenes[1].transitionIn?.durationInFrames).toBe(5);
+    expect(trackPlacements({ track: { ...fadeManifest.tracks[0], scenes } })[1].from).toBe(
+      20,
+    );
+  });
+
   it("snaps within threshold", () => {
     expect(
       snapFrame({
@@ -180,6 +196,30 @@ describe("timelineEdit", () => {
     expect(scene?.durationInFrames).toBe(40);
   });
 
+  it("preserves later clip start frames when trimming an earlier clip", () => {
+    const before = scenePlacements(overlayManifest).filter(
+      (placement) => placement.trackId === "overlay",
+    );
+    const trimmed = trimSceneEnd({
+      manifest: overlayManifest,
+      sceneId: "title-a",
+      durationInFrames: 40,
+    });
+    const after = scenePlacements(trimmed).filter(
+      (placement) => placement.trackId === "overlay",
+    );
+    expect(after.find((placement) => placement.scene.id === "title-a")?.from).toBe(
+      before.find((placement) => placement.scene.id === "title-a")?.from,
+    );
+    expect(after.find((placement) => placement.scene.id === "title-b")?.from).toBe(
+      before.find((placement) => placement.scene.id === "title-b")?.from,
+    );
+    expect(
+      trimmed.tracks[1].scenes.find((entry) => entry.id === "title-b")
+        ?.gapBeforeFrames,
+    ).toBe(60);
+  });
+
   it("preserves sequential fade overlap when trimming", () => {
     const trimmed = trimSceneEnd({
       manifest: fadeManifest,
@@ -187,7 +227,7 @@ describe("timelineEdit", () => {
       durationInFrames: 25,
     });
     expect(trimmed.tracks[0].scenes[0].durationInFrames).toBe(25);
-    expect(scenePlacements(trimmed)[1].from).toBe(15);
+    expect(scenePlacements(trimmed)[1].from).toBe(20);
   });
 
   it("adds and updates tracks", () => {

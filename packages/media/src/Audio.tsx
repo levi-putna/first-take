@@ -3,6 +3,7 @@ import {
   useAbsoluteFrame,
   useCurrentFrame,
   usePlayback,
+  useSceneId,
   useSequenceDuration,
   useVideoConfig,
 } from "@levi-putna/storyboard-core";
@@ -15,6 +16,8 @@ export type AudioClipDescriptor = {
   loop: boolean;
   /** Volume sample per composition frame (length = durationInFrames of composition). */
   volumePerFrame: number[];
+  /** Scene that mounted this clip, when rendered inside a SceneProvider. */
+  sceneId?: string;
   /** Optional trim into the source media (seconds). */
   mediaStartSeconds?: number;
   /** Optional end trim into the source media (seconds). */
@@ -107,6 +110,7 @@ export function Audio({
   const frame = useCurrentFrame();
   const absoluteFrame = useAbsoluteFrame();
   const sequenceDuration = useSequenceDuration();
+  const sceneId = useSceneId();
   const { durationInFrames: totalFrames, fps } = useVideoConfig();
   const playback = usePlayback();
 
@@ -125,6 +129,7 @@ export function Audio({
     startFromFrame: clipStart,
     durationInFrames: clipDuration,
     loop,
+    sceneId: sceneId ?? undefined,
     volumePerFrame: buildVolumePerFrame({
       totalFrames,
       startFromFrame: clipStart,

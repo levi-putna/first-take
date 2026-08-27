@@ -5,11 +5,13 @@ import {
   formatSchema,
   validateTransitionLengths,
   validateUniqueSceneIds,
+  validateVideoFile,
   videoManifestSchema,
   type Scene,
   type VideoManifest,
 } from "@levi-putna/storyboard-schema";
 import { sameManifestPath, type PreviewProject } from "./discover-projects.js";
+import { listSceneAudioSources } from "./scene-audio.js";
 import { tryServeAsset } from "./serve-assets.js";
 
 /**
@@ -500,6 +502,33 @@ export function previewApiPlugin({
       server.middlewares.use((req, res, next) => {
         const pathname = requestPathname({ req });
         const method = req.method ?? "GET";
+
+        if (method === "GET" && pathname === "/__storyboard/scene-audio") {
+          const manifestPath = session.getManifestPath();
+          const result = validateVideoFile({
+            manifestPath,
+            checkAssets: false,
+          });
+          if (!result.ok) {
+            sendJson({
+              res,
+              status: 400,
+              body: { ok: false, errors: result.errors },
+            });
+            return;
+          }
+          sendJson({
+            res,
+            status: 200,
+            body: {
+              scenes: listSceneAudioSources({
+                manifest: result.manifest,
+                manifestPath,
+              }),
+            },
+          });
+          return;
+        }
 
         if (method === "GET" && pathname === "/__storyboard/projects") {
           const current = session.getManifestPath();

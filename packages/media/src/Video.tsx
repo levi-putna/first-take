@@ -10,6 +10,7 @@ import {
   useAbsoluteFrame,
   useCurrentFrame,
   usePlayback,
+  useSceneId,
   useVideoConfig,
 } from "@levi-putna/storyboard-core";
 import {
@@ -172,6 +173,7 @@ export function Video({
   const frame = useCurrentFrame();
   const absoluteFrame = useAbsoluteFrame();
   const playback = usePlayback();
+  const sceneId = useSceneId();
   const { fps, durationInFrames: totalFrames } = useVideoConfig();
 
   const compositionStartFrame = absoluteFrame - frame;
@@ -209,6 +211,7 @@ export function Video({
       startFromFrame: compositionStartFrame,
       durationInFrames: clipDuration,
       loop: false,
+      sceneId: sceneId ?? undefined,
       volumePerFrame: buildVolumePerFrame({
         totalFrames,
         startFromFrame: compositionStartFrame,
