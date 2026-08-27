@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "hello-explainer",
   "title": "Hello Explainer",
   "fps": 30,
@@ -40,8 +40,7 @@
             "jingleVolume": 0.55,
             "jingleFadeOutSeconds": 0.6
           },
-          "durationInFrames": 120,
-          "transitionIn": null
+          "durationInFrames": 120
         },
         {
           "id": "01",
@@ -51,9 +50,14 @@
           "props": {
             "headline": "You hit Tab. Nothing highlights."
           },
-          "durationInFrames": 90,
-          "transitionIn": null
-        },
+          "durationInFrames": 90
+        }
+      ]
+    },
+    {
+      "id": "visual-b",
+      "title": "Visual B",
+      "scenes": [
         {
           "id": "02",
           "title": "Fix",
@@ -63,10 +67,7 @@
             "headline": "Focus rings make the path obvious."
           },
           "durationInFrames": 120,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 15
-          }
+          "gapBeforeFrames": 195
         }
       ]
     },
@@ -88,8 +89,7 @@
             "bedFadeInSeconds": 0.8,
             "bedFadeOutSeconds": 1.2
           },
-          "durationInFrames": 315,
-          "transitionIn": null
+          "durationInFrames": 315
         }
       ]
     }

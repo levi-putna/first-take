@@ -1,6 +1,6 @@
 # Clip Hard Cut
 
-Two sequential `<Video>` clips with no fade. The second scene starts when the first ends (`gapBeforeFrames` is 0, `transitionIn` is null).
+Two sequential `<Video>` clips with no fade. The second scene starts when the first ends on the same track.
 
 Catalogue: [examples/README.md](../README.md).
 

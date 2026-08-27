@@ -44,7 +44,7 @@ describe("storyboard CLI validate", () => {
     writeFileSync(
       manifestPath,
       JSON.stringify({
-        schemaVersion: 2,
+        schemaVersion: 3,
         slug: "bad-audio",
         title: "Bad",
         fps: 30,

@@ -6,7 +6,7 @@ import type { VideoManifest } from "@levi-putna/storyboard-schema";
 import { saveScenePropsToManifestFile, saveStudioChangesToManifestFile } from "./preview-api.js";
 
 const minimalManifest = {
-  schemaVersion: 2 as const,
+  schemaVersion: 3 as const,
   slug: "solo",
   title: "Solo Video",
   formats: [{ id: "16x9", aspectRatio: "16:9", width: 640, height: 360 }],

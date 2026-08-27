@@ -1,10 +1,19 @@
-import { AbsoluteFill, useVideoConfig } from "@levi-putna/storyboard-core";
+import {
+  AbsoluteFill,
+  interpolate,
+  useCurrentFrame,
+  useVideoConfig,
+} from "@levi-putna/storyboard-core";
 
 /**
  * Small corner badge on a third track, overlapping both overlays.
  */
 export default function Badge({ label = "LIVE" }: { label?: string }) {
+  const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
+  const opacity = interpolate(frame, [0, 8], [0, 1], {
+    extrapolateRight: "clamp",
+  });
 
   return (
     <AbsoluteFill>
@@ -22,6 +31,7 @@ export default function Badge({ label = "LIVE" }: { label?: string }) {
           fontSize: Math.max(12, width * 0.014),
           letterSpacing: "0.12em",
           fontWeight: 700,
+          opacity,
         }}
       >
         {label}

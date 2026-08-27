@@ -324,11 +324,6 @@ function SceneDetails({
     setMetaOpen(false);
   }, [scene.id]);
 
-  const transition =
-    scene.transitionIn != null
-      ? `${scene.transitionIn.type} · ${scene.transitionIn.durationInFrames}f`
-      : "None";
-
   return (
     <div className="sb-stacked-details">
       {/* Primary: editable title, then component props */}
@@ -377,7 +372,6 @@ function SceneDetails({
             value={`${scene.gapBeforeFrames ?? 0}f`}
             mono
           />
-          <DetailRow label="Transition in" value={transition} />
         </div>
       </details>
     </div>

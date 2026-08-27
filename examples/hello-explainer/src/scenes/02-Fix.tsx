@@ -10,6 +10,9 @@ export default function FixScene({
 }) {
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
+  const layerOpacity = interpolate(frame, [0, 15], [0, 1], {
+    extrapolateRight: "clamp",
+  });
   const opacity = interpolate(frame, [0, 0.4 * fps], [0, 1], {
     extrapolateRight: "clamp",
   });
@@ -26,6 +29,7 @@ export default function FixScene({
         justifyContent: "center",
         gap: 48,
         padding: width * 0.08,
+        opacity: layerOpacity,
       }}
     >
       {/* Mock button with focus ring */}

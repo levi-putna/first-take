@@ -224,7 +224,7 @@ export function scaffoldVideoProject({
     contents: `${JSON.stringify(tsconfig, null, 2)}\n`,
   });
 
-  /** Intro 90f + Point 120f − 15f sequential fade. */
+  /** Intro 90f; Point overlaps by 15f on a higher track (gap 75). Total 195f. */
   const visualDurationInFrames = 195;
 
   const visualTrack = {
@@ -240,8 +240,14 @@ export function scaffoldVideoProject({
           headline: "Replace this headline.",
         },
         durationInFrames: 90,
-        transitionIn: null,
       },
+    ],
+  };
+
+  const visualOverlayTrack = {
+    id: "visual-b",
+    title: "Visual B",
+    scenes: [
       {
         id: "02",
         title: "Point",
@@ -251,7 +257,7 @@ export function scaffoldVideoProject({
           headline: "Add your second beat here.",
         },
         durationInFrames: 120,
-        transitionIn: { type: "fade", durationInFrames: 15 },
+        gapBeforeFrames: 75,
       },
     ],
   };
@@ -269,13 +275,12 @@ export function scaffoldVideoProject({
           src: "assets/audio/bed-loop.mp3",
         },
         durationInFrames: visualDurationInFrames,
-        transitionIn: null,
       },
     ],
   };
 
   const manifest = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     slug,
     title,
     fps: 30,
@@ -284,7 +289,9 @@ export function scaffoldVideoProject({
       { id: "9x16", aspectRatio: "9:16", width: 1080, height: 1920 },
     ],
     assetsRoot: ".",
-    tracks: withAudio ? [visualTrack, bedTrack] : [visualTrack],
+    tracks: withAudio
+      ? [visualTrack, visualOverlayTrack, bedTrack]
+      : [visualTrack, visualOverlayTrack],
   };
 
   add({
@@ -348,7 +355,7 @@ export default function IntroScene({
     contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
 
 /**
- * Second beat — supporting headline after a fade transition.
+ * Second beat — fades in over the intro on a higher track.
  */
 export default function PointScene({
   headline = "Add your second beat here.",
@@ -356,8 +363,8 @@ export default function PointScene({
   headline?: string;
 }) {
   const frame = useCurrentFrame();
-  const { fps, width } = useVideoConfig();
-  const opacity = interpolate(frame, [0, 0.4 * fps], [0, 1], {
+  const { width } = useVideoConfig();
+  const opacity = interpolate(frame, [0, 15], [0, 1], {
     extrapolateRight: "clamp",
   });
 
@@ -368,12 +375,12 @@ export default function PointScene({
         alignItems: "center",
         justifyContent: "center",
         padding: width * 0.08,
+        opacity,
       }}
     >
       {/* Supporting line */}
       <div
         style={{
-          opacity,
           color: "#d7deed",
           fontFamily: "Georgia, 'Times New Roman', serif",
           fontSize: Math.max(28, width * 0.035),

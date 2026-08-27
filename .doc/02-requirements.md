@@ -47,7 +47,7 @@ Storyboard is a general-purpose, frame-deterministic React video engine. Require
 |----|-------------|
 | F-S1 | A scene references a component module (or clip source) and supplies props / data for that beat. |
 | F-S2 | A scene declares or receives `durationInFrames` (for narrated component scenes, derived from audio alignment upstream). |
-| F-S3 | Scenes support optional `transitionIn` (type + duration in frames). |
+| F-S3 | Fades and wipes are authored in scene components (frame-driven opacity or masks). |
 | F-S4 | Scene types at minimum: `component`; design for later `generated-video` and `real-video` without blocking v1. |
 | F-S5 | Scenes may include empty narration (wordless beats) with clip- or author-defined duration. |
 
@@ -55,10 +55,10 @@ Storyboard is a general-purpose, frame-deterministic React video engine. Require
 
 | ID | Requirement |
 |----|-------------|
-| F-V1 | One JSON file defines a single video (`schemaVersion` 2: slug, title, fps, formats, `tracks[]`). |
+| F-V1 | One JSON file defines a single video (`schemaVersion` 3: slug, title, fps, formats, `tracks[]`). |
 | F-V2 | Formats are an array of `{ id, aspectRatio, width, height }`; one render pass per format from the same timeline. |
 | F-V3 | Audio is in-scene (`<Audio>` / unmuted `<Video>`); file paths typically live in props. |
-| F-V4 | Total `durationInFrames` is the longest track (gaps + scenes − sequential fade overlaps). |
+| F-V4 | Total `durationInFrames` is the longest track (gaps + scene durations). |
 | F-V5 | The schema is versioned (`schemaVersion`) so the CLI can reject or migrate old manifests. |
 | F-V6 | Asset paths in the JSON resolve relative to a known project root / public dir. |
 
@@ -66,7 +66,7 @@ Example shape (illustrative, not final schema):
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "example-feature",
   "title": "Example feature",
   "fps": 30,
@@ -83,9 +83,13 @@ Example shape (illustrative, not final schema):
           "visualType": "component",
           "component": "src/scenes/01-Hook.tsx",
           "props": { "headline": "You hit Tab. Nothing highlights." },
-          "durationInFrames": 90,
-          "transitionIn": null
-        },
+          "durationInFrames": 90
+        }
+      ]
+    },
+    {
+      "id": "visual-b",
+      "scenes": [
         {
           "id": "02",
           "title": "Fix",
@@ -93,7 +97,7 @@ Example shape (illustrative, not final schema):
           "component": "src/scenes/02-Fix.tsx",
           "props": {},
           "durationInFrames": 120,
-          "transitionIn": { "type": "fade", "durationInFrames": 15 }
+          "gapBeforeFrames": 75
         }
       ]
     }
@@ -106,8 +110,8 @@ Example shape (illustrative, not final schema):
 | ID | Requirement |
 |----|-------------|
 | F-T1 | Scenes play in track order; later tracks paint on top. |
-| F-T2 | Supported transitions: `fade` and hard cut (`null`); fade after a gap is fade-in from empty. |
-| F-T3 | Sequential fade duration overlaps adjacent scenes on that track; total length is max(tracks). |
+| F-T2 | Blends use overlapping tracks; motion (fade, wipe) lives in scene components. |
+| F-T3 | Same-lane clip overlap is forbidden; gaps separate clips on one track. |
 | F-T4 | A continuous background is a full-length scene on a lower track (see [`examples/track-overlay`](../examples/track-overlay/README.md)). |
 
 ### 4.5 Audio

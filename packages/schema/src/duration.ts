@@ -1,30 +1,12 @@
 import type { Scene, Track, VideoManifest } from "./manifest.js";
 
 /**
- * Crossfade overlap with the previous scene on the same track.
- * After a gap, transitionIn is a fade-in from empty and does not shorten the track.
- */
-export function sequentialOverlapFrames({
-  scene,
-  index,
-}: {
-  scene: Scene;
-  index: number;
-}): number {
-  if (index === 0) return 0;
-  if ((scene.gapBeforeFrames ?? 0) > 0) return 0;
-  return scene.transitionIn?.durationInFrames ?? 0;
-}
-
-/**
- * Length of a single track in frames (gaps + scenes − sequential overlaps).
+ * Length of a single track in frames (gaps + scene durations).
  */
 export function trackDurationInFrames({ track }: { track: Track }): number {
   let cursor = 0;
-  for (let i = 0; i < track.scenes.length; i++) {
-    const scene = track.scenes[i];
+  for (const scene of track.scenes) {
     cursor += scene.gapBeforeFrames ?? 0;
-    cursor -= sequentialOverlapFrames({ scene, index: i });
     cursor += scene.durationInFrames;
   }
   return cursor;
@@ -62,10 +44,8 @@ export function scenePlacements(manifest: VideoManifest): ScenePlacement[] {
   const placements: ScenePlacement[] = [];
   for (const track of manifest.tracks) {
     let cursor = 0;
-    for (let i = 0; i < track.scenes.length; i++) {
-      const scene = track.scenes[i];
+    for (const scene of track.scenes) {
       cursor += scene.gapBeforeFrames ?? 0;
-      cursor -= sequentialOverlapFrames({ scene, index: i });
       placements.push({
         trackId: track.id,
         scene,
@@ -92,33 +72,6 @@ export function sceneStartFrames(manifest: VideoManifest): number[] {
  */
 export function listScenes(manifest: VideoManifest): Scene[] {
   return manifest.tracks.flatMap((track) => track.scenes);
-}
-
-/**
- * Ensures sequential (non-gap) fades are shorter than both adjacent scenes.
- * @returns list of human-readable error strings (empty if valid)
- */
-export function validateTransitionLengths(manifest: VideoManifest): string[] {
-  const errors: string[] = [];
-  for (const track of manifest.tracks) {
-    for (let i = 1; i < track.scenes.length; i++) {
-      const prev = track.scenes[i - 1];
-      const scene = track.scenes[i];
-      const overlap = sequentialOverlapFrames({ scene, index: i });
-      if (overlap <= 0) continue;
-      if (overlap >= prev.durationInFrames) {
-        errors.push(
-          `Scene "${scene.id}" transitionIn (${overlap}f) must be shorter than previous scene "${prev.id}" (${prev.durationInFrames}f)`,
-        );
-      }
-      if (overlap >= scene.durationInFrames) {
-        errors.push(
-          `Scene "${scene.id}" transitionIn (${overlap}f) must be shorter than its own duration (${scene.durationInFrames}f)`,
-        );
-      }
-    }
-  }
-  return errors;
 }
 
 /**

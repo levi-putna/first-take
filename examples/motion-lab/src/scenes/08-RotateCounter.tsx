@@ -1,5 +1,5 @@
 import { interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
-import { SceneShell } from "../components/SceneShell";
+import { SceneShell, useCrossfadeOpacity } from "../components/SceneShell";
 
 /**
  * Continuous rotation plus an animated numeric counter.
@@ -7,6 +7,7 @@ import { SceneShell } from "../components/SceneShell";
 export default function RotateCounterScene() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const layerOpacity = useCrossfadeOpacity();
 
   const rotation = interpolate(frame, [0, 3 * fps], [0, 360], {
     extrapolateLeft: "clamp",
@@ -30,6 +31,7 @@ export default function RotateCounterScene() {
         justifyContent: "center",
         gap: 40,
       }}
+      opacity={layerOpacity}
     >
       {/* Scene label */}
       <div

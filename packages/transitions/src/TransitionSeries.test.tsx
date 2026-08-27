@@ -16,7 +16,6 @@ const scenes: Scene[] = [
     component: "A",
     durationInFrames: 30,
     gapBeforeFrames: 0,
-    transitionIn: null,
   },
   {
     id: "02",
@@ -25,18 +24,17 @@ const scenes: Scene[] = [
     component: "B",
     durationInFrames: 30,
     gapBeforeFrames: 0,
-    transitionIn: { type: "fade", durationInFrames: 10 },
   },
 ];
 
 describe("computeScenePlacements", () => {
-  it("overlaps the second scene by the fade length", () => {
+  it("abuts sequential scenes without overlap", () => {
     const placements = computeScenePlacements(scenes);
     expect(placements[0].from).toBe(0);
-    expect(placements[1].from).toBe(20);
+    expect(placements[1].from).toBe(30);
   });
 
-  it("places a scene after a gap without overlapping", () => {
+  it("places a scene after a gap", () => {
     const gapped: Scene[] = [
       {
         id: "a",
@@ -45,7 +43,6 @@ describe("computeScenePlacements", () => {
         component: "A",
         durationInFrames: 20,
         gapBeforeFrames: 10,
-        transitionIn: null,
       },
       {
         id: "b",
@@ -54,7 +51,6 @@ describe("computeScenePlacements", () => {
         component: "B",
         durationInFrames: 20,
         gapBeforeFrames: 15,
-        transitionIn: { type: "fade", durationInFrames: 8 },
       },
     ];
     const placements = computeScenePlacements(gapped);
@@ -84,7 +80,7 @@ describe("TransitionSeries", () => {
           fps: 30,
           width: 100,
           height: 100,
-          durationInFrames: 50,
+          durationInFrames: 60,
         }}
       >
         <TransitionSeries
@@ -98,19 +94,19 @@ describe("TransitionSeries", () => {
     expect(queryByTestId("blue")).toBeNull();
   });
 
-  it("shows both scenes during a fade overlap", () => {
+  it("switches to the second scene after the first ends", () => {
     const Red = () => <span data-testid="red">red</span>;
     const Blue = () => <span data-testid="blue">blue</span>;
 
-    const { getByTestId } = render(
+    const { getByTestId, queryByTestId } = render(
       <StoryboardProvider
-        frame={25}
+        frame={35}
         config={{
           id: "t",
           fps: 30,
           width: 100,
           height: 100,
-          durationInFrames: 50,
+          durationInFrames: 60,
         }}
       >
         <TransitionSeries
@@ -120,7 +116,7 @@ describe("TransitionSeries", () => {
       </StoryboardProvider>,
     );
 
-    expect(getByTestId("red")).toBeTruthy();
+    expect(queryByTestId("red")).toBeNull();
     expect(getByTestId("blue")).toBeTruthy();
   });
 });

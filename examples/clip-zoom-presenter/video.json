@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "clip-zoom-presenter",
   "title": "Clip Zoom Presenter",
   "fps": 30,
@@ -23,8 +23,7 @@
           "visualType": "component",
           "component": "src/scenes/ZoomPresenter.tsx",
           "props": {},
-          "durationInFrames": 240,
-          "transitionIn": null
+          "durationInFrames": 240
         }
       ]
     }

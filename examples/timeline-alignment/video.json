@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "timeline-alignment",
   "title": "Timeline Alignment",
   "fps": 30,
@@ -27,8 +27,7 @@
             "startSecond": 0,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-02",
@@ -40,8 +39,7 @@
             "startSecond": 10,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-03",
@@ -53,8 +51,7 @@
             "startSecond": 20,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-04",
@@ -66,8 +63,7 @@
             "startSecond": 30,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-05",
@@ -79,8 +75,7 @@
             "startSecond": 40,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-06",
@@ -92,8 +87,7 @@
             "startSecond": 50,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-07",
@@ -105,8 +99,7 @@
             "startSecond": 60,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-08",
@@ -118,8 +111,7 @@
             "startSecond": 70,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-09",
@@ -131,8 +123,7 @@
             "startSecond": 80,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-10",
@@ -144,8 +135,7 @@
             "startSecond": 90,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-11",
@@ -157,8 +147,7 @@
             "startSecond": 100,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-12",
@@ -170,8 +159,7 @@
             "startSecond": 110,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-13",
@@ -183,8 +171,7 @@
             "startSecond": 120,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-14",
@@ -196,8 +183,7 @@
             "startSecond": 130,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-15",
@@ -209,8 +195,7 @@
             "startSecond": 140,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-16",
@@ -222,8 +207,7 @@
             "startSecond": 150,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-17",
@@ -235,8 +219,7 @@
             "startSecond": 160,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-18",
@@ -248,8 +231,7 @@
             "startSecond": 170,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-19",
@@ -261,8 +243,7 @@
             "startSecond": 180,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-20",
@@ -274,8 +255,7 @@
             "startSecond": 190,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-21",
@@ -287,8 +267,7 @@
             "startSecond": 200,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-22",
@@ -300,8 +279,7 @@
             "startSecond": 210,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-23",
@@ -313,8 +291,7 @@
             "startSecond": 220,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-24",
@@ -326,8 +303,7 @@
             "startSecond": 230,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-25",
@@ -339,8 +315,7 @@
             "startSecond": 240,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-26",
@@ -352,8 +327,7 @@
             "startSecond": 250,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-27",
@@ -365,8 +339,7 @@
             "startSecond": 260,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-28",
@@ -378,8 +351,7 @@
             "startSecond": 270,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-29",
@@ -391,8 +363,7 @@
             "startSecond": 280,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         },
         {
           "id": "bg-30",
@@ -404,8 +375,7 @@
             "startSecond": 290,
             "durationSeconds": 10
           },
-          "durationInFrames": 300,
-          "transitionIn": null
+          "durationInFrames": 300
         }
       ]
     },
@@ -421,8 +391,7 @@
           "props": {
             "second": 0
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-001",
@@ -432,8 +401,7 @@
           "props": {
             "second": 1
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-002",
@@ -443,8 +411,7 @@
           "props": {
             "second": 2
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-003",
@@ -454,8 +421,7 @@
           "props": {
             "second": 3
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-004",
@@ -465,8 +431,7 @@
           "props": {
             "second": 4
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-005",
@@ -476,8 +441,7 @@
           "props": {
             "second": 5
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-006",
@@ -487,8 +451,7 @@
           "props": {
             "second": 6
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-007",
@@ -498,8 +461,7 @@
           "props": {
             "second": 7
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-008",
@@ -509,8 +471,7 @@
           "props": {
             "second": 8
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-009",
@@ -520,8 +481,7 @@
           "props": {
             "second": 9
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-010",
@@ -531,8 +491,7 @@
           "props": {
             "second": 10
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-011",
@@ -542,8 +501,7 @@
           "props": {
             "second": 11
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-012",
@@ -553,8 +511,7 @@
           "props": {
             "second": 12
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-013",
@@ -564,8 +521,7 @@
           "props": {
             "second": 13
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-014",
@@ -575,8 +531,7 @@
           "props": {
             "second": 14
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-015",
@@ -586,8 +541,7 @@
           "props": {
             "second": 15
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-016",
@@ -597,8 +551,7 @@
           "props": {
             "second": 16
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-017",
@@ -608,8 +561,7 @@
           "props": {
             "second": 17
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-018",
@@ -619,8 +571,7 @@
           "props": {
             "second": 18
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-019",
@@ -630,8 +581,7 @@
           "props": {
             "second": 19
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-020",
@@ -641,8 +591,7 @@
           "props": {
             "second": 20
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-021",
@@ -652,8 +601,7 @@
           "props": {
             "second": 21
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-022",
@@ -663,8 +611,7 @@
           "props": {
             "second": 22
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-023",
@@ -674,8 +621,7 @@
           "props": {
             "second": 23
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-024",
@@ -685,8 +631,7 @@
           "props": {
             "second": 24
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-025",
@@ -696,8 +641,7 @@
           "props": {
             "second": 25
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-026",
@@ -707,8 +651,7 @@
           "props": {
             "second": 26
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-027",
@@ -718,8 +661,7 @@
           "props": {
             "second": 27
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-028",
@@ -729,8 +671,7 @@
           "props": {
             "second": 28
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-029",
@@ -740,8 +681,7 @@
           "props": {
             "second": 29
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-030",
@@ -751,8 +691,7 @@
           "props": {
             "second": 30
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-031",
@@ -762,8 +701,7 @@
           "props": {
             "second": 31
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-032",
@@ -773,8 +711,7 @@
           "props": {
             "second": 32
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-033",
@@ -784,8 +721,7 @@
           "props": {
             "second": 33
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-034",
@@ -795,8 +731,7 @@
           "props": {
             "second": 34
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-035",
@@ -806,8 +741,7 @@
           "props": {
             "second": 35
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-036",
@@ -817,8 +751,7 @@
           "props": {
             "second": 36
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-037",
@@ -828,8 +761,7 @@
           "props": {
             "second": 37
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-038",
@@ -839,8 +771,7 @@
           "props": {
             "second": 38
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-039",
@@ -850,8 +781,7 @@
           "props": {
             "second": 39
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-040",
@@ -861,8 +791,7 @@
           "props": {
             "second": 40
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-041",
@@ -872,8 +801,7 @@
           "props": {
             "second": 41
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-042",
@@ -883,8 +811,7 @@
           "props": {
             "second": 42
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-043",
@@ -894,8 +821,7 @@
           "props": {
             "second": 43
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-044",
@@ -905,8 +831,7 @@
           "props": {
             "second": 44
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-045",
@@ -916,8 +841,7 @@
           "props": {
             "second": 45
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-046",
@@ -927,8 +851,7 @@
           "props": {
             "second": 46
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-047",
@@ -938,8 +861,7 @@
           "props": {
             "second": 47
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-048",
@@ -949,8 +871,7 @@
           "props": {
             "second": 48
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-049",
@@ -960,8 +881,7 @@
           "props": {
             "second": 49
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-050",
@@ -971,8 +891,7 @@
           "props": {
             "second": 50
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-051",
@@ -982,8 +901,7 @@
           "props": {
             "second": 51
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-052",
@@ -993,8 +911,7 @@
           "props": {
             "second": 52
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-053",
@@ -1004,8 +921,7 @@
           "props": {
             "second": 53
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-054",
@@ -1015,8 +931,7 @@
           "props": {
             "second": 54
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-055",
@@ -1026,8 +941,7 @@
           "props": {
             "second": 55
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-056",
@@ -1037,8 +951,7 @@
           "props": {
             "second": 56
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-057",
@@ -1048,8 +961,7 @@
           "props": {
             "second": 57
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-058",
@@ -1059,8 +971,7 @@
           "props": {
             "second": 58
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-059",
@@ -1070,8 +981,7 @@
           "props": {
             "second": 59
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-060",
@@ -1081,8 +991,7 @@
           "props": {
             "second": 60
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-061",
@@ -1092,8 +1001,7 @@
           "props": {
             "second": 61
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-062",
@@ -1103,8 +1011,7 @@
           "props": {
             "second": 62
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-063",
@@ -1114,8 +1021,7 @@
           "props": {
             "second": 63
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-064",
@@ -1125,8 +1031,7 @@
           "props": {
             "second": 64
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-065",
@@ -1136,8 +1041,7 @@
           "props": {
             "second": 65
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-066",
@@ -1147,8 +1051,7 @@
           "props": {
             "second": 66
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-067",
@@ -1158,8 +1061,7 @@
           "props": {
             "second": 67
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-068",
@@ -1169,8 +1071,7 @@
           "props": {
             "second": 68
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-069",
@@ -1180,8 +1081,7 @@
           "props": {
             "second": 69
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-070",
@@ -1191,8 +1091,7 @@
           "props": {
             "second": 70
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-071",
@@ -1202,8 +1101,7 @@
           "props": {
             "second": 71
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-072",
@@ -1213,8 +1111,7 @@
           "props": {
             "second": 72
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-073",
@@ -1224,8 +1121,7 @@
           "props": {
             "second": 73
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-074",
@@ -1235,8 +1131,7 @@
           "props": {
             "second": 74
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-075",
@@ -1246,8 +1141,7 @@
           "props": {
             "second": 75
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-076",
@@ -1257,8 +1151,7 @@
           "props": {
             "second": 76
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-077",
@@ -1268,8 +1161,7 @@
           "props": {
             "second": 77
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-078",
@@ -1279,8 +1171,7 @@
           "props": {
             "second": 78
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-079",
@@ -1290,8 +1181,7 @@
           "props": {
             "second": 79
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-080",
@@ -1301,8 +1191,7 @@
           "props": {
             "second": 80
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-081",
@@ -1312,8 +1201,7 @@
           "props": {
             "second": 81
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-082",
@@ -1323,8 +1211,7 @@
           "props": {
             "second": 82
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-083",
@@ -1334,8 +1221,7 @@
           "props": {
             "second": 83
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-084",
@@ -1345,8 +1231,7 @@
           "props": {
             "second": 84
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-085",
@@ -1356,8 +1241,7 @@
           "props": {
             "second": 85
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-086",
@@ -1367,8 +1251,7 @@
           "props": {
             "second": 86
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-087",
@@ -1378,8 +1261,7 @@
           "props": {
             "second": 87
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-088",
@@ -1389,8 +1271,7 @@
           "props": {
             "second": 88
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-089",
@@ -1400,8 +1281,7 @@
           "props": {
             "second": 89
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-090",
@@ -1411,8 +1291,7 @@
           "props": {
             "second": 90
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-091",
@@ -1422,8 +1301,7 @@
           "props": {
             "second": 91
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-092",
@@ -1433,8 +1311,7 @@
           "props": {
             "second": 92
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-093",
@@ -1444,8 +1321,7 @@
           "props": {
             "second": 93
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-094",
@@ -1455,8 +1331,7 @@
           "props": {
             "second": 94
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-095",
@@ -1466,8 +1341,7 @@
           "props": {
             "second": 95
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-096",
@@ -1477,8 +1351,7 @@
           "props": {
             "second": 96
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-097",
@@ -1488,8 +1361,7 @@
           "props": {
             "second": 97
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-098",
@@ -1499,8 +1371,7 @@
           "props": {
             "second": 98
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-099",
@@ -1510,8 +1381,7 @@
           "props": {
             "second": 99
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-100",
@@ -1521,8 +1391,7 @@
           "props": {
             "second": 100
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-101",
@@ -1532,8 +1401,7 @@
           "props": {
             "second": 101
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-102",
@@ -1543,8 +1411,7 @@
           "props": {
             "second": 102
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-103",
@@ -1554,8 +1421,7 @@
           "props": {
             "second": 103
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-104",
@@ -1565,8 +1431,7 @@
           "props": {
             "second": 104
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-105",
@@ -1576,8 +1441,7 @@
           "props": {
             "second": 105
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-106",
@@ -1587,8 +1451,7 @@
           "props": {
             "second": 106
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-107",
@@ -1598,8 +1461,7 @@
           "props": {
             "second": 107
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-108",
@@ -1609,8 +1471,7 @@
           "props": {
             "second": 108
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-109",
@@ -1620,8 +1481,7 @@
           "props": {
             "second": 109
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-110",
@@ -1631,8 +1491,7 @@
           "props": {
             "second": 110
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-111",
@@ -1642,8 +1501,7 @@
           "props": {
             "second": 111
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-112",
@@ -1653,8 +1511,7 @@
           "props": {
             "second": 112
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-113",
@@ -1664,8 +1521,7 @@
           "props": {
             "second": 113
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-114",
@@ -1675,8 +1531,7 @@
           "props": {
             "second": 114
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-115",
@@ -1686,8 +1541,7 @@
           "props": {
             "second": 115
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-116",
@@ -1697,8 +1551,7 @@
           "props": {
             "second": 116
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-117",
@@ -1708,8 +1561,7 @@
           "props": {
             "second": 117
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-118",
@@ -1719,8 +1571,7 @@
           "props": {
             "second": 118
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-119",
@@ -1730,8 +1581,7 @@
           "props": {
             "second": 119
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-120",
@@ -1741,8 +1591,7 @@
           "props": {
             "second": 120
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-121",
@@ -1752,8 +1601,7 @@
           "props": {
             "second": 121
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-122",
@@ -1763,8 +1611,7 @@
           "props": {
             "second": 122
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-123",
@@ -1774,8 +1621,7 @@
           "props": {
             "second": 123
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-124",
@@ -1785,8 +1631,7 @@
           "props": {
             "second": 124
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-125",
@@ -1796,8 +1641,7 @@
           "props": {
             "second": 125
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-126",
@@ -1807,8 +1651,7 @@
           "props": {
             "second": 126
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-127",
@@ -1818,8 +1661,7 @@
           "props": {
             "second": 127
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-128",
@@ -1829,8 +1671,7 @@
           "props": {
             "second": 128
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-129",
@@ -1840,8 +1681,7 @@
           "props": {
             "second": 129
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-130",
@@ -1851,8 +1691,7 @@
           "props": {
             "second": 130
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-131",
@@ -1862,8 +1701,7 @@
           "props": {
             "second": 131
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-132",
@@ -1873,8 +1711,7 @@
           "props": {
             "second": 132
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-133",
@@ -1884,8 +1721,7 @@
           "props": {
             "second": 133
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-134",
@@ -1895,8 +1731,7 @@
           "props": {
             "second": 134
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-135",
@@ -1906,8 +1741,7 @@
           "props": {
             "second": 135
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-136",
@@ -1917,8 +1751,7 @@
           "props": {
             "second": 136
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-137",
@@ -1928,8 +1761,7 @@
           "props": {
             "second": 137
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-138",
@@ -1939,8 +1771,7 @@
           "props": {
             "second": 138
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-139",
@@ -1950,8 +1781,7 @@
           "props": {
             "second": 139
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-140",
@@ -1961,8 +1791,7 @@
           "props": {
             "second": 140
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-141",
@@ -1972,8 +1801,7 @@
           "props": {
             "second": 141
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-142",
@@ -1983,8 +1811,7 @@
           "props": {
             "second": 142
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-143",
@@ -1994,8 +1821,7 @@
           "props": {
             "second": 143
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-144",
@@ -2005,8 +1831,7 @@
           "props": {
             "second": 144
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-145",
@@ -2016,8 +1841,7 @@
           "props": {
             "second": 145
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-146",
@@ -2027,8 +1851,7 @@
           "props": {
             "second": 146
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-147",
@@ -2038,8 +1861,7 @@
           "props": {
             "second": 147
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-148",
@@ -2049,8 +1871,7 @@
           "props": {
             "second": 148
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-149",
@@ -2060,8 +1881,7 @@
           "props": {
             "second": 149
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-150",
@@ -2071,8 +1891,7 @@
           "props": {
             "second": 150
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-151",
@@ -2082,8 +1901,7 @@
           "props": {
             "second": 151
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-152",
@@ -2093,8 +1911,7 @@
           "props": {
             "second": 152
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-153",
@@ -2104,8 +1921,7 @@
           "props": {
             "second": 153
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-154",
@@ -2115,8 +1931,7 @@
           "props": {
             "second": 154
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-155",
@@ -2126,8 +1941,7 @@
           "props": {
             "second": 155
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-156",
@@ -2137,8 +1951,7 @@
           "props": {
             "second": 156
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-157",
@@ -2148,8 +1961,7 @@
           "props": {
             "second": 157
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-158",
@@ -2159,8 +1971,7 @@
           "props": {
             "second": 158
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-159",
@@ -2170,8 +1981,7 @@
           "props": {
             "second": 159
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-160",
@@ -2181,8 +1991,7 @@
           "props": {
             "second": 160
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-161",
@@ -2192,8 +2001,7 @@
           "props": {
             "second": 161
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-162",
@@ -2203,8 +2011,7 @@
           "props": {
             "second": 162
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-163",
@@ -2214,8 +2021,7 @@
           "props": {
             "second": 163
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-164",
@@ -2225,8 +2031,7 @@
           "props": {
             "second": 164
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-165",
@@ -2236,8 +2041,7 @@
           "props": {
             "second": 165
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-166",
@@ -2247,8 +2051,7 @@
           "props": {
             "second": 166
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-167",
@@ -2258,8 +2061,7 @@
           "props": {
             "second": 167
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-168",
@@ -2269,8 +2071,7 @@
           "props": {
             "second": 168
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-169",
@@ -2280,8 +2081,7 @@
           "props": {
             "second": 169
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-170",
@@ -2291,8 +2091,7 @@
           "props": {
             "second": 170
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-171",
@@ -2302,8 +2101,7 @@
           "props": {
             "second": 171
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-172",
@@ -2313,8 +2111,7 @@
           "props": {
             "second": 172
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-173",
@@ -2324,8 +2121,7 @@
           "props": {
             "second": 173
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-174",
@@ -2335,8 +2131,7 @@
           "props": {
             "second": 174
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-175",
@@ -2346,8 +2141,7 @@
           "props": {
             "second": 175
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-176",
@@ -2357,8 +2151,7 @@
           "props": {
             "second": 176
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-177",
@@ -2368,8 +2161,7 @@
           "props": {
             "second": 177
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-178",
@@ -2379,8 +2171,7 @@
           "props": {
             "second": 178
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-179",
@@ -2390,8 +2181,7 @@
           "props": {
             "second": 179
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-180",
@@ -2401,8 +2191,7 @@
           "props": {
             "second": 180
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-181",
@@ -2412,8 +2201,7 @@
           "props": {
             "second": 181
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-182",
@@ -2423,8 +2211,7 @@
           "props": {
             "second": 182
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-183",
@@ -2434,8 +2221,7 @@
           "props": {
             "second": 183
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-184",
@@ -2445,8 +2231,7 @@
           "props": {
             "second": 184
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-185",
@@ -2456,8 +2241,7 @@
           "props": {
             "second": 185
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-186",
@@ -2467,8 +2251,7 @@
           "props": {
             "second": 186
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-187",
@@ -2478,8 +2261,7 @@
           "props": {
             "second": 187
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-188",
@@ -2489,8 +2271,7 @@
           "props": {
             "second": 188
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-189",
@@ -2500,8 +2281,7 @@
           "props": {
             "second": 189
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-190",
@@ -2511,8 +2291,7 @@
           "props": {
             "second": 190
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-191",
@@ -2522,8 +2301,7 @@
           "props": {
             "second": 191
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-192",
@@ -2533,8 +2311,7 @@
           "props": {
             "second": 192
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-193",
@@ -2544,8 +2321,7 @@
           "props": {
             "second": 193
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-194",
@@ -2555,8 +2331,7 @@
           "props": {
             "second": 194
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-195",
@@ -2566,8 +2341,7 @@
           "props": {
             "second": 195
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-196",
@@ -2577,8 +2351,7 @@
           "props": {
             "second": 196
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-197",
@@ -2588,8 +2361,7 @@
           "props": {
             "second": 197
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-198",
@@ -2599,8 +2371,7 @@
           "props": {
             "second": 198
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-199",
@@ -2610,8 +2381,7 @@
           "props": {
             "second": 199
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-200",
@@ -2621,8 +2391,7 @@
           "props": {
             "second": 200
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-201",
@@ -2632,8 +2401,7 @@
           "props": {
             "second": 201
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-202",
@@ -2643,8 +2411,7 @@
           "props": {
             "second": 202
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-203",
@@ -2654,8 +2421,7 @@
           "props": {
             "second": 203
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-204",
@@ -2665,8 +2431,7 @@
           "props": {
             "second": 204
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-205",
@@ -2676,8 +2441,7 @@
           "props": {
             "second": 205
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-206",
@@ -2687,8 +2451,7 @@
           "props": {
             "second": 206
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-207",
@@ -2698,8 +2461,7 @@
           "props": {
             "second": 207
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-208",
@@ -2709,8 +2471,7 @@
           "props": {
             "second": 208
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-209",
@@ -2720,8 +2481,7 @@
           "props": {
             "second": 209
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-210",
@@ -2731,8 +2491,7 @@
           "props": {
             "second": 210
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-211",
@@ -2742,8 +2501,7 @@
           "props": {
             "second": 211
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-212",
@@ -2753,8 +2511,7 @@
           "props": {
             "second": 212
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-213",
@@ -2764,8 +2521,7 @@
           "props": {
             "second": 213
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-214",
@@ -2775,8 +2531,7 @@
           "props": {
             "second": 214
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-215",
@@ -2786,8 +2541,7 @@
           "props": {
             "second": 215
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-216",
@@ -2797,8 +2551,7 @@
           "props": {
             "second": 216
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-217",
@@ -2808,8 +2561,7 @@
           "props": {
             "second": 217
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-218",
@@ -2819,8 +2571,7 @@
           "props": {
             "second": 218
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-219",
@@ -2830,8 +2581,7 @@
           "props": {
             "second": 219
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-220",
@@ -2841,8 +2591,7 @@
           "props": {
             "second": 220
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-221",
@@ -2852,8 +2601,7 @@
           "props": {
             "second": 221
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-222",
@@ -2863,8 +2611,7 @@
           "props": {
             "second": 222
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-223",
@@ -2874,8 +2621,7 @@
           "props": {
             "second": 223
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-224",
@@ -2885,8 +2631,7 @@
           "props": {
             "second": 224
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-225",
@@ -2896,8 +2641,7 @@
           "props": {
             "second": 225
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-226",
@@ -2907,8 +2651,7 @@
           "props": {
             "second": 226
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-227",
@@ -2918,8 +2661,7 @@
           "props": {
             "second": 227
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-228",
@@ -2929,8 +2671,7 @@
           "props": {
             "second": 228
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-229",
@@ -2940,8 +2681,7 @@
           "props": {
             "second": 229
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-230",
@@ -2951,8 +2691,7 @@
           "props": {
             "second": 230
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-231",
@@ -2962,8 +2701,7 @@
           "props": {
             "second": 231
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-232",
@@ -2973,8 +2711,7 @@
           "props": {
             "second": 232
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-233",
@@ -2984,8 +2721,7 @@
           "props": {
             "second": 233
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-234",
@@ -2995,8 +2731,7 @@
           "props": {
             "second": 234
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-235",
@@ -3006,8 +2741,7 @@
           "props": {
             "second": 235
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-236",
@@ -3017,8 +2751,7 @@
           "props": {
             "second": 236
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-237",
@@ -3028,8 +2761,7 @@
           "props": {
             "second": 237
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-238",
@@ -3039,8 +2771,7 @@
           "props": {
             "second": 238
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-239",
@@ -3050,8 +2781,7 @@
           "props": {
             "second": 239
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-240",
@@ -3061,8 +2791,7 @@
           "props": {
             "second": 240
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-241",
@@ -3072,8 +2801,7 @@
           "props": {
             "second": 241
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-242",
@@ -3083,8 +2811,7 @@
           "props": {
             "second": 242
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-243",
@@ -3094,8 +2821,7 @@
           "props": {
             "second": 243
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-244",
@@ -3105,8 +2831,7 @@
           "props": {
             "second": 244
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-245",
@@ -3116,8 +2841,7 @@
           "props": {
             "second": 245
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-246",
@@ -3127,8 +2851,7 @@
           "props": {
             "second": 246
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-247",
@@ -3138,8 +2861,7 @@
           "props": {
             "second": 247
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-248",
@@ -3149,8 +2871,7 @@
           "props": {
             "second": 248
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-249",
@@ -3160,8 +2881,7 @@
           "props": {
             "second": 249
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-250",
@@ -3171,8 +2891,7 @@
           "props": {
             "second": 250
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-251",
@@ -3182,8 +2901,7 @@
           "props": {
             "second": 251
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-252",
@@ -3193,8 +2911,7 @@
           "props": {
             "second": 252
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-253",
@@ -3204,8 +2921,7 @@
           "props": {
             "second": 253
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-254",
@@ -3215,8 +2931,7 @@
           "props": {
             "second": 254
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-255",
@@ -3226,8 +2941,7 @@
           "props": {
             "second": 255
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-256",
@@ -3237,8 +2951,7 @@
           "props": {
             "second": 256
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-257",
@@ -3248,8 +2961,7 @@
           "props": {
             "second": 257
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-258",
@@ -3259,8 +2971,7 @@
           "props": {
             "second": 258
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-259",
@@ -3270,8 +2981,7 @@
           "props": {
             "second": 259
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-260",
@@ -3281,8 +2991,7 @@
           "props": {
             "second": 260
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-261",
@@ -3292,8 +3001,7 @@
           "props": {
             "second": 261
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-262",
@@ -3303,8 +3011,7 @@
           "props": {
             "second": 262
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-263",
@@ -3314,8 +3021,7 @@
           "props": {
             "second": 263
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-264",
@@ -3325,8 +3031,7 @@
           "props": {
             "second": 264
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-265",
@@ -3336,8 +3041,7 @@
           "props": {
             "second": 265
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-266",
@@ -3347,8 +3051,7 @@
           "props": {
             "second": 266
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-267",
@@ -3358,8 +3061,7 @@
           "props": {
             "second": 267
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-268",
@@ -3369,8 +3071,7 @@
           "props": {
             "second": 268
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-269",
@@ -3380,8 +3081,7 @@
           "props": {
             "second": 269
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-270",
@@ -3391,8 +3091,7 @@
           "props": {
             "second": 270
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-271",
@@ -3402,8 +3101,7 @@
           "props": {
             "second": 271
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-272",
@@ -3413,8 +3111,7 @@
           "props": {
             "second": 272
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-273",
@@ -3424,8 +3121,7 @@
           "props": {
             "second": 273
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-274",
@@ -3435,8 +3131,7 @@
           "props": {
             "second": 274
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-275",
@@ -3446,8 +3141,7 @@
           "props": {
             "second": 275
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-276",
@@ -3457,8 +3151,7 @@
           "props": {
             "second": 276
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-277",
@@ -3468,8 +3161,7 @@
           "props": {
             "second": 277
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-278",
@@ -3479,8 +3171,7 @@
           "props": {
             "second": 278
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-279",
@@ -3490,8 +3181,7 @@
           "props": {
             "second": 279
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-280",
@@ -3501,8 +3191,7 @@
           "props": {
             "second": 280
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-281",
@@ -3512,8 +3201,7 @@
           "props": {
             "second": 281
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-282",
@@ -3523,8 +3211,7 @@
           "props": {
             "second": 282
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-283",
@@ -3534,8 +3221,7 @@
           "props": {
             "second": 283
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-284",
@@ -3545,8 +3231,7 @@
           "props": {
             "second": 284
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-285",
@@ -3556,8 +3241,7 @@
           "props": {
             "second": 285
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-286",
@@ -3567,8 +3251,7 @@
           "props": {
             "second": 286
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-287",
@@ -3578,8 +3261,7 @@
           "props": {
             "second": 287
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-288",
@@ -3589,8 +3271,7 @@
           "props": {
             "second": 288
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-289",
@@ -3600,8 +3281,7 @@
           "props": {
             "second": 289
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-290",
@@ -3611,8 +3291,7 @@
           "props": {
             "second": 290
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-291",
@@ -3622,8 +3301,7 @@
           "props": {
             "second": 291
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-292",
@@ -3633,8 +3311,7 @@
           "props": {
             "second": 292
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-293",
@@ -3644,8 +3321,7 @@
           "props": {
             "second": 293
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-294",
@@ -3655,8 +3331,7 @@
           "props": {
             "second": 294
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-295",
@@ -3666,8 +3341,7 @@
           "props": {
             "second": 295
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-296",
@@ -3677,8 +3351,7 @@
           "props": {
             "second": 296
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-297",
@@ -3688,8 +3361,7 @@
           "props": {
             "second": 297
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-298",
@@ -3699,8 +3371,7 @@
           "props": {
             "second": 298
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         },
         {
           "id": "sec-299",
@@ -3710,8 +3381,7 @@
           "props": {
             "second": 299
           },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         }
       ]
     }

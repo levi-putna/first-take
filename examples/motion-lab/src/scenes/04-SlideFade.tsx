@@ -4,7 +4,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "@levi-putna/storyboard-core";
-import { SceneShell } from "../components/SceneShell";
+import { SceneShell, useCrossfadeOpacity } from "../components/SceneShell";
 
 /**
  * Panel slides in from the left while fading up.
@@ -16,6 +16,7 @@ export default function SlideFadeScene({
 }) {
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
+  const layerOpacity = useCrossfadeOpacity();
 
   const x = interpolate(frame, [0, 0.7 * fps], [-width * 0.35, 0], {
     extrapolateLeft: "clamp",
@@ -33,6 +34,7 @@ export default function SlideFadeScene({
         justifyContent: "center",
         gap: 24,
       }}
+      opacity={layerOpacity}
     >
       {/* Scene label */}
       <div

@@ -1,4 +1,9 @@
-import { AbsoluteFill, useVideoConfig } from "@levi-putna/storyboard-core";
+import {
+  AbsoluteFill,
+  interpolate,
+  useCurrentFrame,
+  useVideoConfig,
+} from "@levi-putna/storyboard-core";
 
 /**
  * Second transparent lower-third, after a gap on the overlay track.
@@ -10,8 +15,12 @@ export default function OverlayB({
   headline?: string;
   detail?: string;
 }) {
+  const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const barHeight = Math.round(height * 0.22);
+  const opacity = interpolate(frame, [0, 10], [0, 1], {
+    extrapolateRight: "clamp",
+  });
 
   return (
     <AbsoluteFill>
@@ -28,6 +37,7 @@ export default function OverlayB({
           flexDirection: "column",
           justifyContent: "center",
           background: "linear-gradient(90deg, rgba(140, 70, 30, 0.92) 0%, rgba(140, 70, 30, 0.5) 100%)",
+          opacity,
         }}
       >
         <div

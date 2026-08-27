@@ -3,7 +3,6 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin } from "vite";
 import {
   formatSchema,
-  validateTransitionLengths,
   validateUniqueSceneIds,
   validateVideoFile,
   videoManifestSchema,
@@ -203,14 +202,6 @@ function mergeSceneOnDisk({
     delete next.gapBeforeFrames;
   }
 
-  if (draftScene.transitionIn === null) {
-    next.transitionIn = null;
-  } else if (draftScene.transitionIn) {
-    next.transitionIn = draftScene.transitionIn;
-  } else if (!("transitionIn" in fileScene)) {
-    delete next.transitionIn;
-  }
-
   if (propOverride) {
     next.props = propOverride;
   }
@@ -298,10 +289,7 @@ export function saveStudioChangesToManifestFile({
         ),
       };
     }
-    const errors = [
-      ...validateUniqueSceneIds(parsed.data),
-      ...validateTransitionLengths(parsed.data),
-    ];
+    const errors = [...validateUniqueSceneIds(parsed.data)];
     if (!parsed.data.tracks.some((track) => track.scenes.length > 0)) {
       errors.push("At least one track must contain a scene");
     }

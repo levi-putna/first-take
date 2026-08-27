@@ -7,7 +7,7 @@ Normative testing strategy for Storyboard. Complements the stub in [03-technical
 | Goal | Requirement IDs |
 |------|-----------------|
 | Frame-deterministic pixels for the same inputs | F-R1, F-R2 |
-| Correct duration and transition overlap math | F-V4, F-T3 |
+| Correct track duration math | F-V4, F-T3 |
 | Multi-format dimensions and identical timeline length | F-CLI5, F-V2 |
 | Audio mux present with expected duration | F-A1–F-A6, F-E3 |
 | Schema / asset validation fails fast | F-CLI4, F-CLI6 |
@@ -76,7 +76,8 @@ Focused fixtures use solid colours and no text (or only optional ASCII without c
 | Fixture | Purpose | Key assertions |
 |---------|---------|----------------|
 | [`solid-frames`](../examples/solid-frames/README.md) | Deterministic paint | Frames 0 / 15 / 29 solid colours; 30-frame silent MP4 |
-| [`fade-overlap`](../examples/fade-overlap/README.md) | Transition math + fade | Mid-fade blend; duration = sum − overlap |
+| [`fade-overlap`](../examples/fade-overlap/README.md) | Cross-track fade | Mid-fade blend on two tracks |
+| [`circle-wipe`](../examples/circle-wipe/README.md) | Iris wipe | Close / black / open stills |
 | [`multi-format`](../examples/multi-format/README.md) | 16:9 + 9:16 | Still dimensions; both MP4s same frame count |
 | [`audio-mix`](../examples/audio-mix/README.md) | Series audio | AAC present; duration ≈ lead-in + content + tail; silent omits audio |
 | [`motion-basics`](../examples/motion-basics/README.md) | interpolate + spring | Stills at known frames |
@@ -113,11 +114,11 @@ Suggested CI matrix: `yarn test` on every PR; `yarn test:render` on every PR; `y
 
 | Requirement | Tests / fixtures |
 |-------------|------------------|
-| F-V4 / F-T3 duration + overlap | `packages/schema/src/duration.test.ts`, `fade-overlap` |
+| F-V4 / F-T3 duration | `packages/schema/src/duration.test.ts`, `fade-overlap`, `circle-wipe` |
 | F-CLI4 validate | `packages/schema/src/validate.test.ts`, CLI spawn tests |
 | F-CLI6 exit non-zero | `packages/cli` validate failure tests |
 | F-C2 frame APIs | `interpolate.test.ts`, `Series.test.tsx`, `motion-basics` |
-| F-T2 fade | `TransitionSeries.test.tsx`, `fade-overlap` goldens |
+| F-T2 in-scene blend | `fade-overlap`, `circle-wipe` goldens |
 | F-R1 determinism | Golden stills (re-run same still → match) |
 | F-CLI5 multi-format | `multi-format` stills + `test:render` |
 | F-A* audio mux | `audio-mix` `test:render` |

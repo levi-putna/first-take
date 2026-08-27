@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "multi-format",
   "title": "Multi Format",
   "fps": 30,
@@ -29,8 +29,7 @@
           "visualType": "component",
           "component": "src/scenes/Green.tsx",
           "props": {},
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         }
       ]
     }

@@ -3,13 +3,8 @@ import {
   AbsoluteFill,
   SceneProvider,
   Sequence,
-  interpolate,
-  useCurrentFrame,
 } from "@levi-putna/storyboard-core";
-import {
-  sequentialOverlapFrames,
-  type Scene,
-} from "@levi-putna/storyboard-schema";
+import type { Scene } from "@levi-putna/storyboard-schema";
 
 export type ComponentMap = Record<string, ComponentType<Record<string, unknown>>>;
 
@@ -21,15 +16,13 @@ type Placement = {
 };
 
 /**
- * Compute sequence placements with gaps and sequential fade overlaps.
+ * Compute sequence placements with gaps between clips.
  */
 export function computeScenePlacements(scenes: Scene[]): Placement[] {
   const placements: Placement[] = [];
   let cursor = 0;
-  for (let i = 0; i < scenes.length; i++) {
-    const scene = scenes[i];
+  for (const scene of scenes) {
     cursor += scene.gapBeforeFrames ?? 0;
-    cursor -= sequentialOverlapFrames({ scene, index: i });
     placements.push({
       scene,
       from: cursor,
@@ -40,45 +33,8 @@ export function computeScenePlacements(scenes: Scene[]): Placement[] {
   return placements;
 }
 
-function FadeScene({
-  scene,
-  Component,
-  overlapIn,
-  overlapOut,
-}: {
-  scene: Scene;
-  Component: ComponentType<Record<string, unknown>>;
-  overlapIn: number;
-  overlapOut: number;
-}) {
-  const frame = useCurrentFrame();
-  const duration = scene.durationInFrames;
-
-  let opacity = 1;
-  if (overlapIn > 0) {
-    opacity *= interpolate(frame, [0, overlapIn], [0, 1], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
-  }
-  if (overlapOut > 0) {
-    opacity *= interpolate(
-      frame,
-      [duration - overlapOut, duration],
-      [1, 0],
-      { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
-    );
-  }
-
-  return (
-    <AbsoluteFill style={{ opacity }}>
-      <Component {...(scene.props ?? {})} />
-    </AbsoluteFill>
-  );
-}
-
 /**
- * Play scenes in order with optional fade overlaps and gaps between them.
+ * Play scenes in order on one track. Fades and wipes belong in the scene components.
  */
 export function TransitionSeries({
   scenes,
@@ -91,22 +47,13 @@ export function TransitionSeries({
 
   return (
     <AbsoluteFill>
-      {placements.map((placement, index) => {
+      {placements.map((placement) => {
         const Comp = components[placement.scene.component];
         if (!Comp) {
           throw new Error(
             `Missing component for path "${placement.scene.component}" (scene ${placement.scene.id})`,
           );
         }
-        const overlapIn =
-          placement.scene.transitionIn?.type === "fade"
-            ? (placement.scene.transitionIn.durationInFrames ?? 0)
-            : 0;
-        const next = scenes[index + 1];
-        const overlapOut =
-          next?.transitionIn?.type === "fade"
-            ? sequentialOverlapFrames({ scene: next, index: index + 1 })
-            : 0;
 
         return (
           <Sequence
@@ -116,12 +63,9 @@ export function TransitionSeries({
             name={placement.scene.title}
           >
             <SceneProvider sceneId={placement.scene.id}>
-              <FadeScene
-                scene={placement.scene}
-                Component={Comp}
-                overlapIn={overlapIn}
-                overlapOut={overlapOut}
-              />
+              <AbsoluteFill>
+                <Comp {...(placement.scene.props ?? {})} />
+              </AbsoluteFill>
             </SceneProvider>
           </Sequence>
         );

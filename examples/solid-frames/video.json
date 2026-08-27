@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "solid-frames",
   "title": "Solid Frames",
   "fps": 30,
@@ -23,8 +23,7 @@
           "visualType": "component",
           "component": "src/scenes/Solid.tsx",
           "props": {},
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         }
       ]
     }

@@ -684,7 +684,7 @@ structure guide first):
      "narration": "You hit Tab. Then Tab again. Nothing highlights.",
      "keyPoint": "The one idea this scene must land - nameable in ~1 second",
      "onScreenText": "",
-     "transitionIn": { "type": "fade", "durationInFrames": 15 },
+     "crossfadeNotes": "Optional: place on a higher track with gapBeforeFrames; fade in-scene over ~15f",
      "visualNotes": "Free-text plan for what the scene shows - just planning notes, not a rigid prompt contract. The component code is the real spec once Gate 6 starts. List kit ids in kitComponents whenever remotion/shared covers the chrome."
    }
    ```
@@ -706,7 +706,6 @@ structure guide first):
        "mute": false,
        "approvedAt": "Gate 3"
      },
-     "transitionIn": null,
      "visualNotes": "User-supplied clip, used as-is; trimmed to fit if longer than needed."
    }
    ```
@@ -725,7 +724,7 @@ structure guide first):
        "mute": true,
        "approvedAt": "Gate 3"
      },
-     "transitionIn": { "type": "fade", "durationInFrames": 15 },
+     "crossfadeNotes": "Optional: higher track + in-scene fade if this beat dissolves in",
      "visualNotes": "Narration plays over the muted clip."
    }
    ```
@@ -1203,7 +1202,7 @@ which are genuinely re-shoot/re-generate operations:
 | Change requested | What to do |
 |---|---|
 | "Make the error bigger" / "less clutter" / "different motion" (component scene) | Edit that scene's `.tsx` directly. Re-render a still to confirm, then re-run the Gate 7 render command. No other scene is touched. |
-| "Match the previous scene more" / "hard cut instead" | Adjust that scene's `transitionIn` in `scenes.json` and the corresponding `<TransitionSeries.Transition>` in `Composition.tsx`. |
+| "Match the previous scene more" / "hard cut instead" | Adjust overlapping track placement and in-scene fade length in `video.json`; update the scene component opacity envelope. |
 | Wording of the narration changes | Update `script.md` + the affected scene's `narration` in `scenes.json`, then **redo Gate 5** (re-synthesize, since timings shift), then re-render. |
 | A shared/recurring element or the background needs to change | Edit the one component in `shared/` - every scene using it updates automatically. Never patch the same visual separately in each scene file. |
 | Voice-over only (same script) | Redo Gate 5 with the new voice/model, keep scene components as-is, re-render. |

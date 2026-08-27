@@ -187,14 +187,12 @@ per track:
   cursor = 0
   for each scene:
     cursor += gapBeforeFrames
-    overlap = (gapBeforeFrames === 0 && not first) ? transitionIn.duration : 0
-    cursor -= overlap
     scene starts at cursor
     cursor += durationInFrames
 totalFrames = max(trackLengths)
 ```
 
-- Reject configs where a transition is longer than either adjacent scene.
+- Reject same-lane clip overlap in the studio timeline editor.
 - Fail fast if referenced audio/image/video files are missing.
 
 ## 9. Renderer technical requirements
@@ -258,7 +256,7 @@ Document install steps for macOS (`brew install ffmpeg`) and Linux CI images.
 2. **Schema + validate** - video.json, duration math, asset checks.
 3. **Renderer MVP** - sequential then concurrent stills/frames + FFmpeg silent video.
 4. **Audio mux** - narration + lead-in + bed envelopes.
-5. **Transitions** - fade overlap.
+5. **Blends** - overlapping tracks; in-scene fades and wipes (`fade-overlap`, `circle-wipe`).
 6. **CLI polish** - multi-format, concurrency flags, examples aligned to explainer skill field names.
 7. **Media primitives** - robust image/font/video waiting; off-thread video if needed.
 

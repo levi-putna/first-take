@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "motion-lab",
   "title": "Motion Lab",
   "fps": 30,
@@ -26,20 +26,7 @@
             "line1": "Motion should be frame-driven.",
             "line2": "Never wall-clock CSS animation."
           },
-          "durationInFrames": 120,
-          "transitionIn": null
-        },
-        {
-          "id": "02",
-          "title": "Floating boxes",
-          "visualType": "component",
-          "component": "src/scenes/02-FloatingBoxes.tsx",
-          "props": {},
-          "durationInFrames": 120,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 12
-          }
+          "durationInFrames": 120
         },
         {
           "id": "03",
@@ -48,10 +35,40 @@
           "component": "src/scenes/03-PulseCircle.tsx",
           "props": {},
           "durationInFrames": 90,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 12
-          }
+          "gapBeforeFrames": 96
+        },
+        {
+          "id": "05",
+          "title": "Stagger list",
+          "visualType": "component",
+          "component": "src/scenes/05-StaggerList.tsx",
+          "props": {},
+          "durationInFrames": 105,
+          "gapBeforeFrames": 66
+        },
+        {
+          "id": "07",
+          "title": "Progress fill",
+          "visualType": "component",
+          "component": "src/scenes/07-ProgressFill.tsx",
+          "props": {},
+          "durationInFrames": 90,
+          "gapBeforeFrames": 66
+        }
+      ]
+    },
+    {
+      "id": "overlay",
+      "title": "Overlay",
+      "scenes": [
+        {
+          "id": "02",
+          "title": "Floating boxes",
+          "visualType": "component",
+          "component": "src/scenes/02-FloatingBoxes.tsx",
+          "props": {},
+          "durationInFrames": 120,
+          "gapBeforeFrames": 108
         },
         {
           "id": "04",
@@ -62,22 +79,7 @@
             "headline": "Slide in from the left"
           },
           "durationInFrames": 90,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 12
-          }
-        },
-        {
-          "id": "05",
-          "title": "Stagger list",
-          "visualType": "component",
-          "component": "src/scenes/05-StaggerList.tsx",
-          "props": {},
-          "durationInFrames": 105,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 12
-          }
+          "gapBeforeFrames": 66
         },
         {
           "id": "06",
@@ -86,22 +88,7 @@
           "component": "src/scenes/06-SpringBounce.tsx",
           "props": {},
           "durationInFrames": 90,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 12
-          }
-        },
-        {
-          "id": "07",
-          "title": "Progress fill",
-          "visualType": "component",
-          "component": "src/scenes/07-ProgressFill.tsx",
-          "props": {},
-          "durationInFrames": 90,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 12
-          }
+          "gapBeforeFrames": 81
         },
         {
           "id": "08",
@@ -110,10 +97,7 @@
           "component": "src/scenes/08-RotateCounter.tsx",
           "props": {},
           "durationInFrames": 90,
-          "transitionIn": {
-            "type": "fade",
-            "durationInFrames": 12
-          }
+          "gapBeforeFrames": 66
         }
       ]
     }

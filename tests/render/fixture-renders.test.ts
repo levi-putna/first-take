@@ -27,7 +27,7 @@ describe("short fixture renders", () => {
   );
 
   it(
-    "fade-overlap silent MP4 duration matches overlap math",
+    "fade-overlap silent MP4 duration matches overlapping tracks",
     async () => {
       const fixtureDir = fixtureRoot({
         repoRoot: REPO_ROOT,

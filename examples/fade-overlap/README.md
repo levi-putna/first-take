@@ -1,6 +1,6 @@
 # Fade Overlap
 
-Two solid colour scenes with a 10-frame crossfade. Sequential `transitionIn` shortens the track: 30 + 30 − 10 = 50 frames.
+Two solid colour scenes with a 10-frame crossfade on **overlapping tracks**. Red holds on the main lane; blue sits on a higher track with `gapBeforeFrames: 20` and fades in over 10 frames. Total duration stays **50 frames**.
 
 Catalogue: [examples/README.md](../README.md).
 
@@ -14,7 +14,8 @@ Catalogue: [examples/README.md](../README.md).
 
 | Track | Scenes |
 |-------|--------|
-| Main | Red (30f) then Blue (30f, fade 10f) |
+| Main | Red (30f) |
+| Overlay | Blue (30f, gap 20f, in-scene fade 10f) |
 
 ## Commands
 

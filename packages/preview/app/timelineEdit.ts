@@ -1,7 +1,5 @@
 import {
   scenePlacements,
-  sequentialOverlapFrames,
-  validateTransitionLengths,
   type Scene,
   type Track,
   type VideoManifest,
@@ -22,10 +20,8 @@ const DEFAULT_SNAP_THRESHOLD = 6;
 export function trackPlacements({ track }: { track: Track }): PlacedClip[] {
   const clips: PlacedClip[] = [];
   let cursor = 0;
-  for (let i = 0; i < track.scenes.length; i++) {
-    const scene = track.scenes[i];
+  for (const scene of track.scenes) {
     cursor += scene.gapBeforeFrames ?? 0;
-    cursor -= sequentialOverlapFrames({ scene, index: i });
     clips.push({
       sceneId: scene.id,
       scene,
@@ -126,79 +122,34 @@ export function intervalsOverlap({
 }
 
 /**
- * Allowed sequential fade overlap when `later` immediately follows `earlier`.
- */
-export function allowedFadeOverlap({
-  earlier,
-  later,
-}: {
-  earlier: PlacedClip;
-  later: { from: number; scene: Scene };
-}): number {
-  const prevEnd = earlier.from + earlier.durationInFrames;
-  if (later.from >= prevEnd) return 0;
-  return later.scene.transitionIn?.durationInFrames ?? 0;
-}
-
-/**
- * True when a candidate clip can sit at `from` without forbidden overlap.
+ * True when a candidate clip can sit at `from` without overlapping another clip.
  */
 export function canPlaceClip({
   clips,
   sceneId,
   from,
   durationInFrames,
-  scene,
 }: {
   clips: PlacedClip[];
   sceneId: string;
   from: number;
   durationInFrames: number;
-  scene: Scene;
+  scene?: Scene;
 }): boolean {
-  const candidate: PlacedClip = {
-    sceneId,
-    scene,
-    from,
-    durationInFrames,
-  };
-  const all = [
-    ...clips.filter((clip) => clip.sceneId !== sceneId),
-    candidate,
-  ].sort((a, b) => a.from - b.from || a.sceneId.localeCompare(b.sceneId));
-
-  for (let i = 0; i < all.length; i++) {
-    const a = all[i];
-    const aEnd = a.from + a.durationInFrames;
-    for (let j = i + 1; j < all.length; j++) {
-      const b = all[j];
-      const bEnd = b.from + b.durationInFrames;
-      if (
-        !intervalsOverlap({
-          aStart: a.from,
-          aEnd,
-          bStart: b.from,
-          bEnd,
-        })
-      ) {
-        continue;
-      }
-
-      if (j === i + 1) {
-        const fade = allowedFadeOverlap({
-          earlier: a,
-          later: { from: b.from, scene: b.scene },
-        });
-        const overlap = Math.min(aEnd, bEnd) - b.from;
-        if (fade > 0 && overlap <= fade) {
-          continue;
-        }
-      }
-
+  const candidateEnd = from + durationInFrames;
+  for (const clip of clips) {
+    if (clip.sceneId === sceneId) continue;
+    if (
+      intervalsOverlap({
+        aStart: from,
+        aEnd: candidateEnd,
+        bStart: clip.from,
+        bEnd: clip.from + clip.durationInFrames,
+      })
+    ) {
       return false;
     }
   }
-
   return true;
 }
 
@@ -210,13 +161,12 @@ export function nearestValidStart({
   sceneId,
   desiredFrom,
   durationInFrames,
-  scene,
 }: {
   clips: PlacedClip[];
   sceneId: string;
   desiredFrom: number;
   durationInFrames: number;
-  scene: Scene;
+  scene?: Scene;
 }): number {
   const start = Math.max(0, Math.round(desiredFrom));
   if (
@@ -225,7 +175,6 @@ export function nearestValidStart({
       sceneId,
       from: start,
       durationInFrames,
-      scene,
     })
   ) {
     return start;
@@ -240,10 +189,6 @@ export function nearestValidStart({
     const end = clip.from + clip.durationInFrames;
     candidates.add(end);
     candidates.add(Math.max(0, clip.from - durationInFrames));
-    const fade = clip.scene.transitionIn?.durationInFrames ?? 0;
-    if (fade > 0) {
-      candidates.add(Math.max(0, end - fade));
-    }
   }
 
   let best = start;
@@ -255,7 +200,6 @@ export function nearestValidStart({
         sceneId,
         from: candidate,
         durationInFrames,
-        scene,
       })
     ) {
       continue;
@@ -294,46 +238,17 @@ export function scenesFromStartFrames({
     const prev = sorted[index - 1];
     const prevEnd = prev.from + prev.scene.durationInFrames;
     const leadGap = from - prevEnd;
-    const actualOverlap = prevEnd - from;
 
-    if (leadGap > 0) {
-      return {
-        ...scene,
-        gapBeforeFrames: leadGap,
-      };
+    if (leadGap < 0) {
+      throw new Error(
+        `Scene "${scene.id}" overlaps "${prev.scene.id}" on the same track`,
+      );
     }
 
-    if (leadGap === 0 && (scene.gapBeforeFrames ?? 0) > 0) {
-      return {
-        ...scene,
-        gapBeforeFrames: 0,
-        transitionIn: null,
-      };
-    }
-
-    const overlap = scene.transitionIn?.durationInFrames ?? 0;
-    if (overlap > 0 && actualOverlap > 0 && actualOverlap <= overlap) {
-      return {
-        ...scene,
-        gapBeforeFrames: 0,
-        transitionIn: {
-          ...scene.transitionIn,
-          durationInFrames: actualOverlap,
-        },
-      };
-    }
-
-    if (leadGap === 0) {
-      return {
-        ...scene,
-        gapBeforeFrames: 0,
-        ...(actualOverlap === 0 ? { transitionIn: null } : {}),
-      };
-    }
-
-    throw new Error(
-      `Scene "${scene.id}" overlaps "${prev.scene.id}" without a legal fade`,
-    );
+    return {
+      ...scene,
+      gapBeforeFrames: leadGap,
+    };
   });
 }
 
@@ -425,7 +340,6 @@ export function moveScene({
     sceneId,
     desiredFrom: snapped,
     durationInFrames: scene.durationInFrames,
-    scene,
   });
 
   const targets = [
@@ -497,25 +411,10 @@ export function trimSceneEnd({
   let maxDuration = requestedDuration;
 
   if (next) {
-    const fade = allowedFadeOverlap({
-      earlier: { ...clip, durationInFrames: requestedDuration },
-      later: { from: next.from, scene: next.scene },
-    });
-    maxDuration = Math.min(maxDuration, next.from + fade - clip.from);
+    maxDuration = Math.min(maxDuration, next.from - clip.from);
   }
 
-  let minDuration = 1;
-  if (next && (next.scene.gapBeforeFrames ?? 0) === 0) {
-    const fade = next.scene.transitionIn?.durationInFrames ?? 0;
-    if (fade > 0 && requestedDuration > next.from - clip.from) {
-      minDuration = fade + 1;
-    }
-  }
-
-  const duration = Math.max(
-    minDuration,
-    Math.min(requestedDuration, maxDuration),
-  );
+  const duration = Math.max(1, Math.min(requestedDuration, maxDuration));
 
   const updatedScenes = track.scenes.map((scene) =>
     scene.id === sceneId ? { ...scene, durationInFrames: duration } : scene,
@@ -533,12 +432,7 @@ export function trimSceneEnd({
     trackIndex === location.trackIndex ? rebuiltTrack : entry,
   );
 
-  const nextManifest = { ...manifest, tracks };
-  const errors = validateTransitionLengths(nextManifest);
-  if (errors.length > 0) {
-    throw new Error(errors[0]);
-  }
-  return nextManifest;
+  return { ...manifest, tracks };
 }
 
 /**

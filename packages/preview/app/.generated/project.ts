@@ -1,82 +1,67 @@
 import type { VideoManifest } from "@levi-putna/storyboard-schema";
-import Comp0 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Lead.tsx";
-import Comp1 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Content.tsx";
-import Comp2 from "/Users/leviputna/workspace/storyboard/examples/audio-mix/src/scenes/Mix.tsx";
+import Comp0 from "/Users/leviputna/workspace/storyboard/examples/circle-wipe/src/scenes/01-TealCircle.tsx";
+import Comp1 from "/Users/leviputna/workspace/storyboard/examples/circle-wipe/src/scenes/02-AmberSquare.tsx";
+import Comp2 from "/Users/leviputna/workspace/storyboard/examples/circle-wipe/src/scenes/Wipe.tsx";
 
 export const manifest = {
-  "schemaVersion": 2,
-  "slug": "audio-mix",
-  "title": "Audio Mix",
+  "schemaVersion": 3,
+  "slug": "circle-wipe",
+  "title": "Circle Wipe",
   "fps": 30,
   "formats": [
     {
       "id": "16x9",
       "aspectRatio": "16:9",
-      "width": 640,
-      "height": 360
+      "width": 1280,
+      "height": 720
     }
   ],
   "assetsRoot": ".",
   "tracks": [
     {
-      "id": "visual",
-      "title": "Visual",
+      "id": "main",
+      "title": "Main",
       "scenes": [
         {
-          "id": "lead",
-          "title": "Lead",
+          "id": "01",
+          "title": "Teal circle",
           "visualType": "component",
-          "component": "src/scenes/Lead.tsx",
-          "props": {
-            "jingle": "assets/audio/intro-jingle.mp3",
-            "jingleVolume": 0.55,
-            "jingleFadeOutSeconds": 0.3
-          },
-          "durationInFrames": 30,
-          "gapBeforeFrames": 0,
-          "transitionIn": null
+          "component": "src/scenes/01-TealCircle.tsx",
+          "props": {},
+          "durationInFrames": 180,
+          "gapBeforeFrames": 0
         },
         {
-          "id": "content",
-          "title": "Content",
+          "id": "02",
+          "title": "Amber square",
           "visualType": "component",
-          "component": "src/scenes/Content.tsx",
+          "component": "src/scenes/02-AmberSquare.tsx",
           "props": {},
-          "durationInFrames": 60,
-          "gapBeforeFrames": 0,
-          "transitionIn": null
+          "durationInFrames": 180,
+          "gapBeforeFrames": 0
         }
       ]
     },
     {
-      "id": "audio",
-      "title": "Audio",
+      "id": "wipe",
+      "title": "Wipe",
       "scenes": [
         {
-          "id": "mix",
-          "title": "Mix",
+          "id": "wipe",
+          "title": "Circle wipe",
           "visualType": "component",
-          "component": "src/scenes/Mix.tsx",
-          "props": {
-            "bed": "assets/audio/bed-loop.mp3",
-            "narration": "assets/audio/narration.mp3",
-            "voStartFrame": 30,
-            "bedVolumeUnderVo": 0.12,
-            "bedVolumeLeadIn": 0.08,
-            "bedFadeInSeconds": 0.2,
-            "bedFadeOutSeconds": 0.3
-          },
+          "component": "src/scenes/Wipe.tsx",
+          "props": {},
           "durationInFrames": 90,
-          "gapBeforeFrames": 0,
-          "transitionIn": null
+          "gapBeforeFrames": 135
         }
       ]
     }
   ]
 } as VideoManifest;
 export const components = {
-  "src/scenes/Lead.tsx": Comp0,
-  "src/scenes/Content.tsx": Comp1,
-  "src/scenes/Mix.tsx": Comp2
+  "src/scenes/01-TealCircle.tsx": Comp0,
+  "src/scenes/02-AmberSquare.tsx": Comp1,
+  "src/scenes/Wipe.tsx": Comp2
 };
-export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/audio-mix/video.json";
+export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/circle-wipe/video.json";

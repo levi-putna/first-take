@@ -11,16 +11,6 @@ export const formatSchema = z.object({
 });
 
 /**
- * Fade (or future) transition into a scene.
- */
-export const transitionInSchema = z
-  .object({
-    type: z.literal("fade"),
-    durationInFrames: z.number().int().positive(),
-  })
-  .nullable();
-
-/**
  * One timeline beat: a React component scene with timing and props.
  */
 export const sceneSchema = z.object({
@@ -34,7 +24,6 @@ export const sceneSchema = z.object({
   durationInFrames: z.number().int().positive(),
   /** Empty frames on this track before the scene starts. */
   gapBeforeFrames: z.number().int().nonnegative().default(0),
-  transitionIn: transitionInSchema.optional(),
 });
 
 /**
@@ -49,10 +38,10 @@ export const trackSchema = z.object({
 });
 
 /**
- * Root video.json manifest (schemaVersion 2).
+ * Root video.json manifest (schemaVersion 3).
  */
 export const videoManifestSchema = z.object({
-  schemaVersion: z.literal(2),
+  schemaVersion: z.literal(3),
   slug: z.string().min(1),
   title: z.string().min(1),
   fps: z.number().positive().default(30),
@@ -62,7 +51,6 @@ export const videoManifestSchema = z.object({
 });
 
 export type Format = z.infer<typeof formatSchema>;
-export type TransitionIn = z.infer<typeof transitionInSchema>;
 export type Scene = z.infer<typeof sceneSchema>;
 export type Track = z.infer<typeof trackSchema>;
 export type VideoManifest = z.infer<typeof videoManifestSchema>;

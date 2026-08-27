@@ -79,7 +79,7 @@ npx @levi-putna/storyboard preview video.json
 npx @levi-putna/storyboard render video.json
 ```
 
-`create` writes `video.json` (`schemaVersion` 2, `tracks[]`), two scene components, `package.json`, and `assets/audio/`. Pass `--with-audio` for a looping bed track with in-scene `<Audio>`; `--force` overwrites a non-empty folder.
+`create` writes `video.json` (`schemaVersion` 3, `tracks[]`), two scene components on overlapping visual tracks, `package.json`, and `assets/audio/`. Pass `--with-audio` for a looping bed track with in-scene `<Audio>`; `--force` overwrites a non-empty folder.
 
 Rendered files land in `out/` (for example `out/my-feature-16x9.mp4`). Use `--format=16x9` and `--out=out/hello.mp4` to pin a single format and path.
 
@@ -187,7 +187,8 @@ npx @levi-putna/storyboard render examples/hello-explainer/video.json
 | [`motion-basics`](./examples/motion-basics/README.md) | Frame-driven `interpolate` and `spring` on a simple block |
 | [`motion-lab`](./examples/motion-lab/README.md) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |
 | [`solid-frames`](./examples/solid-frames/README.md) | Solid colour hold (deterministic paint fixture) |
-| [`fade-overlap`](./examples/fade-overlap/README.md) | Two scenes with a 10-frame fade; total duration is sum minus overlap |
+| [`fade-overlap`](./examples/fade-overlap/README.md) | Two tracks with a 10-frame in-scene crossfade (50 frames total) |
+| [`circle-wipe`](./examples/circle-wipe/README.md) | Iris wipe on a higher track between two colour holds |
 | [`multi-format`](./examples/multi-format/README.md) | Same composition rendered in 16:9 and 9:16 |
 | [`audio-mix`](./examples/audio-mix/README.md) | Visual track plus in-scene jingle / looping bed / narration |
 | [`audio-volume-fade`](./examples/audio-volume-fade/README.md) | Looped bed with a V-shaped volume envelope (fade out, then back in) |

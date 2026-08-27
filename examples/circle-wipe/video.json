@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 3,
+  "slug": "circle-wipe",
+  "title": "Circle Wipe",
+  "fps": 30,
+  "formats": [
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "assetsRoot": ".",
+  "tracks": [
+    {
+      "id": "main",
+      "title": "Main",
+      "scenes": [
+        {
+          "id": "01",
+          "title": "Teal circle",
+          "visualType": "component",
+          "component": "src/scenes/01-TealCircle.tsx",
+          "props": {},
+          "durationInFrames": 180
+        },
+        {
+          "id": "02",
+          "title": "Amber square",
+          "visualType": "component",
+          "component": "src/scenes/02-AmberSquare.tsx",
+          "props": {},
+          "durationInFrames": 180
+        }
+      ]
+    },
+    {
+      "id": "wipe",
+      "title": "Wipe",
+      "scenes": [
+        {
+          "id": "wipe",
+          "title": "Circle wipe",
+          "visualType": "component",
+          "component": "src/scenes/Wipe.tsx",
+          "props": {},
+          "durationInFrames": 90,
+          "gapBeforeFrames": 135
+        }
+      ]
+    }
+  ]
+}

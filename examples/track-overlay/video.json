@@ -1,10 +1,15 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "track-overlay",
   "title": "Track Overlay",
   "fps": 30,
   "formats": [
-    { "id": "16x9", "aspectRatio": "16:9", "width": 1280, "height": 720 }
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1280,
+      "height": 720
+    }
   ],
   "assetsRoot": ".",
   "tracks": [
@@ -20,8 +25,7 @@
           "props": {
             "label": "Full-length background"
           },
-          "durationInFrames": 240,
-          "transitionIn": null
+          "durationInFrames": 240
         }
       ]
     },
@@ -39,8 +43,7 @@
             "detail": "Fades in over empty track after a gap."
           },
           "durationInFrames": 60,
-          "gapBeforeFrames": 20,
-          "transitionIn": { "type": "fade", "durationInFrames": 10 }
+          "gapBeforeFrames": 20
         },
         {
           "id": "title-b",
@@ -52,8 +55,7 @@
             "detail": "Another gap, then this overlay."
           },
           "durationInFrames": 80,
-          "gapBeforeFrames": 40,
-          "transitionIn": { "type": "fade", "durationInFrames": 10 }
+          "gapBeforeFrames": 40
         }
       ]
     },
@@ -70,8 +72,7 @@
             "label": "LIVE"
           },
           "durationInFrames": 120,
-          "gapBeforeFrames": 50,
-          "transitionIn": { "type": "fade", "durationInFrames": 8 }
+          "gapBeforeFrames": 50
         }
       ]
     }

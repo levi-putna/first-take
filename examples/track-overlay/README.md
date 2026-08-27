@@ -2,7 +2,7 @@
 
 Stacked tracks with gaps. A long opaque background sits on the bottom. Overlay scenes skip time with `gapBeforeFrames` (empty track, not a spacer clip). A third track shows z-order with a corner badge that overlaps both callouts.
 
-A fade after a gap is a fade-in from empty: it does **not** shorten the track.
+Overlay scenes fade in via in-scene opacity after a gap on their track.
 
 Catalogue: [examples/README.md](../README.md).
 

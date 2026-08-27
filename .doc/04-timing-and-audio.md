@@ -32,8 +32,7 @@ Use a consistent `fps` (default **30**). Author motion in seconds, then convert.
 ## 3. Track duration
 
 See [06-video-json-schema.md](./06-video-json-schema.md) §5. Composition length
-is `max(track lengths)`. Sequential fades (`gapBeforeFrames === 0`) shorten
-that track. A fade after a gap is a fade-in from empty and does not.
+is `max(track lengths)`. Overlapping blends use multiple tracks; same-lane overlap is forbidden.
 
 ## 4. Typical explainer mix (as scenes)
 
@@ -43,7 +42,7 @@ Map the old series mix onto components:
 Track visual
   scene lead   [0, leadFrames)     <Audio jingle> fade out as VO starts
   scene hook   …
-  scene fix    … with sequential fade
+  scene fix    … on a higher track with in-scene fade
 
 Track audio
   scene mix    [0, total)          <Audio loop bed> + <Audio narration startFromFrame={leadFrames}>
@@ -93,7 +92,7 @@ change. Never fork timings per aspect ratio.
 
 - [ ] Audio paths live in props; `<Audio>` / `<Video>` live in the scene component
 - [ ] Bed length is an explicit `durationInFrames` on that scene
-- [ ] Sequential fades only when `gapBeforeFrames === 0`
+- [ ] Overlapping blends use multiple tracks; same-lane overlap is forbidden
 - [ ] Clip audio muted under VO by default
 - [ ] Same timeline for every format
 - [ ] `validate` sees the audio files (or you pass `--no-assets`)

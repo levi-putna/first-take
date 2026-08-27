@@ -1,5 +1,5 @@
 import { interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
-import { SceneShell } from "../components/SceneShell";
+import { SceneShell, useCrossfadeOpacity } from "../components/SceneShell";
 
 /**
  * Two boxes drifting on gentle Lissajous-style paths.
@@ -7,6 +7,7 @@ import { SceneShell } from "../components/SceneShell";
 export default function FloatingBoxesScene() {
   const frame = useCurrentFrame();
   const { width, height, fps } = useVideoConfig();
+  const layerOpacity = useCrossfadeOpacity();
   const t = frame / fps;
 
   const boxSize = Math.round(Math.min(width, height) * 0.14);
@@ -34,7 +35,7 @@ export default function FloatingBoxesScene() {
   });
 
   return (
-    <SceneShell contentStyle={{ position: "relative" }}>
+    <SceneShell contentStyle={{ position: "relative" }} opacity={layerOpacity}>
       {/* Scene label */}
       <div
         style={{

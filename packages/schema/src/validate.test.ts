@@ -13,7 +13,7 @@ import {
 } from "./index.js";
 
 const base = {
-  schemaVersion: 2 as const,
+  schemaVersion: 3 as const,
   slug: "test",
   title: "Test",
   fps: 30,
@@ -28,7 +28,6 @@ const base = {
           visualType: "component" as const,
           component: "scenes/01.tsx",
           durationInFrames: 90,
-          transitionIn: null,
         },
         {
           id: "02",
@@ -36,7 +35,6 @@ const base = {
           visualType: "component" as const,
           component: "scenes/02.tsx",
           durationInFrames: 120,
-          transitionIn: { type: "fade" as const, durationInFrames: 15 },
         },
       ],
     },
@@ -44,10 +42,9 @@ const base = {
 };
 
 describe("sceneStartFrames", () => {
-  it("accounts for fade overlaps on a single track", () => {
+  it("lists scene start frames on a single track", () => {
     const manifest = parseVideoManifest(base);
-    // scene1 @ 0; scene2 @ 90-15 = 75
-    expect(sceneStartFrames(manifest)).toEqual([0, 75]);
+    expect(sceneStartFrames(manifest)).toEqual([0, 90]);
   });
 });
 
@@ -152,10 +149,53 @@ describe("validateVideoFile", () => {
     const manifestPath = path.join(dir, "video.json");
     fs.writeFileSync(
       manifestPath,
-      JSON.stringify({ schemaVersion: 2, slug: "x" }),
+      JSON.stringify({ schemaVersion: 3, slug: "x" }),
     );
     const result = validateVideoFile({ manifestPath, checkAssets: false });
     expect(result.ok).toBe(false);
+  });
+
+  it("rejects schemaVersion 2 manifests", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-v2-"));
+    const manifestPath = path.join(dir, "video.json");
+    fs.writeFileSync(
+      manifestPath,
+      JSON.stringify({ ...base, schemaVersion: 2 }),
+    );
+    const result = validateVideoFile({ manifestPath, checkAssets: false });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.includes("schemaVersion 2"))).toBe(
+        true,
+      );
+    }
+  });
+
+  it("rejects transitionIn on scenes", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-trans-"));
+    const manifestPath = path.join(dir, "video.json");
+    fs.writeFileSync(
+      manifestPath,
+      JSON.stringify({
+        ...base,
+        tracks: [
+          {
+            id: "main",
+            scenes: [
+              {
+                ...base.tracks[0].scenes[0],
+                transitionIn: { type: "fade", durationInFrames: 10 },
+              },
+            ],
+          },
+        ],
+      }),
+    );
+    const result = validateVideoFile({ manifestPath, checkAssets: false });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.some((e) => e.includes("transitionIn"))).toBe(true);
+    }
   });
 
   it("accepts empty tracks when another track has scenes", () => {

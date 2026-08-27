@@ -17,7 +17,8 @@ yarn storyboard render examples/<slug>/video.json --format=16x9
 | [motion-basics](./motion-basics/README.md) | Frame-driven `interpolate` and `spring` on a simple block |
 | [motion-lab](./motion-lab/README.md) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |
 | [solid-frames](./solid-frames/README.md) | Solid colour hold (deterministic paint fixture) |
-| [fade-overlap](./fade-overlap/README.md) | Two scenes with a 10-frame fade; total duration is sum minus overlap |
+| [fade-overlap](./fade-overlap/README.md) | Two tracks with a 10-frame in-scene crossfade; total duration 50 frames |
+| [circle-wipe](./circle-wipe/README.md) | Iris wipe on a higher track between two colour holds |
 | [multi-format](./multi-format/README.md) | Same composition rendered in 16:9 and 9:16 |
 | [audio-mix](./audio-mix/README.md) | Visual track plus in-scene jingle / looping bed / narration |
 | [audio-volume-fade](./audio-volume-fade/README.md) | Looped bed with a V-shaped volume envelope (fade out, then back in) |

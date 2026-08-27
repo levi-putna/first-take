@@ -100,9 +100,13 @@ describe("scaffoldVideoProject", () => {
         scenes: Array<{ props?: { src?: string } }>;
       }>;
     };
-    expect(raw.schemaVersion).toBe(2);
-    expect(raw.tracks.map((track) => track.id)).toEqual(["visual", "bed"]);
-    expect(raw.tracks[1]?.scenes[0]?.props?.src).toBe(
+    expect(raw.schemaVersion).toBe(3);
+    expect(raw.tracks.map((track) => track.id)).toEqual([
+      "visual",
+      "visual-b",
+      "bed",
+    ]);
+    expect(raw.tracks[2]?.scenes[0]?.props?.src).toBe(
       "assets/audio/bed-loop.mp3",
     );
   });

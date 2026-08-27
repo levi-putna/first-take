@@ -195,7 +195,7 @@ Multi-beat motion inside one scene:
 </Sequence>
 ```
 
-Scene-to-scene fades belong in `video.json` `transitionIn`, not ad hoc inside every scene, unless you are building a custom in-component transition.
+Cross-track blends (fades, wipes) use **overlapping tracks** and **in-scene** opacity or masks via `useCurrentFrame()` / `interpolate`. Same-lane overlap is not allowed. See [`fade-overlap`](./examples/fade-overlap/README.md) and [`circle-wipe`](./examples/circle-wipe/README.md).
 
 ### Media (`@levi-putna/storyboard-media`)
 
@@ -234,13 +234,13 @@ Double-click a timeline clip (or use the Back control to restore the full video)
 
 ## Using components from `video.json`
 
-Schema v2. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-schema.md).
+Schema v3. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-schema.md).
 
 ### Minimal silent video
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "my-video",
   "title": "My Video",
   "fps": 30,
@@ -257,8 +257,7 @@ Schema v2. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-
           "visualType": "component",
           "component": "src/scenes/01-Hook.tsx",
           "props": { "headline": "You hit Tab. Nothing highlights." },
-          "durationInFrames": 90,
-          "transitionIn": null
+          "durationInFrames": 90
         }
       ]
     }
@@ -275,14 +274,8 @@ Schema v2. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-
 | `props` | Arbitrary JSON. Storyboard does **not** type-check props. Audio paths here are validated |
 | `durationInFrames` | Local length. For narrated scenes, derive from speech (below) |
 | `gapBeforeFrames` | Empty time on this track before the clip (default 0) |
-| `transitionIn` | First scene or after a gap: fade-in from empty. Sequential fade only when `gapBeforeFrames === 0` |
 
-Fade overlap rules (enforced by `validate`):
-
-- Fade length `t` must be **strictly less than** the previous scene’s `durationInFrames`
-- And **strictly less than** this scene’s `durationInFrames`
-
-All formats share fps, tracks, and audio. Only layout that reads `useVideoConfig()` should differ.
+Blends between scenes: place clips on **different tracks** so they overlap in time, then fade or wipe inside the scene component.
 
 ### Duration math
 
@@ -291,8 +284,6 @@ per track:
   cursor = 0
   for each scene:
     cursor += gapBeforeFrames
-    overlap = (gapBeforeFrames === 0 && not first) ? transitionIn.duration : 0
-    cursor -= overlap
     scene starts at cursor
     cursor += durationInFrames
 totalFrames = max(trackLengths)
@@ -346,7 +337,8 @@ Validate does **not** execute components or type-check props. Broken motion only
 | First Take `TitleCard` kit | [`examples/first-take-kit`](./examples/first-take-kit/README.md) |
 | Frame-driven motion catalogue | [`examples/motion-lab`](./examples/motion-lab/README.md) |
 | Smallest interpolate + spring | [`examples/motion-basics`](./examples/motion-basics/README.md) |
-| Fade overlap math | [`examples/fade-overlap`](./examples/fade-overlap/README.md) |
+| Cross-track fade | [`examples/fade-overlap`](./examples/fade-overlap/README.md) |
+| Circle iris wipe | [`examples/circle-wipe`](./examples/circle-wipe/README.md) |
 | 16:9 + 9:16 | [`examples/multi-format`](./examples/multi-format/README.md) |
 | Series jingle / bed / narration as scene Audio | [`examples/audio-mix`](./examples/audio-mix/README.md) |
 | Frame-varying `Audio` volume | [`examples/audio-volume-fade`](./examples/audio-volume-fade/README.md) |
@@ -374,7 +366,7 @@ Before presenting a scene or render:
 - [ ] Multi-format layout uses `width` / `height` from `useVideoConfig()`
 - [ ] Media uses `@levi-putna/storyboard-media` (`staticFile`, `Img`, `Audio`, `Video`)
 - [ ] No Remotion imports; no hard-coded scene index or sibling scenes
-- [ ] `video.json` uses `tracks[]`; scene ids unique across tracks; fade lengths are legal
+- [ ] `video.json` uses `schemaVersion` 3 and `tracks[]`; scene ids unique across tracks; blends use overlapping tracks + in-scene motion
 - [ ] Narrated durations derived from alignment + lead-out, not guessed
 - [ ] `validate` passes; stills captured at start / mid / end look correct
 - [ ] Shared chrome lives in `src/components/`, not copy-pasted per scene

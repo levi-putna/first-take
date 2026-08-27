@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "clip-hard-cut",
   "title": "Clip Hard Cut",
   "fps": 30,
@@ -23,8 +23,7 @@
           "visualType": "component",
           "component": "src/scenes/ClipA.tsx",
           "props": {},
-          "durationInFrames": 150,
-          "transitionIn": null
+          "durationInFrames": 150
         },
         {
           "id": "02",
@@ -32,8 +31,7 @@
           "visualType": "component",
           "component": "src/scenes/ClipB.tsx",
           "props": {},
-          "durationInFrames": 150,
-          "transitionIn": null
+          "durationInFrames": 150
         }
       ]
     }

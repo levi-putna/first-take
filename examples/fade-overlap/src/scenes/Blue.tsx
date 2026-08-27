@@ -1,8 +1,15 @@
-import { AbsoluteFill } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, interpolate, useCurrentFrame } from "@levi-putna/storyboard-core";
 
 /**
- * Solid blue scene for fade overlap fixture.
+ * Solid blue scene — fades in over the red hold on a higher track.
  */
 export default function Blue() {
-  return <AbsoluteFill style={{ backgroundColor: "#0000ff" }} />;
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [0, 10], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: "#0000ff", opacity }} />
+  );
 }

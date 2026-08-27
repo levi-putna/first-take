@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "first-take-kit",
   "title": "First Take scene kit",
   "fps": 30,
@@ -25,8 +25,7 @@
             "headline": "First Take",
             "subtitle": "Editor scene kit"
           },
-          "durationInFrames": 90,
-          "transitionIn": null
+          "durationInFrames": 90
         }
       ]
     }

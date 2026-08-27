@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "three-robot",
   "title": "Three Robot",
   "fps": 30,
@@ -26,8 +26,7 @@
             "clipName": "Walking",
             "metresPerSecond": 1.15
           },
-          "durationInFrames": 330,
-          "transitionIn": null
+          "durationInFrames": 330
         }
       ]
     }

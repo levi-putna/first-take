@@ -17,7 +17,7 @@ import {
 } from "./timelineEdit.js";
 
 const overlayManifest = parseVideoManifest({
-  schemaVersion: 2,
+  schemaVersion: 3,
   slug: "track-overlay",
   title: "Track Overlay",
   fps: 30,
@@ -33,7 +33,6 @@ const overlayManifest = parseVideoManifest({
           visualType: "component",
           component: "bg.tsx",
           durationInFrames: 240,
-          transitionIn: null,
         },
       ],
     },
@@ -48,7 +47,6 @@ const overlayManifest = parseVideoManifest({
           component: "a.tsx",
           durationInFrames: 60,
           gapBeforeFrames: 20,
-          transitionIn: { type: "fade", durationInFrames: 10 },
         },
         {
           id: "title-b",
@@ -57,38 +55,6 @@ const overlayManifest = parseVideoManifest({
           component: "b.tsx",
           durationInFrames: 80,
           gapBeforeFrames: 40,
-          transitionIn: { type: "fade", durationInFrames: 10 },
-        },
-      ],
-    },
-  ],
-});
-
-const fadeManifest = parseVideoManifest({
-  schemaVersion: 2,
-  slug: "fade-overlap",
-  title: "Fade Overlap",
-  fps: 30,
-  formats: [{ id: "16x9", aspectRatio: "16:9", width: 640, height: 360 }],
-  tracks: [
-    {
-      id: "main",
-      scenes: [
-        {
-          id: "01",
-          title: "One",
-          visualType: "component",
-          component: "one.tsx",
-          durationInFrames: 30,
-          transitionIn: null,
-        },
-        {
-          id: "02",
-          title: "Two",
-          visualType: "component",
-          component: "two.tsx",
-          durationInFrames: 30,
-          transitionIn: { type: "fade", durationInFrames: 10 },
         },
       ],
     },
@@ -107,20 +73,21 @@ describe("timelineEdit", () => {
     expect(scenes[1].gapBeforeFrames).toBe(40);
   });
 
-  it("shrinks sequential fade overlap to match a preserved start frame", () => {
-    const scenes = scenesFromStartFrames({
-      placements: [
-        {
-          scene: { ...fadeManifest.tracks[0].scenes[0], durationInFrames: 25 },
-          from: 0,
-        },
-        { scene: fadeManifest.tracks[0].scenes[1], from: 20 },
-      ],
-    });
-    expect(scenes[1].transitionIn?.durationInFrames).toBe(5);
-    expect(trackPlacements({ track: { ...fadeManifest.tracks[0], scenes } })[1].from).toBe(
-      20,
-    );
+  it("rejects same-track overlap when rebuilding gaps", () => {
+    expect(() =>
+      scenesFromStartFrames({
+        placements: [
+          {
+            scene: overlayManifest.tracks[1].scenes[0],
+            from: 0,
+          },
+          {
+            scene: overlayManifest.tracks[1].scenes[1],
+            from: 20,
+          },
+        ],
+      }),
+    ).toThrow(/overlaps/);
   });
 
   it("snaps within threshold", () => {
@@ -142,12 +109,6 @@ describe("timelineEdit", () => {
         sceneId: "probe",
         from: 25,
         durationInFrames: 40,
-        scene: {
-          id: "probe",
-          title: "Probe",
-          component: "probe.tsx",
-          durationInFrames: 40,
-        },
       }),
     ).toBe(false);
   });
@@ -223,14 +184,42 @@ describe("timelineEdit", () => {
     ).toBe(60);
   });
 
-  it("preserves sequential fade overlap when trimming", () => {
+  it("clamps trim to the next clip start on the same track", () => {
+    const manifest = parseVideoManifest({
+      schemaVersion: 3,
+      slug: "abut",
+      title: "Abut",
+      fps: 30,
+      formats: [{ id: "16x9", aspectRatio: "16:9", width: 640, height: 360 }],
+      tracks: [
+        {
+          id: "main",
+          scenes: [
+            {
+              id: "01",
+              title: "One",
+              visualType: "component",
+              component: "one.tsx",
+              durationInFrames: 30,
+            },
+            {
+              id: "02",
+              title: "Two",
+              visualType: "component",
+              component: "two.tsx",
+              durationInFrames: 30,
+            },
+          ],
+        },
+      ],
+    });
     const trimmed = trimSceneEnd({
-      manifest: fadeManifest,
+      manifest,
       sceneId: "01",
       durationInFrames: 25,
     });
     expect(trimmed.tracks[0].scenes[0].durationInFrames).toBe(25);
-    expect(scenePlacements(trimmed)[1].from).toBe(20);
+    expect(scenePlacements(trimmed)[1].from).toBe(30);
   });
 
   it("adds and updates tracks", () => {

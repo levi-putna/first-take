@@ -17,7 +17,7 @@ const repoRoot = path.resolve(
 );
 
 const minimalManifest = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   slug: "solo",
   title: "Solo Video",
   fps: 30,

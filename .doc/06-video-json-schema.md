@@ -4,7 +4,7 @@ Normative specification for the Storyboard **video definition file** — the JSO
 manifest that drives validation, preview, still capture, and MP4 render.
 
 Validated by `@levi-putna/storyboard-schema` (`videoManifestSchema`). Current
-`schemaVersion` is **`2`**.
+`schemaVersion` is **`3`** (v2 removed framework `transitionIn`).
 
 Companion docs:
 
@@ -59,7 +59,7 @@ to fail.
 
 | Field | Type | Required | Default | Notes |
 |-------|------|----------|---------|-------|
-| `schemaVersion` | `2` (literal) | yes | — | Breaking bump from v1 (`scenes` / `leadIn` / `seriesAudio`) |
+| `schemaVersion` | `3` (literal) | yes | — | Breaking bump from v2 (`transitionIn` removed) |
 | `slug` | non-empty string | yes | — | Output filename stem |
 | `title` | non-empty string | yes | — | Human-readable title |
 | `fps` | positive number | no | `30` | Frames per second for the whole composition |
@@ -109,7 +109,8 @@ Each scene is one clip on a track.
 | `props` | object | no | — | Spread onto the default-exported component |
 | `durationInFrames` | positive integer | yes | — | Local length of this scene |
 | `gapBeforeFrames` | integer ≥ 0 | no | `0` | Empty frames on this track before the scene |
-| `transitionIn` | `null` \| `TransitionIn` | no | — | Fade in; see §4.2 |
+
+Fades, wipes, and other blends are **not** schema fields. Use overlapping tracks and frame-driven motion inside scene components. See [`fade-overlap`](../examples/fade-overlap/README.md) and [`circle-wipe`](../examples/circle-wipe/README.md).
 
 ### 4.1 visualType
 
@@ -122,29 +123,7 @@ Each scene is one clip on a track.
 Real footage is embedded **inside** a component via `@levi-putna/storyboard-media` `<Video />`,
 not via `visualType: "real-video"`. See [09-video-clips.md](./09-video-clips.md).
 
-### 4.2 transitionIn
-
-| Field | Type | Notes |
-|-------|------|-------|
-| `type` | `"fade"` | Only fade is defined |
-| `durationInFrames` | positive integer | Fade length |
-
-Behaviour depends on the gap:
-
-| Condition | Effect |
-|-----------|--------|
-| `gapBeforeFrames === 0` and not the first scene | Sequential **crossfade**. Shortens this track by `durationInFrames` |
-| `gapBeforeFrames > 0` | Fade-in **from empty**. Does **not** shorten the track |
-| First scene on the track | No previous clip; fade-in from empty if a fade is set |
-
-Sequential fade rules (enforced by `validateTransitionLengths` when the fade
-actually overlaps):
-
-1. Fade length `t` must be **strictly less than** the previous scene’s duration
-2. And **strictly less than** this scene’s duration
-3. `null` or omitted with `gapBeforeFrames === 0` is a hard cut
-
-### 4.3 Component path resolution
+### 4.2 Component path resolution
 
 ```
 resolve(dirname(video.json), scene.component)
@@ -155,7 +134,7 @@ resolve(dirname(video.json), scene.component)
 The module **must** default-export a React component. See
 [10-component-requirements.md](./10-component-requirements.md).
 
-### 4.4 Props
+### 4.3 Props
 
 `props` is an arbitrary JSON object. Storyboard does not validate prop shapes.
 Prefer serialisable values. Audio file paths in props (strings ending
@@ -174,8 +153,6 @@ Per track:
 cursor = 0
 for each scene:
   cursor += gapBeforeFrames
-  overlap = (gapBeforeFrames === 0 && not first) ? transitionIn.duration : 0
-  cursor -= overlap
   scene starts at cursor
   cursor += durationInFrames
 trackLength = cursor
@@ -280,6 +257,6 @@ This layout is conventional, not schema-enforced.
 | v1 `scenes` / `leadIn` / `seriesAudio` | Removed. Rewrite as `tracks[]` and in-scene `<Audio>` |
 | Add optional root/scene fields | Prefer backward-compatible additions; keep `schemaVersion: 2` until a break |
 | Rename/remove fields or change types | Bump `schemaVersion` and update this doc + `@levi-putna/storyboard-schema` |
-| New transition types | Extend `transitionInSchema`; document here |
+| v2 `transitionIn` | Removed in v3. Use overlapping tracks and in-scene fades/wipes |
 
 Schema source of truth in code: `packages/schema/src/manifest.ts`.

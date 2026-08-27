@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "clip-trim-fullscreen",
   "title": "Clip Trim Fullscreen",
   "fps": 30,
@@ -23,8 +23,7 @@
           "visualType": "component",
           "component": "src/scenes/TrimmedClip.tsx",
           "props": {},
-          "durationInFrames": 600,
-          "transitionIn": null
+          "durationInFrames": 600
         }
       ]
     }

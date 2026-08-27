@@ -1,4 +1,9 @@
-import { AbsoluteFill, useVideoConfig } from "@levi-putna/storyboard-core";
+import {
+  AbsoluteFill,
+  interpolate,
+  useCurrentFrame,
+  useVideoConfig,
+} from "@levi-putna/storyboard-core";
 
 /**
  * Transparent lower-third. The rest of the frame stays empty so the background shows through.
@@ -10,8 +15,12 @@ export default function OverlayA({
   headline?: string;
   detail?: string;
 }) {
+  const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const barHeight = Math.round(height * 0.22);
+  const opacity = interpolate(frame, [0, 10], [0, 1], {
+    extrapolateRight: "clamp",
+  });
 
   return (
     <AbsoluteFill>
@@ -28,6 +37,7 @@ export default function OverlayA({
           flexDirection: "column",
           justifyContent: "center",
           background: "linear-gradient(90deg, rgba(20, 90, 140, 0.92) 0%, rgba(20, 90, 140, 0.55) 100%)",
+          opacity,
         }}
       >
         <div

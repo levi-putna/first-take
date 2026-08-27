@@ -20,6 +20,7 @@ const FIXTURES = [
   "motion-lab",
   "hello-explainer",
   "track-overlay",
+  "circle-wipe",
 ] as const;
 
 describe("golden stills", () => {

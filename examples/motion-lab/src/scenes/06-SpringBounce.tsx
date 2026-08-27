@@ -1,5 +1,5 @@
 import { spring, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
-import { SceneShell } from "../components/SceneShell";
+import { SceneShell, useCrossfadeOpacity } from "../components/SceneShell";
 
 /**
  * Spring-driven bounce onto the stage (overshoot, then settle).
@@ -7,6 +7,7 @@ import { SceneShell } from "../components/SceneShell";
 export default function SpringBounceScene() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const layerOpacity = useCrossfadeOpacity();
 
   const scale = spring({
     frame,
@@ -30,6 +31,7 @@ export default function SpringBounceScene() {
         justifyContent: "center",
         gap: 28,
       }}
+      opacity={layerOpacity}
     >
       {/* Scene label */}
       <div

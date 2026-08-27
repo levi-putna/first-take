@@ -183,8 +183,7 @@ frame-accurate in render.
 ### 4.3 `@levi-putna/storyboard-transitions`
 
 Use only when composing multi-part visuals **inside** a component. Scene-to-scene
-fades belong in `video.json` as `transitionIn`, not duplicated ad hoc unless you
-intentionally own a custom transition UI.
+fades and wipes belong in scene components on overlapping tracks, not in `video.json`.
 
 ### 4.4 React
 

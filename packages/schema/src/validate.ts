@@ -1,10 +1,6 @@
 import fs from "node:fs";
 import { videoManifestSchema, type VideoManifest } from "./manifest.js";
-import {
-  listScenes,
-  validateTransitionLengths,
-  validateUniqueSceneIds,
-} from "./duration.js";
+import { listScenes, validateUniqueSceneIds } from "./duration.js";
 import { assertAssetsExist } from "./assets.js";
 
 export type ValidateVideoResult =
@@ -12,7 +8,42 @@ export type ValidateVideoResult =
   | { ok: false; errors: string[] };
 
 /**
- * Parse and validate a video.json file (schema, transitions, optional assets).
+ * Detect legacy schemaVersion 2 or transitionIn fields in raw JSON.
+ */
+function legacyManifestErrors(raw: unknown): string[] {
+  const errors: string[] = [];
+  if (typeof raw !== "object" || raw === null) return errors;
+
+  const root = raw as Record<string, unknown>;
+  if (root.schemaVersion === 2) {
+    errors.push(
+      'schemaVersion 2 is no longer supported. Bump to 3 and remove transitionIn from scenes. Use overlapping tracks and in-scene fades instead.',
+    );
+  }
+
+  const tracks = root.tracks;
+  if (!Array.isArray(tracks)) return errors;
+
+  for (const track of tracks) {
+    if (typeof track !== "object" || track === null) continue;
+    const scenes = (track as Record<string, unknown>).scenes;
+    if (!Array.isArray(scenes)) continue;
+    for (const scene of scenes) {
+      if (typeof scene !== "object" || scene === null) continue;
+      const sceneObj = scene as Record<string, unknown>;
+      if ("transitionIn" in sceneObj) {
+        errors.push(
+          `Scene "${String(sceneObj.id ?? "?")}" has transitionIn, which was removed in schemaVersion 3. Use overlapping tracks and fade motion inside the scene component.`,
+        );
+      }
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Parse and validate a video.json file (schema, optional assets).
  */
 export function validateVideoFile({
   manifestPath,
@@ -37,6 +68,11 @@ export function validateVideoFile({
     };
   }
 
+  errors.push(...legacyManifestErrors(raw));
+  if (errors.length > 0) {
+    return { ok: false, errors };
+  }
+
   const parsed = videoManifestSchema.safeParse(raw);
   if (!parsed.success) {
     for (const issue of parsed.error.issues) {
@@ -47,7 +83,6 @@ export function validateVideoFile({
 
   const manifest = parsed.data;
   errors.push(...validateUniqueSceneIds(manifest));
-  errors.push(...validateTransitionLengths(manifest));
 
   if (!manifest.tracks.some((track) => track.scenes.length > 0)) {
     errors.push("At least one track must contain a scene");
