@@ -4,7 +4,7 @@ Mirror of the React scenes First Take writes under each session’s `storyboard/
 
 Primary templates live in the First Take app (`Sources/FirstTake/Editor/StoryboardBridge/StoryboardAdapter.swift`) so the macOS editor can emit them without a yarn link. This example is for Storyboard preview/render smoke of `TitleCard`.
 
-The manifest uses `schemaVersion` 2 `tracks[]` — a breaking change for the adapter. Scene ids must stay unique across tracks.
+The manifest uses `schemaVersion` 3 `tracks[]` — a breaking change for the adapter. Scene ids must stay unique across tracks.
 
 Catalogue: [examples/README.md](../README.md).
 

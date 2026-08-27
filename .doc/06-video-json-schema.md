@@ -46,7 +46,7 @@ hardcode global scene order or composition length.
 |----------|--------|
 | Typical filename | `video.json` (any path accepted by the CLI) |
 | Encoding | UTF-8 JSON object |
-| Schema | `schemaVersion: 2` |
+| Schema | `schemaVersion: 3` |
 | Validate | `yarn storyboard validate <path-to-video.json>` |
 
 Invalid JSON, schema failures, illegal transitions, duplicate scene ids,
@@ -173,7 +173,7 @@ A looping bed that should last the whole video is a scene whose
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "slug": "solid-frames",
   "title": "Solid Frames",
   "fps": 30,
@@ -190,8 +190,7 @@ A looping bed that should last the whole video is a scene whose
           "visualType": "component",
           "component": "src/scenes/Colour.tsx",
           "props": { "colour": "#112233" },
-          "durationInFrames": 30,
-          "transitionIn": null
+          "durationInFrames": 30
         }
       ]
     }
@@ -255,7 +254,7 @@ This layout is conventional, not schema-enforced.
 | Change | Guidance |
 |--------|----------|
 | v1 `scenes` / `leadIn` / `seriesAudio` | Removed. Rewrite as `tracks[]` and in-scene `<Audio>` |
-| Add optional root/scene fields | Prefer backward-compatible additions; keep `schemaVersion: 2` until a break |
+| Add optional root/scene fields | Prefer backward-compatible additions; keep `schemaVersion: 3` until a break |
 | Rename/remove fields or change types | Bump `schemaVersion` and update this doc + `@levi-putna/storyboard-schema` |
 | v2 `transitionIn` | Removed in v3. Use overlapping tracks and in-scene fades/wipes |
 

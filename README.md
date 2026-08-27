@@ -108,7 +108,7 @@ The screenshot is [`track-overlay`](./examples/track-overlay/README.md): a full-
 The studio is split into three panes:
 
 - **Sidebar** — scenes grouped by track, plus a props inspector for the selection
-- **Stage** — the composition at the current format (switch 16:9 / 9:16, or add a format, from the toolbar)
+- **Stage** — the composition at the current format (switch, add, or remove a format from the toolbar; at least one format must remain)
 - **Timeline** — play / pause, mute, timecode, and one lane per track
 
 While authoring:
@@ -184,6 +184,7 @@ npx @levi-putna/storyboard render examples/hello-explainer/video.json
 |---------|----------------|
 | [`hello-explainer`](./examples/hello-explainer/README.md) | Dual-format explainer: visual track + spanning mix (jingle, bed, narration) |
 | [`track-overlay`](./examples/track-overlay/README.md) | Long background, gapped transparent overlays, corner badge for z-order |
+| [`many-tracks`](./examples/many-tracks/README.md) | Thirty stacked tracks for timeline scroll and multi-lane UI testing |
 | [`first-take-kit`](./examples/first-take-kit/README.md) | `TitleCard` scene used by the First Take macOS editor |
 | [`motion-basics`](./examples/motion-basics/README.md) | Frame-driven `interpolate` and `spring` on a simple block |
 | [`motion-lab`](./examples/motion-lab/README.md) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |

@@ -334,6 +334,7 @@ Validate does **not** execute components or type-check props. Broken motion only
 |-----|------------|
 | Full dual-format explainer with in-scene mix | [`examples/hello-explainer`](./examples/hello-explainer/README.md) |
 | Stacked overlay tracks + gaps | [`examples/track-overlay`](./examples/track-overlay/README.md) |
+| Many stacked lanes (timeline scroll) | [`examples/many-tracks`](./examples/many-tracks/README.md) |
 | First Take `TitleCard` kit | [`examples/first-take-kit`](./examples/first-take-kit/README.md) |
 | Frame-driven motion catalogue | [`examples/motion-lab`](./examples/motion-lab/README.md) |
 | Smallest interpolate + spring | [`examples/motion-basics`](./examples/motion-basics/README.md) |

@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@levi-putna/storyboard-core": "0.2.0"
+    "@levi-putna/storyboard-core": "0.3.0"
   },
   "devDependencies": {
     "typescript": "^5.8.3",

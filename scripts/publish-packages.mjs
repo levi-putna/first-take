@@ -12,8 +12,12 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { stageCliDocs } from "./stage-cli-docs.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+stageCliDocs();
+console.log("Staged packages/cli README.md and LICENSE from the repo root.");
 
 const otpArg = process.argv.find((arg) => arg.startsWith("--otp="));
 const otp = otpArg ? otpArg.slice("--otp=".length) : process.env.OTP;
