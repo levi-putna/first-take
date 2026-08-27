@@ -747,6 +747,13 @@ button {
   border-bottom: 1px solid var(--border);
 }
 
+.sb-transport-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
 .sb-icon-btn {
   display: inline-flex;
   align-items: center;
@@ -776,6 +783,10 @@ button {
 .sb-icon-btn:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.sb-icon-btn:disabled:hover {
+  background: transparent;
 }
 
 .sb-mono {

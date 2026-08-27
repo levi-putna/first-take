@@ -21,6 +21,8 @@ uses [Semantic Versioning](https://semver.org/).
 
 - Preview studio: **Save to video.json** writes live prop inspector overrides
   back to the open manifest (⌘S / Ctrl+S).
+- Preview studio: undo and redo for unsaved timeline and prop edits (timeline
+  header buttons; ⌘Z / ⌘⇧Z / Ctrl+Z / Ctrl+Shift+Z / Ctrl+Y).
 - Preview studio: drag clips to reposition or trim, move between tracks, and
   manage track title, description, and render order; timeline edits save to
   `video.json`.

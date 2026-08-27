@@ -120,6 +120,7 @@ export function DetailsSidebar({
 
         {selectedScene ? (
           <SceneDetails
+            key={selectedScene.id}
             scene={selectedScene}
             props={selectedProps}
             onPropChange={onPropChange}
@@ -129,6 +130,7 @@ export function DetailsSidebar({
           />
         ) : selectedTrack && selectedLane ? (
           <TrackDetails
+            key={selectedTrack.id}
             trackId={selectedTrack.id}
             title={selectedLane.title}
             description={selectedLane.description}
@@ -150,6 +152,7 @@ export function DetailsSidebar({
           />
         ) : (
           <VideoDetails
+            key={manifest.slug}
             manifest={manifest}
             compositionDuration={compositionDuration}
             onTitleChange={(title) => onVideoTitleChange({ title })}
@@ -178,15 +181,12 @@ function VideoDetails({
     <div className="sb-stacked-details">
       {/* Primary: editable title */}
       <div className="sb-stacked-details-main">
-        <div className="sb-field">
-          <label htmlFor="video-title">Title</label>
-          <input
-            id="video-title"
-            className="sb-input"
-            value={manifest.title}
-            onChange={(event) => onTitleChange(event.target.value)}
-          />
-        </div>
+        <BlurCommitField
+          id="video-title"
+          label="Title"
+          value={manifest.title}
+          onCommit={onTitleChange}
+        />
       </div>
 
       {/* Secondary: read-only metadata at the bottom (collapsed by default) */}
@@ -270,26 +270,21 @@ function TrackDetails({
       </div>
       <DetailRow label="ID" value={trackId} mono />
       <DetailRow label="Scenes" value={String(sceneCount)} mono />
-      <div className="sb-field">
-        <label htmlFor={`track-title-${trackId}`}>Title</label>
-        <input
-          id={`track-title-${trackId}`}
-          className="sb-input"
-          value={title}
-          onChange={(event) => onTitleChange(event.target.value)}
-        />
-      </div>
-      <div className="sb-field">
-        <label htmlFor={`track-desc-${trackId}`}>Description</label>
-        <textarea
-          id={`track-desc-${trackId}`}
-          className="sb-textarea"
-          value={description ?? ""}
-          rows={3}
-          placeholder="Track description"
-          onChange={(event) => onDescriptionChange(event.target.value)}
-        />
-      </div>
+      <BlurCommitField
+        id={`track-title-${trackId}`}
+        label="Title"
+        value={title}
+        onCommit={onTitleChange}
+      />
+      <BlurCommitField
+        id={`track-desc-${trackId}`}
+        label="Description"
+        value={description ?? ""}
+        multiline
+        rows={3}
+        placeholder="Track description"
+        onCommit={onDescriptionChange}
+      />
 
       {/* Timeline order: labelled stepper so drag is not the only way to rearrange */}
       <TrackOrderField
@@ -329,15 +324,12 @@ function SceneDetails({
       {/* Primary: editable title, then component props */}
       <div className="sb-stacked-details-main">
         {/* Scene name in the editor — not a rendered page element */}
-        <div className="sb-field">
-          <label htmlFor={`scene-title-${scene.id}`}>Title</label>
-          <input
-            id={`scene-title-${scene.id}`}
-            className="sb-input"
-            value={scene.title}
-            onChange={(event) => onTitleChange(event.target.value)}
-          />
-        </div>
+        <BlurCommitField
+          id={`scene-title-${scene.id}`}
+          label="Title"
+          value={scene.title}
+          onCommit={onTitleChange}
+        />
 
         {/* Props that the scene component actually receives */}
         <div className="sb-details-section sb-details-props">
@@ -512,6 +504,77 @@ function DetailRow({
     <div className="sb-detail-row">
       <span className="sb-detail-label">{label}</span>
       <span className={`sb-detail-value${mono ? " sb-mono" : ""}`}>{value}</span>
+    </div>
+  );
+}
+
+/**
+ * Text field that commits on blur so typing stays one undo step.
+ */
+function BlurCommitField({
+  id,
+  label,
+  value,
+  onCommit,
+  multiline = false,
+  rows = 3,
+  placeholder,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onCommit: (next: string) => void;
+  multiline?: boolean;
+  rows?: number;
+  placeholder?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  /**
+   * Push the draft to the parent when the field loses focus.
+   */
+  function commitDraft() {
+    if (draft !== value) {
+      onCommit(draft);
+    }
+  }
+
+  if (multiline) {
+    return (
+      <div className="sb-field">
+        <label htmlFor={id}>{label}</label>
+        <textarea
+          id={id}
+          className="sb-textarea"
+          value={draft}
+          rows={rows}
+          placeholder={placeholder}
+          onChange={(event) => setDraft(event.target.value)}
+          onBlur={commitDraft}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="sb-field">
+      <label htmlFor={id}>{label}</label>
+      <input
+        id={id}
+        className="sb-input"
+        value={draft}
+        onChange={(event) => setDraft(event.target.value)}
+        onBlur={commitDraft}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            (event.target as HTMLInputElement).blur();
+          }
+        }}
+      />
     </div>
   );
 }

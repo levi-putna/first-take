@@ -130,7 +130,7 @@ Example shape (illustrative, not final schema):
 | ID | Requirement |
 |----|-------------|
 | F-P1 | Dev preview: scrub frames, play, jump to scene boundaries. |
-| F-P2 | Isolate a scene from the timeline (double-click); sidebar edits props as a live override; drag clips to reposition or trim; manage tracks (add, title, description, render order); Save writes props and timeline edits to `video.json`. |
+| F-P2 | Isolate a scene from the timeline (double-click); sidebar edits props as a live override; drag clips to reposition or trim; manage tracks (add, title, description, render order); undo/redo unsaved edits; Save writes props and timeline edits to `video.json`. |
 | F-P3 | Still capture: export PNG of a given composition frame (for QA stills). |
 | F-P4 | Clear errors when a component uses non-deterministic patterns (lint / docs; automated detection where practical). |
 

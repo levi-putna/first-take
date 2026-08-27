@@ -15,7 +15,9 @@ import {
   Pause,
   Play,
   Plus,
+  Redo2,
   SkipBack,
+  Undo2,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -103,6 +105,12 @@ export function Timeline({
   onDropTargetTrackChange,
   onAddTrack,
   onReorderTracks,
+  canUndo = false,
+  canRedo = false,
+  undoHint = "Undo",
+  redoHint = "Redo",
+  onUndo,
+  onRedo,
   sceneAudio = {},
 }: {
   frame: number;
@@ -135,6 +143,12 @@ export function Timeline({
   onDropTargetTrackChange?: (trackId: string | null) => void;
   onAddTrack?: () => void;
   onReorderTracks?: (args: { trackIds: string[] }) => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
+  undoHint?: string;
+  redoHint?: string;
+  onUndo?: () => void;
+  onRedo?: () => void;
   /** Audio sources detected for each scene, used to paint clip waveforms. */
   sceneAudio?: Record<string, SceneAudioClip[]>;
 }) {
@@ -900,6 +914,32 @@ export function Timeline({
           {formatTimecode({ frame, fps })} / {formatTimecode({ frame: last, fps })}
         </span>
         <span className="sb-mono">f{frame}</span>
+
+        {/* Undo / redo on the right of the transport bar */}
+        {editable ? (
+          <div className="sb-transport-actions">
+            <button
+              type="button"
+              className="sb-icon-btn"
+              aria-label="Undo"
+              title={`Undo (${undoHint})`}
+              disabled={!canUndo}
+              onClick={() => onUndo?.()}
+            >
+              <Undo2 size={16} />
+            </button>
+            <button
+              type="button"
+              className="sb-icon-btn"
+              aria-label="Redo"
+              title={`Redo (${redoHint})`}
+              disabled={!canRedo}
+              onClick={() => onRedo?.()}
+            >
+              <Redo2 size={16} />
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {/* Ruler + lanes (scroll vertically when dock is short) */}

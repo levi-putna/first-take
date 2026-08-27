@@ -47,6 +47,7 @@ import {
   timelineLanes,
   type TimelineLane,
 } from "./timelineModel";
+import { useEditHistory } from "./editHistory";
 
 const isEmbed =
   typeof window !== "undefined" &&
@@ -75,21 +76,41 @@ export function App() {
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
   const [sidebarResizing, setSidebarResizing] = useState(false);
   const sidebarResizeStart = useRef({ x: 0, width: SIDEBAR_DEFAULT_WIDTH });
-  const [workingManifest, setWorkingManifest] = useState<VideoManifest>(manifest);
+  const {
+    present: studioPresent,
+    canUndo,
+    canRedo,
+    commit: commitStudio,
+    undo: undoStudio,
+    redo: redoStudio,
+    reset: resetStudio,
+    replacePresent: replaceStudioPresent,
+  } = useEditHistory({
+    initialSnapshot: {
+      workingManifest: manifest,
+      propOverrides: {},
+    },
+  });
+  const workingManifest = studioPresent.workingManifest;
+  const propOverrides = studioPresent.propOverrides;
   const [dropTargetTrackId, setDropTargetTrackId] = useState<string | null>(
     null,
   );
 
   useEffect(() => {
-    setWorkingManifest(manifest);
-    setPropOverrides({});
+    resetStudio({
+      snapshot: {
+        workingManifest: manifest,
+        propOverrides: {},
+      },
+    });
     setSaveError(null);
     setDropTargetTrackId(null);
     setIsolatedSceneId(null);
     setSelectedSceneId(null);
     setSelectedTrackId(null);
     setFrame(0);
-  }, [manifest]);
+  }, [manifest, resetStudio]);
 
   const compositionDuration = totalDurationInFrames(workingManifest);
   const fullLanes = useMemo(
@@ -108,9 +129,6 @@ export function App() {
   const [selectedSceneId, setSelectedSceneId] = useState<string | null>(null);
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
   const [isolatedSceneId, setIsolatedSceneId] = useState<string | null>(null);
-  const [propOverrides, setPropOverrides] = useState<
-    Record<string, Record<string, unknown>>
-  >({});
   const [pendingSave, setPendingSave] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -226,6 +244,41 @@ export function App() {
   }
 
   /**
+   * Commit a new working manifest while keeping prop overrides.
+   */
+  function commitManifest({
+    updater,
+  }: {
+    updater: (current: VideoManifest) => VideoManifest;
+  }) {
+    commitStudio({
+      next: {
+        workingManifest: updater(workingManifest),
+        propOverrides,
+      },
+    });
+  }
+
+  /**
+   * Commit new prop overrides while keeping the working manifest.
+   */
+  function commitPropOverrides({
+    nextOverrides,
+    coalesce = false,
+  }: {
+    nextOverrides: Record<string, Record<string, unknown>>;
+    coalesce?: boolean;
+  }) {
+    commitStudio({
+      next: {
+        workingManifest,
+        propOverrides: nextOverrides,
+      },
+      coalesce,
+    });
+  }
+
+  /**
    * Apply a timeline move from the clip editor.
    */
   function applyMoveScene({
@@ -238,15 +291,16 @@ export function App() {
     startFrame: number;
   }) {
     try {
-      setWorkingManifest((current) =>
-        moveScene({
-          manifest: current,
-          sceneId,
-          targetTrackId,
-          startFrame,
-          playheadFrame: frame,
-        }),
-      );
+      commitManifest({
+        updater: (current) =>
+          moveScene({
+            manifest: current,
+            sceneId,
+            targetTrackId,
+            startFrame,
+            playheadFrame: frame,
+          }),
+      });
       setSaveError(null);
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : String(err));
@@ -264,9 +318,10 @@ export function App() {
     durationInFrames: number;
   }) {
     try {
-      setWorkingManifest((current) =>
-        trimSceneEnd({ manifest: current, sceneId, durationInFrames }),
-      );
+      commitManifest({
+        updater: (current) =>
+          trimSceneEnd({ manifest: current, sceneId, durationInFrames }),
+      });
       setSaveError(null);
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : String(err));
@@ -423,6 +478,45 @@ export function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [saving, pendingSave]);
 
+  const undoRef = useRef(undoStudio);
+  undoRef.current = undoStudio;
+  const redoRef = useRef(redoStudio);
+  redoRef.current = redoStudio;
+  const canUndoRef = useRef(canUndo);
+  canUndoRef.current = canUndo;
+  const canRedoRef = useRef(canRedo);
+  canRedoRef.current = canRedo;
+
+  // Undo/redo for committed studio edits (not while typing in a field).
+  useEffect(() => {
+    if (isEmbed) return;
+    const onKey = (event: KeyboardEvent) => {
+      const tag = (event.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+      const mod = event.metaKey || event.ctrlKey;
+      if (!mod) return;
+
+      const key = event.key.toLowerCase();
+      if (key === "z" && !event.shiftKey) {
+        if (!canUndoRef.current) return;
+        event.preventDefault();
+        undoRef.current();
+        return;
+      }
+
+      const isRedo =
+        (key === "z" && event.shiftKey) || (key === "y" && !event.metaKey);
+      if (isRedo) {
+        if (!canRedoRef.current) return;
+        event.preventDefault();
+        redoRef.current();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   // Escape clears timeline selection back to video details.
   useEffect(() => {
     if (isEmbed) return;
@@ -469,7 +563,14 @@ export function App() {
         if (!response.ok || !payload.ok) {
           throw new Error(payload.errors?.join("; ") || "Could not save changes");
         }
-        if (!cancelled) setPropOverrides({});
+        if (!cancelled) {
+          replaceStudioPresent({
+            snapshot: {
+              workingManifest,
+              propOverrides: {},
+            },
+          });
+        }
       } catch (err) {
         if (!cancelled) {
           setSaveError(err instanceof Error ? err.message : String(err));
@@ -623,6 +724,14 @@ export function App() {
     typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
       ? "⌘S"
       : "Ctrl+S";
+  const undoHint =
+    typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
+      ? "⌘Z"
+      : "Ctrl+Z";
+  const redoHint =
+    typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
+      ? "⌘⇧Z"
+      : "Ctrl+Shift+Z";
 
   const Isolated = isolatedScene
     ? (components[isolatedScene.component] as
@@ -752,32 +861,40 @@ export function App() {
           onRequestSave={requestSave}
           onPropChange={(next) => {
             if (!selectedSceneId) return;
-            setPropOverrides((current) => ({
-              ...current,
-              [selectedSceneId]: next,
-            }));
+            commitPropOverrides({
+              nextOverrides: {
+                ...propOverrides,
+                [selectedSceneId]: next,
+              },
+              coalesce: true,
+            });
           }}
           onVideoTitleChange={({ title }) => {
-            setWorkingManifest((current) => ({ ...current, title }));
+            commitManifest({
+              updater: (current) => ({ ...current, title }),
+            });
           }}
           onSceneTitleChange={({ sceneId, title }) => {
-            setWorkingManifest((current) =>
-              updateScene({ manifest: current, sceneId, title }),
-            );
+            commitManifest({
+              updater: (current) =>
+                updateScene({ manifest: current, sceneId, title }),
+            });
           }}
           onTrackTitleChange={({ trackId, title }) => {
-            setWorkingManifest((current) =>
-              updateTrack({ manifest: current, trackId, title }),
-            );
+            commitManifest({
+              updater: (current) =>
+                updateTrack({ manifest: current, trackId, title }),
+            });
           }}
           onTrackDescriptionChange={({ trackId, description }) => {
-            setWorkingManifest((current) =>
-              updateTrack({
-                manifest: current,
-                trackId,
-                description: description || null,
-              }),
-            );
+            commitManifest({
+              updater: (current) =>
+                updateTrack({
+                  manifest: current,
+                  trackId,
+                  description: description || null,
+                }),
+            });
           }}
           onTrackMoveUp={(trackId) => {
             const ids = workingManifest.tracks.map((track) => track.id);
@@ -785,9 +902,10 @@ export function App() {
             if (index <= 0) return;
             const next = [...ids];
             [next[index - 1], next[index]] = [next[index], next[index - 1]];
-            setWorkingManifest((current) =>
-              reorderTracks({ manifest: current, trackIds: next }),
-            );
+            commitManifest({
+              updater: (current) =>
+                reorderTracks({ manifest: current, trackIds: next }),
+            });
           }}
           onTrackMoveDown={(trackId) => {
             const ids = workingManifest.tracks.map((track) => track.id);
@@ -795,9 +913,10 @@ export function App() {
             if (index < 0 || index >= ids.length - 1) return;
             const next = [...ids];
             [next[index], next[index + 1]] = [next[index + 1], next[index]];
-            setWorkingManifest((current) =>
-              reorderTracks({ manifest: current, trackIds: next }),
-            );
+            commitManifest({
+              updater: (current) =>
+                reorderTracks({ manifest: current, trackIds: next }),
+            });
           }}
         />
 
@@ -876,13 +995,22 @@ export function App() {
           dropTargetTrackId={dropTargetTrackId}
           onDropTargetTrackChange={setDropTargetTrackId}
           onAddTrack={() => {
-            setWorkingManifest((current) => addTrack({ manifest: current }));
+            commitManifest({
+              updater: (current) => addTrack({ manifest: current }),
+            });
           }}
           onReorderTracks={({ trackIds }) => {
-            setWorkingManifest((current) =>
-              reorderTracks({ manifest: current, trackIds }),
-            );
+            commitManifest({
+              updater: (current) =>
+                reorderTracks({ manifest: current, trackIds }),
+            });
           }}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          undoHint={undoHint}
+          redoHint={redoHint}
+          onUndo={undoStudio}
+          onRedo={redoStudio}
           sceneAudio={sceneAudio}
         />
       </div>

@@ -116,6 +116,7 @@ While authoring:
 - Play and scrub the playhead. Mute lives in the dock. Preview audio is audible but not sample-accurate.
 - Double-click a clip to isolate that scene on a local clock. Other tracks unmount, including their audio. Back restores the full video.
 - Drag clips to reposition or trim their end; drop onto another track. Add tracks, edit track title and description, and reorder render order from the sidebar.
+- **Undo** and **Redo** (buttons on the timeline header, or ⌘Z / ⌘⇧Z / Ctrl+Z / Ctrl+Shift+Z / Ctrl+Y) step through unsaved timeline and prop edits.
 - Sidebar prop edits are live overrides. **Save to video.json** (or ⌘S / Ctrl+S) writes props and timeline edits to the open file so `render` / `still` pick them up.
 
 ```bash
