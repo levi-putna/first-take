@@ -190,6 +190,48 @@ describe("saveStudioChangesToManifestFile", () => {
     expect(saved.tracks[0]?.scenes[1]).not.toHaveProperty("visualType");
   });
 
+  it("writes a renamed scene title", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-save-scene-title-"));
+    const manifestPath = writeManifest({ dir });
+
+    const result = saveStudioChangesToManifestFile({
+      manifestPath,
+      timeline: {
+        ...minimalManifest,
+        fps: 30,
+        assetsRoot: ".",
+        tracks: [
+          {
+            id: "main",
+            title: "Main",
+            scenes: [
+              {
+                ...minimalManifest.tracks[0].scenes[0],
+                title: "Opening hold",
+                visualType: "component" as const,
+                gapBeforeFrames: 0,
+              },
+              {
+                ...minimalManifest.tracks[0].scenes[1],
+                visualType: "component" as const,
+                gapBeforeFrames: 0,
+              },
+            ],
+          },
+        ],
+      } as VideoManifest,
+    });
+
+    expect(result).toEqual({ ok: true });
+    const saved = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
+      tracks: Array<{
+        scenes: Array<{ id: string; title?: string }>;
+      }>;
+    };
+    expect(saved.tracks[0]?.scenes[0]?.title).toBe("Opening hold");
+    expect(saved.tracks[0]?.scenes[1]?.title).toBe("Next");
+  });
+
   it("moves a scene between tracks and saves props together", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-save-move-"));
     const manifestPath = writeManifest({

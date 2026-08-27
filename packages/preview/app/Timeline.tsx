@@ -40,6 +40,8 @@ const LABEL_WIDTH = 96;
 const RULER_HEIGHT = 28;
 const DRAG_THRESHOLD_PX = 4;
 const TRIM_HANDLE_PX = 7;
+/** Clips narrower than this cannot be moved, trimmed, or selected. */
+const MIN_CLIP_INTERACT_PX = 12;
 
 type ClipDragMode = "move" | "trim-end";
 
@@ -70,7 +72,9 @@ export function Timeline({
   onFrameChange,
   lanes,
   selectedSceneId,
+  selectedTrackId,
   onSelectScene,
+  onSelectTrack,
   onIsolateScene,
   isolated,
   onBack,
@@ -91,8 +95,10 @@ export function Timeline({
   onMutedChange: (next: boolean) => void;
   onFrameChange: (next: number) => void;
   lanes: TimelineLane[];
-  selectedSceneId: string;
+  selectedSceneId: string | null;
+  selectedTrackId: string | null;
   onSelectScene: (sceneId: string) => void;
+  onSelectTrack: (trackId: string) => void;
   onIsolateScene: (sceneId: string) => void;
   isolated: boolean;
   onBack: () => void;
@@ -403,6 +409,14 @@ export function Timeline({
     mode: ClipDragMode;
   }) {
     if (!editable) return;
+    if (
+      isClipTooSmall({
+        durationInFrames: clip.durationInFrames,
+        pixelsPerFrame,
+      })
+    ) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     clipDragRef.current = {
@@ -599,11 +613,15 @@ export function Timeline({
       clipDragRef.current?.sceneId === clip.sceneId && isPreview;
     const audioClips = sceneAudio[clip.sceneId] ?? [];
     const clipWidth = duration * pixelsPerFrame;
+    const isTooSmall = isClipTooSmall({
+      durationInFrames: duration,
+      pixelsPerFrame,
+    });
 
     return (
       <div
         key={clip.key}
-        className={`sb-clip-wrap${selectedSceneId === clip.sceneId ? " is-current" : ""}${isDragging ? " is-dragging" : ""}`}
+        className={`sb-clip-wrap${selectedSceneId === clip.sceneId ? " is-current" : ""}${isDragging ? " is-dragging" : ""}${isTooSmall ? " is-too-small" : ""}`}
         style={{
           left: startFrame * pixelsPerFrame,
           width: clipWidth,
@@ -612,13 +630,18 @@ export function Timeline({
         <button
           type="button"
           className="sb-clip"
-          style={{ background: clipTone(laneIndex) }}
+          style={{
+            background: isTooSmall ? "var(--scene-locked)" : clipTone(laneIndex),
+          }}
           title={
-            audioClips.length > 0
-              ? `${clip.title} · ${duration}f · audio`
-              : `${clip.title} · ${duration}f`
+            isTooSmall
+              ? `${clip.title} · zoom in to edit`
+              : audioClips.length > 0
+                ? `${clip.title} · ${duration}f · audio`
+                : `${clip.title} · ${duration}f`
           }
           onPointerDown={(event) => {
+            if (isTooSmall) return;
             if (!editable) {
               onSelectScene(clip.sceneId);
               return;
@@ -652,7 +675,7 @@ export function Timeline({
           ) : null}
           <span className="sb-clip-title">{clip.title}</span>
         </button>
-        {editable ? (
+        {editable && !isTooSmall ? (
           <div
             className="sb-clip-trim-handle"
             aria-hidden
@@ -723,15 +746,27 @@ export function Timeline({
                 className="sb-timeline-label-gutter"
                 style={{ height: RULER_HEIGHT }}
               />
-              {lanes.map((lane) => (
-                <div
-                  key={lane.trackId}
-                  className={`sb-timeline-label${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
-                  title={lane.description}
-                >
-                  {lane.title}
-                </div>
-              ))}
+              {lanes.map((lane) =>
+                isolated ? (
+                  <div
+                    key={lane.trackId}
+                    className={`sb-timeline-label${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
+                    title={lane.description}
+                  >
+                    {lane.title}
+                  </div>
+                ) : (
+                  <button
+                    key={lane.trackId}
+                    type="button"
+                    className={`sb-timeline-label${selectedTrackId === lane.trackId ? " is-current" : ""}${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}`}
+                    title={lane.description}
+                    onClick={() => onSelectTrack(lane.trackId)}
+                  >
+                    {lane.title}
+                  </button>
+                ),
+              )}
             </div>
 
             {/* Scrollport: native scrollbar hidden; focus bar is the scroll UI */}
@@ -762,10 +797,13 @@ export function Timeline({
                     }
                   }}
                 >
-                  {ticks.map((tick) => (
+                  {ticks.map((tick, index) => (
                     <div
                       key={tick}
-                      className="sb-ruler-tick"
+                      className={`sb-ruler-tick${rulerTickEdgeClass({
+                        index,
+                        count: ticks.length,
+                      })}`}
                       style={{ left: tick * pixelsPerFrame }}
                     >
                       <span>{formatFlooredTimecode({ frame: tick, fps })}</span>
@@ -850,4 +888,33 @@ export function Timeline({
  */
 function clipTone(laneIndex: number): string {
   return laneIndex % 2 === 0 ? "var(--scene-a)" : "var(--scene-b)";
+}
+
+/**
+ * Edge class so first/last ruler labels sit against the timeline bounds.
+ * Middle ticks stay centred on their time point.
+ */
+function rulerTickEdgeClass({
+  index,
+  count,
+}: {
+  index: number;
+  count: number;
+}): string {
+  if (index === 0) return " is-start";
+  if (index === count - 1) return " is-end";
+  return "";
+}
+
+/**
+ * Whether a clip is too narrow at the current zoom to move, trim, or select.
+ */
+function isClipTooSmall({
+  durationInFrames,
+  pixelsPerFrame,
+}: {
+  durationInFrames: number;
+  pixelsPerFrame: number;
+}): boolean {
+  return durationInFrames * pixelsPerFrame < MIN_CLIP_INTERACT_PX;
 }

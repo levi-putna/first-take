@@ -192,6 +192,10 @@ function mergeSceneOnDisk({
   const next: Record<string, unknown> = { ...fileScene };
   next.durationInFrames = draftScene.durationInFrames;
 
+  if (draftScene.title) {
+    next.title = draftScene.title;
+  }
+
   const gap = draftScene.gapBeforeFrames ?? 0;
   if (gap > 0) {
     next.gapBeforeFrames = gap;

@@ -10,6 +10,7 @@ import {
   timelineStructureEqual,
   trackPlacements,
   trimSceneEnd,
+  updateScene,
   updateTrack,
 } from "./timelineEdit.js";
 
@@ -247,6 +248,19 @@ describe("timelineEdit", () => {
     });
     expect(renamed.tracks[2].title).toBe("Corner");
     expect(renamed.tracks[2].description).toBe("Top-right badge lane");
+  });
+
+  it("updates a scene title", () => {
+    const renamed = updateScene({
+      manifest: overlayManifest,
+      sceneId: "title-a",
+      title: "Lower third intro",
+    });
+    const scene = renamed.tracks[1].scenes.find((entry) => entry.id === "title-a");
+    expect(scene?.title).toBe("Lower third intro");
+    expect(
+      timelineStructureEqual({ left: overlayManifest, right: renamed }),
+    ).toBe(false);
   });
 
   it("reorders tracks for render order", () => {

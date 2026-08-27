@@ -623,6 +623,32 @@ export function updateTrack({
 }
 
 /**
+ * Update scene metadata (title) on the matching clip.
+ */
+export function updateScene({
+  manifest,
+  sceneId,
+  title,
+}: {
+  manifest: VideoManifest;
+  sceneId: string;
+  title?: string;
+}): VideoManifest {
+  return {
+    ...manifest,
+    tracks: manifest.tracks.map((track) => ({
+      ...track,
+      scenes: track.scenes.map((scene) => {
+        if (scene.id !== sceneId) return scene;
+        const next = { ...scene };
+        if (title != null) next.title = title;
+        return next;
+      }),
+    })),
+  };
+}
+
+/**
  * Reorder tracks (render / paint order).
  */
 export function reorderTracks({
@@ -669,6 +695,7 @@ export function timelineStructureEqual({
       const sa = a.scenes[j];
       const sb = b.scenes[j];
       if (sa.id !== sb.id) return false;
+      if (sa.title !== sb.title) return false;
       if (sa.durationInFrames !== sb.durationInFrames) return false;
       if ((sa.gapBeforeFrames ?? 0) !== (sb.gapBeforeFrames ?? 0)) return false;
     }

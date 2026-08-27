@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
-import { Save } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ComponentType, type CSSProperties, type ReactNode } from "react";
 import {
   SceneProvider,
   Sequence,
@@ -15,10 +14,9 @@ import {
 } from "@levi-putna/storyboard-schema";
 import { CompositionFromManifest } from "@levi-putna/storyboard-transitions";
 import { components, manifest } from "./.generated/project";
-import { Explorer, type ExplorerGroup } from "./Explorer";
+import { DetailsSidebar } from "./DetailsSidebar";
 import { FormatSwitcher } from "./FormatSwitcher";
 import { ProjectSwitcher } from "./ProjectSwitcher";
-import { PropFields } from "./PropFields";
 import { Timeline } from "./Timeline";
 import { useSceneAudio } from "./useSceneAudio";
 import {
@@ -41,6 +39,7 @@ import {
   reorderTracks,
   timelineStructureEqual,
   trimSceneEnd,
+  updateScene,
   updateTrack,
 } from "./timelineEdit";
 import {
@@ -53,10 +52,8 @@ const isEmbed =
   typeof window !== "undefined" &&
   new URLSearchParams(window.location.search).has("embed");
 
-const SCENE_TONES = ["var(--scene-a)", "var(--scene-b)", "var(--lead)"];
-
 /**
- * Preview studio: composition stage, scenes sidebar, and multi-lane timeline.
+ * Preview studio: composition stage, details sidebar, and multi-lane timeline.
  * With `?embed=1`, hides chrome and accepts host frame control (First Take).
  */
 export function App() {
@@ -89,7 +86,8 @@ export function App() {
     setSaveError(null);
     setDropTargetTrackId(null);
     setIsolatedSceneId(null);
-    setSelectedSceneId(listScenes(manifest)[0]?.id ?? "");
+    setSelectedSceneId(null);
+    setSelectedTrackId(null);
     setFrame(0);
   }, [manifest]);
 
@@ -102,8 +100,13 @@ export function App() {
     () => !timelineStructureEqual({ left: manifest, right: workingManifest }),
     [manifest, workingManifest],
   );
-  const firstSceneId = listScenes(manifest)[0]?.id ?? "";
-  const [selectedSceneId, setSelectedSceneId] = useState(firstSceneId);
+  const manifestMetadataDirty = useMemo(
+    () => manifest.title !== workingManifest.title,
+    [manifest.title, workingManifest.title],
+  );
+  const workingManifestDirty = timelineDirty || manifestMetadataDirty;
+  const [selectedSceneId, setSelectedSceneId] = useState<string | null>(null);
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
   const [isolatedSceneId, setIsolatedSceneId] = useState<string | null>(null);
   const [propOverrides, setPropOverrides] = useState<
     Record<string, Record<string, unknown>>
@@ -161,10 +164,19 @@ export function App() {
   );
 
   /**
-   * Select a scene in the sidebar and timeline. Seeks if the playhead is outside the clip.
+   * Clear scene and track selection to show video details.
+   */
+  function clearSelection() {
+    setSelectedSceneId(null);
+    setSelectedTrackId(null);
+  }
+
+  /**
+   * Select a scene from the timeline. Seeks if the playhead is outside the clip.
    */
   function selectScene({ sceneId }: { sceneId: string }) {
     setSelectedSceneId(sceneId);
+    setSelectedTrackId(null);
     setPlaying(false);
     if (isolatedSceneId) {
       setIsolatedSceneId(sceneId);
@@ -182,12 +194,22 @@ export function App() {
   }
 
   /**
+   * Select a track from the timeline lane label.
+   */
+  function selectTrack({ trackId }: { trackId: string }) {
+    setSelectedTrackId(trackId);
+    setSelectedSceneId(null);
+    setPlaying(false);
+  }
+
+  /**
    * Isolate a scene on a local clock (double-click).
    */
   function isolateScene({ sceneId }: { sceneId: string }) {
     const scene = listScenes(workingManifest).find((entry) => entry.id === sceneId);
     if (!scene) return;
     setSelectedSceneId(sceneId);
+    setSelectedTrackId(null);
     setIsolatedSceneId(sceneId);
     setPlaying(false);
     setFrame(0);
@@ -401,13 +423,26 @@ export function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [saving, pendingSave]);
 
+  // Escape clears timeline selection back to video details.
+  useEffect(() => {
+    if (isEmbed) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (!selectedSceneId && !selectedTrackId) return;
+      event.preventDefault();
+      clearSelection();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isEmbed, selectedSceneId, selectedTrackId]);
+
   // Persist after the render that includes any in-progress field commit.
   useEffect(() => {
     if (!pendingSave || isEmbed) return;
 
     const overrides = propOverridesRef.current;
     const hasPropChanges = Object.keys(overrides).length > 0;
-    const hasTimelineChanges = timelineDirty;
+    const hasTimelineChanges = workingManifestDirty;
     if (!hasPropChanges && !hasTimelineChanges) {
       setPendingSave(false);
       return;
@@ -450,30 +485,23 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, [pendingSave, timelineDirty, workingManifest]);
+  }, [pendingSave, workingManifestDirty, workingManifest]);
 
-  const explorerGroups: ExplorerGroup[] = useMemo(() => {
-    const savedLanes = timelineLanes({ manifest });
-    return fullLanes.map((lane, laneIndex) => {
-      const savedLane = savedLanes.find((entry) => entry.trackId === lane.trackId);
-      const trackDirty =
-        savedLane?.title !== lane.title ||
-        (savedLane?.description ?? "") !== (lane.description ?? "");
-      return {
-        trackId: lane.trackId,
-        title: lane.title,
-        description: lane.description,
-        dirty: trackDirty,
-        items: lane.clips.map((clip) => ({
-          id: clip.sceneId,
-          title: clip.title,
-          detail: `${clip.durationInFrames}f`,
-          tone: SCENE_TONES[laneIndex % SCENE_TONES.length],
-          dirty: Boolean(propOverrides[clip.sceneId]),
-        })),
-      };
-    });
-  }, [fullLanes, manifest, propOverrides]);
+  const savedLanes = useMemo(
+    () => timelineLanes({ manifest }),
+    [manifest],
+  );
+
+  const selectedTrackDirty = useMemo(() => {
+    if (!selectedTrackId) return false;
+    const lane = fullLanes.find((entry) => entry.trackId === selectedTrackId);
+    const savedLane = savedLanes.find((entry) => entry.trackId === selectedTrackId);
+    if (!lane || !savedLane) return false;
+    return (
+      savedLane.title !== lane.title ||
+      (savedLane.description ?? "") !== (lane.description ?? "")
+    );
+  }, [fullLanes, savedLanes, selectedTrackId]);
 
   // Restore and clamp dock + sidebar sizes when the shell resizes.
   useEffect(() => {
@@ -556,7 +584,7 @@ export function App() {
 
     const onMove = (event: MouseEvent) => {
       const shellWidth = shellRef.current?.clientWidth ?? window.innerWidth;
-      const delta = event.clientX - sidebarResizeStart.current.x;
+      const delta = sidebarResizeStart.current.x - event.clientX;
       setSidebarWidth(
         clampSidebarWidth({
           width: sidebarResizeStart.current.width + delta,
@@ -581,13 +609,16 @@ export function App() {
     };
   }, [sidebarResizing]);
 
-  const selectedScene: Scene | undefined = listScenes(workingManifest).find(
-    (scene) => scene.id === selectedSceneId,
-  );
+  const selectedScene: Scene | undefined =
+    selectedSceneId != null
+      ? listScenes(workingManifest).find((scene) => scene.id === selectedSceneId)
+      : undefined;
   const selectedProps =
-    propOverrides[selectedSceneId] ?? selectedScene?.props ?? {};
+    selectedSceneId != null
+      ? propOverrides[selectedSceneId] ?? selectedScene?.props ?? {}
+      : {};
   const propDirtyCount = Object.keys(propOverrides).length;
-  const unsavedCount = propDirtyCount + (timelineDirty ? 1 : 0);
+  const unsavedCount = propDirtyCount + (workingManifestDirty ? 1 : 0);
   const saveHint =
     typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
       ? "⌘S"
@@ -679,12 +710,17 @@ export function App() {
     <div
       ref={shellRef}
       className={`sb-shell${dockResizing ? " is-dock-resizing" : ""}${sidebarResizing ? " is-sidebar-resizing" : ""}`}
+      style={
+        {
+          "--sb-sidebar-width": `${sidebarWidth}px`,
+        } as CSSProperties
+      }
     >
       {/* Top bar: title / video switcher + format pill */}
       <header className="sb-header">
         <div className="sb-title">
           <strong>Storyboard</strong>
-          <ProjectSwitcher title={manifest.title} />
+          <ProjectSwitcher title={workingManifest.title} />
         </div>
         <FormatSwitcher
           formats={manifest.formats}
@@ -694,115 +730,101 @@ export function App() {
         />
       </header>
 
-      <div className="sb-body">
-        {/* Left: scenes grouped by track + props inspector */}
-        <div className="sb-sidebar-host" style={{ width: sidebarWidth }}>
-          <Explorer
-            groups={explorerGroups}
-            selectedId={selectedSceneId}
-            onSelect={(id) => selectScene({ sceneId: id })}
-            onTrackTitleChange={({ trackId, title }) => {
-              setWorkingManifest((current) =>
-                updateTrack({ manifest: current, trackId, title }),
-              );
-            }}
-            onTrackDescriptionChange={({ trackId, description }) => {
-              setWorkingManifest((current) =>
-                updateTrack({
-                  manifest: current,
-                  trackId,
-                  description: description || null,
-                }),
-              );
-            }}
-            onTrackMoveUp={(trackId) => {
-              const ids = workingManifest.tracks.map((track) => track.id);
-              const index = ids.indexOf(trackId);
-              if (index <= 0) return;
-              const next = [...ids];
-              [next[index - 1], next[index]] = [next[index], next[index - 1]];
-              setWorkingManifest((current) =>
-                reorderTracks({ manifest: current, trackIds: next }),
-              );
-            }}
-            onTrackMoveDown={(trackId) => {
-              const ids = workingManifest.tracks.map((track) => track.id);
-              const index = ids.indexOf(trackId);
-              if (index < 0 || index >= ids.length - 1) return;
-              const next = [...ids];
-              [next[index], next[index + 1]] = [next[index + 1], next[index]];
-              setWorkingManifest((current) =>
-                reorderTracks({ manifest: current, trackIds: next }),
-              );
-            }}
-            onAddTrack={() => {
-              setWorkingManifest((current) => addTrack({ manifest: current }));
-            }}
-          >
-            <div className="sb-props">
-              {/* Inspector heading + unsaved marker */}
-              <div className="sb-props-head">
-                <h2>Props</h2>
-                {unsavedCount > 0 ? (
-                  <span className="sb-unsaved">Unsaved</span>
-                ) : null}
-              </div>
-              <PropFields
-                key={selectedSceneId}
-                values={selectedProps}
-                onChange={(next) => {
-                  setPropOverrides((current) => ({
-                    ...current,
-                    [selectedSceneId]: next,
-                  }));
-                }}
-              />
-              {/* Persist live overrides to the open video.json */}
-              <button
-                type="button"
-                className="sb-add-btn"
-                disabled={unsavedCount === 0 || saving}
-                title={`Save to video.json (${saveHint})`}
-                onClick={() => requestSave()}
-              >
-                <Save size={14} aria-hidden />
-                {saving
-                  ? "Saving…"
-                  : unsavedCount > 1
-                    ? `Save ${unsavedCount} changes`
-                    : "Save to video.json"}
-              </button>
-              {saveError ? <p className="sb-error">{saveError}</p> : null}
-            </div>
-          </Explorer>
+      {/* Composition preview */}
+      {stage}
 
-          {/* Sidebar resize handle */}
-          <div
-            className="sb-sidebar-resize-handle"
-            role="separator"
-            aria-orientation="vertical"
-            aria-label="Resize sidebar"
-            aria-valuemin={SIDEBAR_MIN_WIDTH}
-            aria-valuemax={SIDEBAR_MAX_WIDTH}
-            aria-valuenow={sidebarWidth}
-            onMouseDown={(event) => {
-              event.preventDefault();
-              beginSidebarResize({ clientX: event.clientX });
-            }}
-            onDoubleClick={() => {
-              const shellWidth =
-                shellRef.current?.clientWidth ?? window.innerWidth;
-              const next = clampSidebarWidth({
-                width: SIDEBAR_DEFAULT_WIDTH,
-                shellWidth,
-              });
-              setSidebarWidth(next);
-              window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(next));
-            }}
-          />
-        </div>
+      {/* Right: selection-driven details panel */}
+      <div className="sb-sidebar-host">
+        <DetailsSidebar
+          manifest={workingManifest}
+          compositionDuration={compositionDuration}
+          fullLanes={fullLanes}
+          selectedSceneId={selectedSceneId}
+          selectedTrackId={selectedTrackId}
+          selectedScene={selectedScene}
+          selectedProps={selectedProps}
+          trackDirty={selectedTrackDirty}
+          unsavedCount={unsavedCount}
+          saving={saving}
+          saveError={saveError}
+          saveHint={saveHint}
+          onClearSelection={clearSelection}
+          onRequestSave={requestSave}
+          onPropChange={(next) => {
+            if (!selectedSceneId) return;
+            setPropOverrides((current) => ({
+              ...current,
+              [selectedSceneId]: next,
+            }));
+          }}
+          onVideoTitleChange={({ title }) => {
+            setWorkingManifest((current) => ({ ...current, title }));
+          }}
+          onSceneTitleChange={({ sceneId, title }) => {
+            setWorkingManifest((current) =>
+              updateScene({ manifest: current, sceneId, title }),
+            );
+          }}
+          onTrackTitleChange={({ trackId, title }) => {
+            setWorkingManifest((current) =>
+              updateTrack({ manifest: current, trackId, title }),
+            );
+          }}
+          onTrackDescriptionChange={({ trackId, description }) => {
+            setWorkingManifest((current) =>
+              updateTrack({
+                manifest: current,
+                trackId,
+                description: description || null,
+              }),
+            );
+          }}
+          onTrackMoveUp={(trackId) => {
+            const ids = workingManifest.tracks.map((track) => track.id);
+            const index = ids.indexOf(trackId);
+            if (index <= 0) return;
+            const next = [...ids];
+            [next[index - 1], next[index]] = [next[index], next[index - 1]];
+            setWorkingManifest((current) =>
+              reorderTracks({ manifest: current, trackIds: next }),
+            );
+          }}
+          onTrackMoveDown={(trackId) => {
+            const ids = workingManifest.tracks.map((track) => track.id);
+            const index = ids.indexOf(trackId);
+            if (index < 0 || index >= ids.length - 1) return;
+            const next = [...ids];
+            [next[index], next[index + 1]] = [next[index + 1], next[index]];
+            setWorkingManifest((current) =>
+              reorderTracks({ manifest: current, trackIds: next }),
+            );
+          }}
+        />
 
-        {stage}
+        {/* Sidebar resize handle */}
+        <div
+          className="sb-sidebar-resize-handle"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize sidebar"
+          aria-valuemin={SIDEBAR_MIN_WIDTH}
+          aria-valuemax={SIDEBAR_MAX_WIDTH}
+          aria-valuenow={sidebarWidth}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            beginSidebarResize({ clientX: event.clientX });
+          }}
+          onDoubleClick={() => {
+            const shellWidth =
+              shellRef.current?.clientWidth ?? window.innerWidth;
+            const next = clampSidebarWidth({
+              width: SIDEBAR_DEFAULT_WIDTH,
+              shellWidth,
+            });
+            setSidebarWidth(next);
+            window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(next));
+          }}
+        />
       </div>
 
       {/* Resize handle */}
@@ -842,7 +864,9 @@ export function App() {
           onFrameChange={setFrame}
           lanes={lanes}
           selectedSceneId={selectedSceneId}
+          selectedTrackId={selectedTrackId}
           onSelectScene={(sceneId) => selectScene({ sceneId })}
+          onSelectTrack={(trackId) => selectTrack({ trackId })}
           onIsolateScene={(sceneId) => isolateScene({ sceneId })}
           isolated={Boolean(isolatedSceneId)}
           onBack={backToTimeline}
