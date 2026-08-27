@@ -1,0 +1,527 @@
+{
+  "schemaVersion": 3,
+  "slug": "many-tracks",
+  "title": "Many Tracks",
+  "fps": 30,
+  "formats": [
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "assetsRoot": ".",
+  "tracks": [
+    {
+      "id": "track-01",
+      "title": "Track 01",
+      "scenes": [
+        {
+          "id": "strip-01",
+          "title": "Strip 01",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 01",
+            "hue": 0
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-02",
+      "title": "Track 02",
+      "scenes": [
+        {
+          "id": "strip-02",
+          "title": "Strip 02",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 02",
+            "hue": 12
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-03",
+      "title": "Track 03",
+      "scenes": [
+        {
+          "id": "strip-03",
+          "title": "Strip 03",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 03",
+            "hue": 24
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-04",
+      "title": "Track 04",
+      "scenes": [
+        {
+          "id": "strip-04",
+          "title": "Strip 04",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 04",
+            "hue": 36
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-05",
+      "title": "Track 05",
+      "scenes": [
+        {
+          "id": "strip-05",
+          "title": "Strip 05",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 05",
+            "hue": 48
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-06",
+      "title": "Track 06",
+      "scenes": [
+        {
+          "id": "strip-06",
+          "title": "Strip 06",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 06",
+            "hue": 60
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-07",
+      "title": "Track 07",
+      "scenes": [
+        {
+          "id": "strip-07",
+          "title": "Strip 07",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 07",
+            "hue": 72
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-08",
+      "title": "Track 08",
+      "scenes": [
+        {
+          "id": "strip-08",
+          "title": "Strip 08",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 08",
+            "hue": 84
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-09",
+      "title": "Track 09",
+      "scenes": [
+        {
+          "id": "strip-09",
+          "title": "Strip 09",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 09",
+            "hue": 96
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-10",
+      "title": "Track 10",
+      "scenes": [
+        {
+          "id": "strip-10",
+          "title": "Strip 10",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 10",
+            "hue": 108
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-11",
+      "title": "Track 11",
+      "scenes": [
+        {
+          "id": "strip-11",
+          "title": "Strip 11",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 11",
+            "hue": 120
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-12",
+      "title": "Track 12",
+      "scenes": [
+        {
+          "id": "strip-12",
+          "title": "Strip 12",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 12",
+            "hue": 132
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-13",
+      "title": "Track 13",
+      "scenes": [
+        {
+          "id": "strip-13",
+          "title": "Strip 13",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 13",
+            "hue": 144
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-14",
+      "title": "Track 14",
+      "scenes": [
+        {
+          "id": "strip-14",
+          "title": "Strip 14",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 14",
+            "hue": 156
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-15",
+      "title": "Track 15",
+      "scenes": [
+        {
+          "id": "strip-15",
+          "title": "Strip 15",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 15",
+            "hue": 168
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-16",
+      "title": "Track 16",
+      "scenes": [
+        {
+          "id": "strip-16",
+          "title": "Strip 16",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 16",
+            "hue": 180
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-17",
+      "title": "Track 17",
+      "scenes": [
+        {
+          "id": "strip-17",
+          "title": "Strip 17",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 17",
+            "hue": 192
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-18",
+      "title": "Track 18",
+      "scenes": [
+        {
+          "id": "strip-18",
+          "title": "Strip 18",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 18",
+            "hue": 204
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-19",
+      "title": "Track 19",
+      "scenes": [
+        {
+          "id": "strip-19",
+          "title": "Strip 19",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 19",
+            "hue": 216
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-20",
+      "title": "Track 20",
+      "scenes": [
+        {
+          "id": "strip-20",
+          "title": "Strip 20",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 20",
+            "hue": 228
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-21",
+      "title": "Track 21",
+      "scenes": [
+        {
+          "id": "strip-21",
+          "title": "Strip 21",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 21",
+            "hue": 240
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-22",
+      "title": "Track 22",
+      "scenes": [
+        {
+          "id": "strip-22",
+          "title": "Strip 22",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 22",
+            "hue": 252
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-23",
+      "title": "Track 23",
+      "scenes": [
+        {
+          "id": "strip-23",
+          "title": "Strip 23",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 23",
+            "hue": 264
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-24",
+      "title": "Track 24",
+      "scenes": [
+        {
+          "id": "strip-24",
+          "title": "Strip 24",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 24",
+            "hue": 276
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-25",
+      "title": "Track 25",
+      "scenes": [
+        {
+          "id": "strip-25",
+          "title": "Strip 25",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 25",
+            "hue": 288
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-26",
+      "title": "Track 26",
+      "scenes": [
+        {
+          "id": "strip-26",
+          "title": "Strip 26",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 26",
+            "hue": 300
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-27",
+      "title": "Track 27",
+      "scenes": [
+        {
+          "id": "strip-27",
+          "title": "Strip 27",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 27",
+            "hue": 312
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-28",
+      "title": "Track 28",
+      "scenes": [
+        {
+          "id": "strip-28",
+          "title": "Strip 28",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 28",
+            "hue": 324
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-29",
+      "title": "Track 29",
+      "scenes": [
+        {
+          "id": "strip-29",
+          "title": "Strip 29",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 29",
+            "hue": 336
+          },
+          "durationInFrames": 60
+        }
+      ]
+    },
+    {
+      "id": "track-30",
+      "title": "Track 30",
+      "scenes": [
+        {
+          "id": "strip-30",
+          "title": "Strip 30",
+          "visualType": "component",
+          "component": "src/scenes/TrackStrip.tsx",
+          "props": {
+            "label": "Track 30",
+            "hue": 348
+          },
+          "durationInFrames": 60
+        }
+      ]
+    }
+  ]
+}

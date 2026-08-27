@@ -130,6 +130,74 @@ function appendFormatToManifestFile({
 }
 
 /**
+ * Remove a format from video.json, keeping at least one format on disk.
+ */
+export function removeFormatFromManifestFile({
+  manifestPath,
+  formatId,
+}: {
+  manifestPath: string;
+  formatId: string;
+}): { ok: true } | { ok: false; errors: string[] } {
+  if (!formatId) {
+    return { ok: false, errors: ["formatId is required"] };
+  }
+
+  let raw: unknown;
+  try {
+    raw = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as unknown;
+  } catch (err) {
+    return {
+      ok: false,
+      errors: [`Could not read video.json: ${err instanceof Error ? err.message : String(err)}`],
+    };
+  }
+
+  if (!raw || typeof raw !== "object") {
+    return { ok: false, errors: ["video.json must be an object"] };
+  }
+
+  const file = raw as { formats?: unknown };
+  if (!Array.isArray(file.formats)) {
+    return { ok: false, errors: ["video.json is missing a formats array"] };
+  }
+
+  if (file.formats.length <= 1) {
+    return { ok: false, errors: ["At least one format is required"] };
+  }
+
+  const nextFormats = file.formats.filter((entry) => {
+    if (!entry || typeof entry !== "object" || !("id" in entry)) return true;
+    return (entry as { id: unknown }).id !== formatId;
+  });
+
+  if (nextFormats.length === file.formats.length) {
+    return { ok: false, errors: [`Format id "${formatId}" was not found`] };
+  }
+
+  if (nextFormats.length < 1) {
+    return { ok: false, errors: ["At least one format is required"] };
+  }
+
+  const next = {
+    ...file,
+    formats: nextFormats,
+  };
+  const validated = videoManifestSchema.safeParse(next);
+  if (!validated.success) {
+    return {
+      ok: false,
+      errors: validated.error.issues.map(
+        (issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`,
+      ),
+    };
+  }
+
+  fs.writeFileSync(manifestPath, `${JSON.stringify(next, null, 2)}\n`, "utf8");
+  return { ok: true };
+}
+
+/**
  * Return a non-array object, or null when the value is not that shape.
  */
 function asPlainObject({
@@ -583,6 +651,34 @@ export function previewApiPlugin({
                   width: number;
                   height: number;
                 },
+              });
+              if (!result.ok) {
+                sendJson({ res, status: 400, body: result });
+                return;
+              }
+              sendJson({ res, status: 200, body: { ok: true } });
+            } catch (err) {
+              sendJson({
+                res,
+                status: 400,
+                body: {
+                  ok: false,
+                  errors: [err instanceof Error ? err.message : String(err)],
+                },
+              });
+            }
+          })();
+          return;
+        }
+
+        if (method === "POST" && pathname === "/__storyboard/remove-format") {
+          void (async () => {
+            try {
+              const body = (await readJsonBody({ req })) as { id?: unknown };
+              const formatId = typeof body.id === "string" ? body.id : "";
+              const result = removeFormatFromManifestFile({
+                manifestPath: session.getManifestPath(),
+                formatId,
               });
               if (!result.ok) {
                 sendJson({ res, status: 400, body: result });

@@ -54,6 +54,28 @@ const isEmbed =
   new URLSearchParams(window.location.search).has("embed");
 
 /**
+ * Parse JSON from a studio API response. Unknown POST routes come back as an
+ * empty 404, which throws if we call `response.json()` directly.
+ */
+async function readStudioJson({
+  response,
+  fallback,
+}: {
+  response: Response;
+  fallback: string;
+}): Promise<{ ok?: boolean; errors?: string[] }> {
+  const text = await response.text();
+  if (!text.trim()) {
+    throw new Error(fallback);
+  }
+  try {
+    return JSON.parse(text) as { ok?: boolean; errors?: string[] };
+  } catch {
+    throw new Error(fallback);
+  }
+}
+
+/**
  * Preview studio: composition stage, details sidebar, and multi-lane timeline.
  * With `?embed=1`, hides chrome and accepts host frame control (First Take).
  */
@@ -111,6 +133,13 @@ export function App() {
     setSelectedTrackId(null);
     setFrame(0);
   }, [manifest, resetStudio]);
+
+  useEffect(() => {
+    // Stay on a live format after video.json drops the one we were previewing.
+    if (!manifest.formats.some((entry) => entry.id === formatId)) {
+      setFormatId(manifest.formats[0].id);
+    }
+  }, [manifest.formats, formatId]);
 
   const compositionDuration = totalDurationInFrames(workingManifest);
   const fullLanes = useMemo(
@@ -187,6 +216,17 @@ export function App() {
   function clearSelection() {
     setSelectedSceneId(null);
     setSelectedTrackId(null);
+  }
+
+  /**
+   * Step back: leave isolate mode first, then clear the timeline selection.
+   */
+  function goBack() {
+    if (isolatedSceneId) {
+      backToTimeline();
+      return;
+    }
+    clearSelection();
   }
 
   /**
@@ -517,18 +557,18 @@ export function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Escape clears timeline selection back to video details.
+  // Escape leaves isolate mode, then clears timeline selection back to video details.
   useEffect(() => {
     if (isEmbed) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      if (!selectedSceneId && !selectedTrackId) return;
+      if (!isolatedSceneId && !selectedSceneId && !selectedTrackId) return;
       event.preventDefault();
-      clearSelection();
+      goBack();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isEmbed, selectedSceneId, selectedTrackId]);
+  }, [isEmbed, isolatedSceneId, selectedSceneId, selectedTrackId]);
 
   // Persist after the render that includes any in-progress field commit.
   useEffect(() => {
@@ -806,12 +846,31 @@ export function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(next),
     });
-    const payload = (await response.json()) as {
-      ok?: boolean;
-      errors?: string[];
-    };
+    const payload = await readStudioJson({
+      response,
+      fallback: "Could not add format",
+    });
     if (!response.ok || !payload.ok) {
       throw new Error(payload.errors?.join("; ") || "Could not add format");
+    }
+  };
+
+  /**
+   * Remove a format from the open video.json. The studio reloads the file after a successful write.
+   */
+  const removeFormat = async ({ id }: { id: string }) => {
+    const response = await fetch("/__storyboard/remove-format", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    const payload = await readStudioJson({
+      response,
+      fallback:
+        "Could not delete format. Restart the preview server to pick up the new API.",
+    });
+    if (!response.ok || !payload.ok) {
+      throw new Error(payload.errors?.join("; ") || "Could not delete format");
     }
   };
 
@@ -836,6 +895,7 @@ export function App() {
           formatId={format.id}
           onFormatChange={setFormatId}
           onFormatAdd={addFormat}
+          onFormatRemove={removeFormat}
         />
       </header>
 
@@ -852,12 +912,13 @@ export function App() {
           selectedTrackId={selectedTrackId}
           selectedScene={selectedScene}
           selectedProps={selectedProps}
+          isolated={Boolean(isolatedSceneId)}
           trackDirty={selectedTrackDirty}
           unsavedCount={unsavedCount}
           saving={saving}
           saveError={saveError}
           saveHint={saveHint}
-          onClearSelection={clearSelection}
+          onBack={goBack}
           onRequestSave={requestSave}
           onPropChange={(next) => {
             if (!selectedSceneId) return;

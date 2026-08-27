@@ -9,6 +9,12 @@
       "aspectRatio": "16:9",
       "width": 1280,
       "height": 720
+    },
+    {
+      "id": "1x1",
+      "aspectRatio": "1:1",
+      "width": 1080,
+      "height": 1080
     }
   ],
   "assetsRoot": ".",
@@ -44,7 +50,9 @@
           "title": "Circle wipe",
           "visualType": "component",
           "component": "src/scenes/Wipe.tsx",
-          "props": {},
+          "props": {
+            "pauseMs": 300
+          },
           "durationInFrames": 90,
           "gapBeforeFrames": 135
         }

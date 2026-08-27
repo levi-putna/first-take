@@ -9,6 +9,12 @@
       "aspectRatio": "16:9",
       "width": 1280,
       "height": 720
+    },
+    {
+      "id": "4x5",
+      "aspectRatio": "4:5",
+      "width": 1080,
+      "height": 1350
     }
   ],
   "assetsRoot": ".",

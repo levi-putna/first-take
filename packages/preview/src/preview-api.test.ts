@@ -3,7 +3,11 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { VideoManifest } from "@levi-putna/storyboard-schema";
-import { saveScenePropsToManifestFile, saveStudioChangesToManifestFile } from "./preview-api.js";
+import {
+  removeFormatFromManifestFile,
+  saveScenePropsToManifestFile,
+  saveStudioChangesToManifestFile,
+} from "./preview-api.js";
 
 const minimalManifest = {
   schemaVersion: 3 as const,
@@ -300,5 +304,101 @@ describe("saveStudioChangesToManifestFile", () => {
     expect(saved.tracks[1]?.scenes[0]?.id).toBe("01");
     expect(saved.tracks[1]?.scenes[0]?.props).toEqual({ headline: "Moved" });
     expect(saved.tracks[0]?.scenes.map((scene) => scene.id)).toEqual(["02"]);
+  });
+});
+
+describe("removeFormatFromManifestFile", () => {
+  it("removes the matching format and leaves the rest of the file unchanged", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-remove-format-"));
+    const manifestPath = writeManifest({
+      dir,
+      manifest: {
+        ...minimalManifest,
+        formats: [
+          { id: "16x9", aspectRatio: "16:9", width: 640, height: 360 },
+          { id: "9x16", aspectRatio: "9:16", width: 360, height: 640 },
+        ],
+      },
+    });
+
+    const result = removeFormatFromManifestFile({
+      manifestPath,
+      formatId: "9x16",
+    });
+
+    expect(result).toEqual({ ok: true });
+    const saved = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
+      formats: Array<{ id: string }>;
+    };
+    expect(saved.formats.map((entry) => entry.id)).toEqual(["16x9"]);
+  });
+
+  it("rejects deleting the last remaining format", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-remove-last-format-"));
+    const manifestPath = writeManifest({ dir });
+    const before = fs.readFileSync(manifestPath, "utf8");
+
+    const result = removeFormatFromManifestFile({
+      manifestPath,
+      formatId: "16x9",
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0]).toMatch(/At least one format is required/);
+    }
+    expect(fs.readFileSync(manifestPath, "utf8")).toBe(before);
+  });
+
+  it("rejects an unknown format id and leaves the file untouched", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-remove-missing-format-"));
+    const manifestPath = writeManifest({
+      dir,
+      manifest: {
+        ...minimalManifest,
+        formats: [
+          { id: "16x9", aspectRatio: "16:9", width: 640, height: 360 },
+          { id: "1x1", aspectRatio: "1:1", width: 360, height: 360 },
+        ],
+      },
+    });
+    const before = fs.readFileSync(manifestPath, "utf8");
+
+    const result = removeFormatFromManifestFile({
+      manifestPath,
+      formatId: "missing",
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0]).toMatch(/Format id "missing" was not found/);
+    }
+    expect(fs.readFileSync(manifestPath, "utf8")).toBe(before);
+  });
+
+  it("does not inject Zod defaults that were omitted from the file", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-remove-format-defaults-"));
+    const manifestPath = writeManifest({
+      dir,
+      manifest: {
+        ...minimalManifest,
+        formats: [
+          { id: "16x9", aspectRatio: "16:9", width: 640, height: 360 },
+          { id: "9x16", aspectRatio: "9:16", width: 360, height: 640 },
+        ],
+      },
+    });
+
+    removeFormatFromManifestFile({
+      manifestPath,
+      formatId: "9x16",
+    });
+
+    const saved = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as Record<
+      string,
+      unknown
+    >;
+    expect(saved).not.toHaveProperty("fps");
+    expect(saved).not.toHaveProperty("assetsRoot");
   });
 });

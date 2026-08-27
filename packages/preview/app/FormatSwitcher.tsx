@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, Monitor, Plus, Ratio, Smartphone, Square } from "lucide-react";
+import { Check, ChevronDown, Monitor, Plus, Ratio, Smartphone, Square, Trash2 } from "lucide-react";
 import type { Format } from "@levi-putna/storyboard-schema";
 import {
   availableFormatPresets,
@@ -8,27 +8,31 @@ import {
 } from "./formatPresets";
 
 /**
- * Top-right format pill: switch the preview size or append a format to video.json.
+ * Top-right format pill: switch the preview size, or add/remove formats on video.json.
  */
 export function FormatSwitcher({
   formats,
   formatId,
   onFormatChange,
   onFormatAdd,
+  onFormatRemove,
 }: {
   formats: Format[];
   formatId: string;
   onFormatChange: (id: string) => void;
   onFormatAdd: (format: Format) => Promise<void>;
+  onFormatRemove: ({ id }: { id: string }) => Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [customWidth, setCustomWidth] = useState("1080");
   const [customHeight, setCustomHeight] = useState("1080");
   const rootRef = useRef<HTMLDivElement>(null);
   const active = formats.find((format) => format.id === formatId) ?? formats[0];
   const addable = availableFormatPresets({ formats });
+  const canDelete = formats.length > 1;
 
   useEffect(() => {
     if (!open) return;
@@ -66,8 +70,30 @@ export function FormatSwitcher({
     }
   };
 
+  /**
+   * Drop a format from video.json. If the active preview is removed, jump to the first remaining format.
+   */
+  const remove = async ({ id }: { id: string }) => {
+    if (!canDelete || removingId) return;
+    setError(null);
+    setRemovingId(id);
+    try {
+      await onFormatRemove({ id });
+      if (active.id === id) {
+        const remaining = formats.filter((format) => format.id !== id);
+        const nextFormat = remaining[0];
+        if (nextFormat) onFormatChange(nextFormat.id);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
   return (
     <div className="sb-format" ref={rootRef}>
+      {/* Format trigger — current aspect ratio and pixel size */}
       <button
         type="button"
         className="sb-format-trigger"
@@ -85,27 +111,46 @@ export function FormatSwitcher({
       </button>
       {open ? (
         <div className="sb-menu" role="menu">
+          {/* Current formats — delete is hover-only and hidden when this is the last one */}
           {formats.map((format) => (
-            <button
-              key={format.id}
-              type="button"
-              className="sb-menu-item"
-              role="menuitemradio"
-              aria-checked={format.id === active.id}
-              onClick={() => {
-                onFormatChange(format.id);
-                setOpen(false);
-              }}
-            >
-              <FormatGlyph aspectRatio={format.aspectRatio} />
-              <span style={{ flex: 1 }}>
-                {format.aspectRatio}
-                <small>{formatHint({ format })}</small>
-              </span>
-              {format.id === active.id ? <Check size={16} aria-hidden /> : null}
-            </button>
+            <div key={format.id} className="sb-format-option">
+              <button
+                type="button"
+                className="sb-menu-item"
+                role="menuitemradio"
+                aria-checked={format.id === active.id}
+                onClick={() => {
+                  onFormatChange(format.id);
+                  setOpen(false);
+                }}
+              >
+                <FormatGlyph aspectRatio={format.aspectRatio} />
+                <span style={{ flex: 1 }}>
+                  {format.aspectRatio}
+                  <small>{formatHint({ format })}</small>
+                </span>
+                {format.id === active.id ? (
+                  <Check className="sb-format-check" size={16} aria-hidden />
+                ) : null}
+              </button>
+              {canDelete ? (
+                <button
+                  type="button"
+                  className="sb-format-delete"
+                  aria-label={`Delete ${format.aspectRatio} format`}
+                  title="Delete format"
+                  disabled={removingId != null}
+                  onClick={() => {
+                    void remove({ id: format.id });
+                  }}
+                >
+                  <Trash2 size={14} aria-hidden />
+                </button>
+              ) : null}
+            </div>
           ))}
           <div className="sb-menu-sep" />
+          {/* Presets and custom pixels to append another format */}
           {!adding ? (
             <button
               type="button"
@@ -173,9 +218,9 @@ export function FormatSwitcher({
               >
                 Add {customWidth}×{customHeight}
               </button>
-              {error ? <p className="sb-error">{error}</p> : null}
             </div>
           )}
+          {error ? <p className="sb-error">{error}</p> : null}
         </div>
       ) : null}
     </div>

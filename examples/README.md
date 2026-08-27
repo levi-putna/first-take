@@ -13,6 +13,7 @@ yarn storyboard render examples/<slug>/video.json --format=16x9
 |---------|----------------|
 | [hello-explainer](./hello-explainer/README.md) | Dual-format explainer: visual track + spanning mix (jingle, bed, narration) |
 | [track-overlay](./track-overlay/README.md) | Long background, gapped transparent overlays, corner badge for z-order |
+| [many-tracks](./many-tracks/README.md) | Thirty stacked tracks for timeline scroll and multi-lane UI testing |
 | [first-take-kit](./first-take-kit/README.md) | `TitleCard` scene used by the First Take macOS editor |
 | [motion-basics](./motion-basics/README.md) | Frame-driven `interpolate` and `spring` on a simple block |
 | [motion-lab](./motion-lab/README.md) | Catalogue of patterns (typewriter, float, pulse, slide, stagger, spring, progress, rotate) plus a frame timeline |

@@ -1,6 +1,6 @@
 # Circle Wipe
 
-Two colour holds on the main track with a **circle iris wipe** on a higher track. Black closes to a centre point over 1.5 seconds, holds one frame fully black, then opens fully back out over 1.5 seconds. The wipe clip’s first and last frames are identical — the overlay is fully transparent — so the hold underneath shows through unchanged at both edges. No framework transition fields; the wipe is entirely in-scene.
+Two colour holds on the main track with a **circle iris wipe** on a higher track. Black closes to a centre point, holds fully closed for `pauseMs` (300ms in this example), then opens fully back out. The wipe clip’s first and last frames are identical — the overlay is fully transparent — so the hold underneath shows through unchanged at both edges. No framework transition fields; the wipe is entirely in-scene.
 
 Catalogue: [examples/README.md](../README.md).
 
@@ -15,7 +15,7 @@ Catalogue: [examples/README.md](../README.md).
 | Track | Layout |
 |-------|--------|
 | Main | Teal circle (180f / 6s), then amber square (180f / 6s) |
-| Wipe | Iris mask (90f / 3s) starting 135f — overlaps the last 1.5s of scene A and first 1.5s of scene B |
+| Wipe | Iris mask (90f / 3s) starting 135f — closes, holds 300ms (`pauseMs`), then opens. Overlaps the last 1.5s of scene A and first 1.5s of scene B |
 
 Composition length is **360 frames** (12 seconds at 30 fps).
 

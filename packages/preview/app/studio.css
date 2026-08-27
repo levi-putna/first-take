@@ -1430,6 +1430,64 @@ button.sb-timeline-label:focus-visible {
   font-weight: 400;
 }
 
+.sb-format-option {
+  position: relative;
+}
+
+.sb-format-option:has(.sb-format-delete) button.sb-menu-item {
+  padding-right: 32px;
+}
+
+.sb-format-option .sb-format-check {
+  flex-shrink: 0;
+}
+
+.sb-format-delete {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sb-format-option:hover .sb-format-delete,
+.sb-format-option:focus-within .sb-format-delete {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sb-format-option:hover .sb-format-check,
+.sb-format-option:focus-within .sb-format-check {
+  visibility: hidden;
+}
+
+.sb-format-delete:hover,
+.sb-format-delete:focus-visible {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 18%, transparent);
+}
+
+.sb-format-delete:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+.sb-format-option:hover .sb-format-delete:disabled,
+.sb-format-option:focus-within .sb-format-delete:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
 .sb-menu-sep {
   height: 1px;
   background: var(--border);

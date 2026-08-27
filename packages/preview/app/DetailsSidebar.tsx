@@ -16,12 +16,13 @@ export function DetailsSidebar({
   selectedTrackId,
   selectedScene,
   selectedProps,
+  isolated = false,
   trackDirty,
   unsavedCount,
   saving,
   saveError,
   saveHint,
-  onClearSelection,
+  onBack,
   onRequestSave,
   onPropChange,
   onVideoTitleChange,
@@ -38,12 +39,13 @@ export function DetailsSidebar({
   selectedTrackId: string | null;
   selectedScene?: Scene;
   selectedProps: Record<string, unknown>;
+  isolated?: boolean;
   trackDirty?: boolean;
   unsavedCount: number;
   saving: boolean;
   saveError: string | null;
   saveHint: string;
-  onClearSelection: () => void;
+  onBack: () => void;
   onRequestSave: () => void;
   onPropChange: (next: Record<string, unknown>) => void;
   onVideoTitleChange: (args: { title: string }) => void;
@@ -79,12 +81,12 @@ export function DetailsSidebar({
       {/* Details header aligned with the main app header */}
       <header className="sb-details-header">
         <div className="sb-details-title">
-          {hasSelection ? (
+          {hasSelection || isolated ? (
             <button
               type="button"
               className="sb-icon-btn"
-              aria-label="Clear selection"
-              onClick={onClearSelection}
+              aria-label={isolated ? "Back to full timeline" : "Clear selection"}
+              onClick={onBack}
             >
               <ArrowLeft size={16} aria-hidden />
             </button>

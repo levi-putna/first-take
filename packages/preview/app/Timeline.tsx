@@ -154,6 +154,7 @@ export function Timeline({
 }) {
   const last = Math.max(0, durationInFrames - 1);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const laneRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const applyingFocusRef = useRef(false);
   const didInitZoomRef = useRef(false);
@@ -663,53 +664,71 @@ export function Timeline({
 
   applyZoomRef.current = applyZoom;
 
-  // Vertical wheel / pinch zooms; horizontal wheel keeps native pan scrolling.
+  // Cmd/Ctrl+wheel or pinch zooms; unmodified vertical wheel scrolls lanes; horizontal wheel pans.
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+    const panelEl = panelRef.current;
+    if (!panelEl) return;
 
     /**
-     * Zooms the timeline from wheel or trackpad pinch, anchored under the pointer.
+     * Routes wheel gestures: modifier/pinch zoom, vertical scroll for overflow, or native pan.
      */
     function handleWheel(event: WheelEvent) {
       const scrollEl = scrollRef.current;
-      if (!scrollEl) return;
+      const panel = panelRef.current;
+      if (!scrollEl || !panel) return;
 
       const absX = Math.abs(event.deltaX);
       const absY = Math.abs(event.deltaY);
       const isPinch = event.ctrlKey || event.metaKey;
-      const isVerticalZoom = absY >= absX && absY > 0;
+      const isVertical = absY >= absX && absY > 0;
 
-      if (!isPinch && !isVerticalZoom) return;
+      if (isPinch) {
+        event.preventDefault();
 
-      event.preventDefault();
+        let deltaY = event.deltaY;
+        if (event.deltaMode === 1) deltaY *= 16;
+        if (event.deltaMode === 2) deltaY *= scrollEl.clientWidth;
 
-      let deltaY = event.deltaY;
-      if (event.deltaMode === 1) deltaY *= 16;
-      if (event.deltaMode === 2) deltaY *= scrollEl.clientWidth;
+        const factor = Math.exp(-deltaY * 0.0018);
+        const rect = scrollEl.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const anchorFrame =
+          (scrollEl.scrollLeft + offsetX) / Math.max(0.0001, pixelsPerFrame);
 
-      const factor = Math.exp(-deltaY * 0.0018);
-      const rect = scrollEl.getBoundingClientRect();
-      const offsetX = event.clientX - rect.left;
-      const anchorFrame =
-        (scrollEl.scrollLeft + offsetX) / Math.max(0.0001, pixelsPerFrame);
+        applyZoomRef.current({
+          nextPpf: scalePixelsPerFrame({
+            pixelsPerFrame,
+            factor,
+            trackWidth: scrollEl.clientWidth,
+            durationInFrames,
+            fps,
+          }),
+          anchorFrame,
+          anchorOffsetPx: offsetX,
+        });
+        return;
+      }
 
-      applyZoomRef.current({
-        nextPpf: scalePixelsPerFrame({
-          pixelsPerFrame,
-          factor,
-          trackWidth: scrollEl.clientWidth,
-          durationInFrames,
-          fps,
-        }),
-        anchorFrame,
-        anchorOffsetPx: offsetX,
-      });
+      if (isVertical) {
+        const maxScroll = panel.scrollHeight - panel.clientHeight;
+        if (maxScroll <= 0) return;
+
+        event.preventDefault();
+
+        let deltaY = event.deltaY;
+        if (event.deltaMode === 1) deltaY *= 16;
+        if (event.deltaMode === 2) deltaY *= panel.clientHeight;
+
+        panel.scrollTop = Math.min(
+          maxScroll,
+          Math.max(0, panel.scrollTop + deltaY),
+        );
+      }
     }
 
-    el.addEventListener("wheel", handleWheel, { passive: false });
+    panelEl.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
-      el.removeEventListener("wheel", handleWheel);
+      panelEl.removeEventListener("wheel", handleWheel);
     };
   }, [durationInFrames, fps, pixelsPerFrame]);
 
@@ -944,7 +963,7 @@ export function Timeline({
 
       {/* Ruler + lanes (scroll vertically when dock is short) */}
       <div className="sb-timeline-body">
-        <div className="sb-timeline-panel">
+        <div ref={panelRef} className="sb-timeline-panel">
           <div className={`sb-timeline${reorderingTrackId ? " is-reordering-tracks" : ""}`}>
             {/* Track titles sit left of the scrollport; grip only when reorderable */}
             <div className="sb-timeline-labels" style={{ width: labelWidth }}>
