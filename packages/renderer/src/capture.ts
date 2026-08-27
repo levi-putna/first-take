@@ -119,6 +119,12 @@ export async function captureFrames({
 
   const launchOptions: Parameters<typeof chromium.launch>[0] = {
     headless: true,
+    // ANGLE so headless Chromium can create a WebGL2 context for Three.js.
+    args: [
+      "--use-gl=angle",
+      "--enable-webgl",
+      "--ignore-gpu-blocklist",
+    ],
   };
   if (chromiumPath) {
     launchOptions.executablePath = chromiumPath;

@@ -22,6 +22,8 @@ const MIME_BY_EXT: Record<string, string> = {
   ".woff": "font/woff",
   ".woff2": "font/woff2",
   ".ttf": "font/ttf",
+  ".glb": "model/gltf-binary",
+  ".gltf": "model/gltf+json",
 };
 
 const SKIP_SOURCE_EXT = new Set([

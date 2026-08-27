@@ -357,6 +357,7 @@ Validate does **not** execute components or type-check props. Broken motion only
 | Hard cut between clips | [`examples/clip-hard-cut`](./examples/clip-hard-cut/README.md) |
 | Moving clip with sound | [`examples/clip-sound-move`](./examples/clip-sound-move/README.md) |
 | Long timeline alignment (5 min colour holds + second counter) | [`examples/timeline-alignment`](./examples/timeline-alignment/README.md) |
+| Frame-seeked Three.js / WebGL | [`examples/three-robot`](./examples/three-robot/README.md) |
 
 Playable previews: [`examples/README.md`](./examples/README.md). Descriptions: [README.md](./README.md#examples).
 

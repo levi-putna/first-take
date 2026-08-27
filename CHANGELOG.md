@@ -8,6 +8,10 @@ uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `three-robot` example: an 11-second frame-seeked Three.js walk (RobotExpressive), with a camera pull-out in the second half.
+- Headless Chromium launches with `--use-gl=angle` so WebGL compositions can capture.
+- Preview serves `.glb` / `.gltf` with the glTF MIME types.
+
 - Preview studio: **Save to video.json** writes live prop inspector overrides
   back to the open manifest (⌘S / Ctrl+S).
 - Preview studio: drag clips to reposition or trim, move between tracks, and

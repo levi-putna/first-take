@@ -28,5 +28,6 @@ yarn storyboard render examples/<slug>/video.json --format=16x9
 | [clip-hard-cut](./clip-hard-cut/README.md) | Two clips back-to-back with no transition |
 | [clip-sound-move](./clip-sound-move/README.md) | Sound-on clip that drifts around the frame |
 | [timeline-alignment](./timeline-alignment/README.md) | 5-minute fixture: colour holds every 10s plus a per-second counter overlay |
+| [three-robot](./three-robot/README.md) | Frame-seeked Three.js clip: RobotExpressive walks; camera pulls out in the second half |
 
 Studio UI: [Preview](../README.md#preview) in the root README.

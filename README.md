@@ -28,7 +28,7 @@ Point the agent at [`AGENT-README.md`](./AGENT-README.md) before it scaffolds a 
 | Pure React scenes | Each scene is a default-exported component with JSON-serialisable props. Motion is `f(frame, props)`. |
 | Deterministic pixels | The same files always produce the same frames, so iterate-and-diff actually works. |
 | A closed CLI loop | `create` → write → `validate` → `still` → `preview` → `render`. Broken motion shows up in stills before you wait on an encode. |
-| Copyable examples | Motion patterns, overlays, clips, audio mix, dual format. Start from the closest example; do not invent from scratch. |
+| Copyable examples | Motion patterns, overlays, clips, audio mix, dual format, Three.js / WebGL. Start from the closest example; do not invent from scratch. |
 
 You stay the director: review stills and the [preview studio](#preview), change the brief, and ask for another pass. Revisions are code edits, not "regenerate and hope".
 
@@ -94,7 +94,8 @@ Drive all motion from `useCurrentFrame()`. Do not use CSS transitions or animati
 Agent playbook (read this first): [`AGENT-README.md`](./AGENT-README.md).  
 Authoring detail: [`.doc/07-authoring-guide.md`](.doc/07-authoring-guide.md).  
 Component contract: [`.doc/10-component-requirements.md`](.doc/10-component-requirements.md).  
-Real footage (trim, PIP, overlays): [`.doc/09-video-clips.md`](.doc/09-video-clips.md).
+Real footage (trim, PIP, overlays): [`.doc/09-video-clips.md`](.doc/09-video-clips.md).  
+Three.js / WebGL (frame-seeked mixer, not a wall-clock loop): [`examples/three-robot`](./examples/three-robot/README.md).
 
 ## Preview
 
@@ -197,6 +198,7 @@ npx @levi-putna/storyboard render examples/hello-explainer/video.json
 | [`clip-hard-cut`](./examples/clip-hard-cut/README.md) | Two clips back-to-back with no transition |
 | [`clip-sound-move`](./examples/clip-sound-move/README.md) | Sound-on clip that drifts around the frame |
 | [`timeline-alignment`](./examples/timeline-alignment/README.md) | 5-minute fixture: colour holds every 10s plus a per-second counter overlay |
+| [`three-robot`](./examples/three-robot/README.md) | Three.js / WebGL: RobotExpressive walk, seeked from `useCurrentFrame()`; camera pull-out in the second half |
 
 ### Tests
 

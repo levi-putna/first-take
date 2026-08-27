@@ -341,8 +341,9 @@ function SceneDetails({
 
   return (
     <div className="sb-stacked-details">
-      {/* Primary: editable title, then props */}
+      {/* Primary: editable title, then component props */}
       <div className="sb-stacked-details-main">
+        {/* Scene name in the editor — not a rendered page element */}
         <div className="sb-field">
           <label htmlFor={`scene-title-${scene.id}`}>Title</label>
           <input
@@ -352,7 +353,14 @@ function SceneDetails({
             onChange={(event) => onTitleChange(event.target.value)}
           />
         </div>
-        <PropFields key={scene.id} values={props} onChange={onPropChange} />
+
+        {/* Props that the scene component actually receives */}
+        <div className="sb-details-section sb-details-props">
+          <div className="sb-details-section-head">
+            <h2 className="sb-details-label">Props</h2>
+          </div>
+          <PropFields key={scene.id} values={props} onChange={onPropChange} />
+        </div>
       </div>
 
       {/* Secondary: read-only metadata at the bottom (collapsed by default) */}

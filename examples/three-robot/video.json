@@ -1,7 +1,4 @@
-import type { VideoManifest } from "@levi-putna/storyboard-schema";
-import Comp0 from "/Users/leviputna/workspace/storyboard/examples/three-robot/src/scenes/RobotWalk.tsx";
-
-export const manifest = {
+{
   "schemaVersion": 2,
   "slug": "three-robot",
   "title": "Three Robot",
@@ -30,14 +27,9 @@ export const manifest = {
             "metresPerSecond": 1.15
           },
           "durationInFrames": 330,
-          "gapBeforeFrames": 0,
           "transitionIn": null
         }
       ]
     }
   ]
-} as VideoManifest;
-export const components = {
-  "src/scenes/RobotWalk.tsx": Comp0
-};
-export const manifestPath = "/Users/leviputna/workspace/storyboard/examples/three-robot/video.json";
+}
