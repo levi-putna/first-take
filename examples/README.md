@@ -5,8 +5,8 @@ Each folder is a workspace with `video.json`, scene components, and a committed 
 Open an example README to watch the render, then preview or re-render locally:
 
 ```bash
-yarn storyboard preview examples/<slug>/video.json
-yarn storyboard render examples/<slug>/video.json --format=16x9
+pnpm first-take preview examples/<slug>/video.json
+pnpm first-take render examples/<slug>/video.json --format=16x9
 ```
 
 | Example | What it does |

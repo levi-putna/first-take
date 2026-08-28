@@ -5,11 +5,11 @@
  * Default path is npm web 2FA: the script opens the default browser
  * (Safari when that is the macOS default) and never asks for a typed OTP.
  *
- *   yarn publish:npm
+ *   pnpm publish:npm
  *
  * Escape hatch if the user already has a code:
  *
- *   yarn publish:npm --otp=<code-from-your-authenticator>
+ *   pnpm publish:npm --otp=<code-from-your-authenticator>
  */
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -30,7 +30,7 @@ const order = [
   "@levi-putna/storyboard-transitions",
   "@levi-putna/storyboard-renderer",
   "@levi-putna/storyboard-preview",
-  "@levi-putna/storyboard",
+  "first-take",
 ];
 
 /**
@@ -210,8 +210,8 @@ async function main() {
     otp = await publishPackage({ name, dir, otp });
   }
 
-  console.log("\nPublished all @levi-putna/storyboard* packages.");
-  console.log("Verify: npx @levi-putna/storyboard --help");
+  console.log("\nPublished first-take and @levi-putna/storyboard-* packages.");
+  console.log("Verify: npx first-take --help");
 }
 
 main().catch((error) => {

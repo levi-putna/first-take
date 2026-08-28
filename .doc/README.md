@@ -1,6 +1,6 @@
-# Storyboard documentation
+# First Take documentation
 
-Storyboard is a **video generation engine** for explainer videos. Videos are authored as pure React components, composed into scenes, and assembled from a JSON video definition. A CLI renders those artefacts into a finished MP4.
+First Take is a **video generation engine** for explainer videos. Videos are authored as pure React components, composed into scenes, and assembled from a JSON video definition. A CLI renders those artefacts into a finished MP4.
 
 It is **inspired by** [Remotion](https://github.com/remotion-dev/remotion) (frame-driven React video), but is a **separate codebase**. No Remotion packages are imported. Patterns, timing ideas, and rendering approaches are studied from Remotion and reimplemented for this project.
 
@@ -9,7 +9,7 @@ It is **inspired by** [Remotion](https://github.com/remotion-dev/remotion) (fram
 | Doc | Purpose |
 |-----|---------|
 | [01-core-concepts.md](./01-core-concepts.md) | Frame model, determinism, compositions, scenes, components, animation |
-| [02-requirements.md](./02-requirements.md) | Product and functional requirements for Storyboard |
+| [02-requirements.md](./02-requirements.md) | Product and functional requirements for First Take |
 | [03-technical-requirements.md](./03-technical-requirements.md) | Architecture, stack, dependencies, CLI, project layout |
 | [04-timing-and-audio.md](./04-timing-and-audio.md) | How video lines up with narration and series audio (explainer skill) |
 | [05-remotion-research.md](./05-remotion-research.md) | Research notes from Remotion docs and architecture |
@@ -22,7 +22,7 @@ It is **inspired by** [Remotion](https://github.com/remotion-dev/remotion) (fram
 
 Playable example catalogue: [`examples/README.md`](../examples/README.md). Studio UI: [README.md § Preview](../README.md#preview).
 
-> Note: `.skills/video-generate-explainer` still mentions Remotion APIs in places. Storyboard is the engine those artefacts should target; field mapping is in [04-timing-and-audio.md](./04-timing-and-audio.md).
+> Note: `.skills/video-generate-explainer` still mentions Remotion APIs in places. First Take is the engine those artefacts should target; field mapping is in [04-timing-and-audio.md](./04-timing-and-audio.md).
 
 ## Design intent (short)
 

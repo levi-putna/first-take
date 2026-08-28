@@ -1,10 +1,10 @@
 # Core concepts
 
-These concepts are the foundation of Storyboard. They are heavily informed by Remotion's model ([The fundamentals](https://www.remotion.dev/docs/the-fundamentals), [useCurrentFrame](https://www.remotion.dev/docs/use-current-frame), [Flickering](https://www.remotion.dev/docs/flickering)), re-expressed for an engine we own.
+These concepts are the foundation of First Take. They are heavily informed by Remotion's model ([The fundamentals](https://www.remotion.dev/docs/the-fundamentals), [useCurrentFrame](https://www.remotion.dev/docs/use-current-frame), [Flickering](https://www.remotion.dev/docs/flickering)), re-expressed for an engine we own.
 
 ## 1. A video is a function of frame → image
 
-A video is a sequence of images over time. Storyboard does not "play" React in real time and record the screen. Instead:
+A video is a sequence of images over time. First Take does not "play" React in real time and record the screen. Instead:
 
 1. Fix `fps`, `width`, `height`, and `durationInFrames`.
 2. For each integer frame `f` from `0` to `durationInFrames - 1`, render the React tree as if the clock is exactly at frame `f`.
@@ -36,7 +36,7 @@ fadeInFrames = 0.5 * fps   // half a second, regardless of 24 vs 30 fps
 
 ## 3. Determinism and concurrent rendering
 
-Remotion renders frames **out of order and in parallel** across browser tabs ([Flickering docs](https://www.remotion.dev/docs/flickering)). Storyboard should do the same for speed.
+Remotion renders frames **out of order and in parallel** across browser tabs ([Flickering docs](https://www.remotion.dev/docs/flickering)). First Take should do the same for speed.
 
 Therefore a component must satisfy:
 
@@ -56,13 +56,13 @@ These look fine in a browser tab but break frame-accurate capture:
 
 ### Required motion drivers
 
-- Current frame from the engine (Storyboard equivalent of `useCurrentFrame()`)
+- Current frame from the engine (First Take equivalent of `useCurrentFrame()`)
 - Video config (`fps`, dimensions, duration)
 - Pure helpers: `interpolate`, easing, spring-from-frame
 
 ## 4. Layer model: Component → Scene → Video
 
-Storyboard splits Remotion's flat "composition" idea into explicit layers:
+First Take splits Remotion's flat "composition" idea into explicit layers:
 
 ```
 ┌─────────────────────────────────────────────────────────┐

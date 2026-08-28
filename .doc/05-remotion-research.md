@@ -1,6 +1,6 @@
 # Remotion research notes
 
-Study notes from [Remotion](https://github.com/remotion-dev/remotion) public docs and architecture descriptions. Use these to guide Storyboard's **clean-room** design. Do not copy Remotion source into this repo; do not add Remotion dependencies.
+Study notes from [Remotion](https://github.com/remotion-dev/remotion) public docs and architecture descriptions. Use these to guide First Take's **clean-room** design. Do not copy Remotion source into this repo; do not add Remotion dependencies.
 
 Primary references:
 
@@ -24,7 +24,7 @@ Remotion's core insight: give React a **frame number** and a blank canvas. Anima
 
 ### Determinism for parallel render
 
-Frames render in parallel across tabs. Non-frame-driven animation flickers or freezes ([flickering](https://www.remotion.dev/docs/flickering)). Rules to enforce in Storyboard:
+Frames render in parallel across tabs. Non-frame-driven animation flickers or freezes ([flickering](https://www.remotion.dev/docs/flickering)). Rules to enforce in First Take:
 
 - Same visual every time for the same frame
 - No reliance on order
@@ -68,7 +68,7 @@ Volume can be a function of frame for fades; trim/loop props place clips on the 
 
 ### Player vs render
 
-`@remotion/player` embeds compositions in apps with runtime props - useful inspiration for Storyboard's component playground and future embeddable preview, implemented ourselves.
+`@remotion/player` embeds compositions in apps with runtime props - useful inspiration for First Take's component playground and future embeddable preview, implemented ourselves.
 
 ## 2. Remotion package map (orientation only)
 
@@ -84,11 +84,11 @@ From the monorepo layout (high level):
 | `packages/player` | Embeddable player |
 | `packages/lambda` | Distributed cloud render |
 
-Storyboard's proposed packages mirror **responsibilities**, not APIs or code.
+First Take's proposed packages mirror **responsibilities**, not APIs or code.
 
-## 3. Where Storyboard deliberately diverges
+## 3. Where First Take deliberately diverges
 
-| Remotion | Storyboard |
+| Remotion | First Take |
 |----------|------------|
 | Composition-centric programming model | Explicit **Component → Scene → Video JSON** layering for explainer pipelines |
 | Often code-defined roots (`Root.tsx` compositions) | **JSON video file** as the stringer of scenes, transitions, global audio |
@@ -109,20 +109,20 @@ Storyboard's proposed packages mirror **responsibilities**, not APIs or code.
 ## 5. Patterns to avoid copying blindly
 
 - Remotion-specific ESLint plugin rules - write our own guidance/rules.
-- Exact CLI flag names - choose Storyboard-native UX.
+- Exact CLI flag names - choose First Take-native UX.
 - Lambda / Cloud Run - out of MVP scope.
 - Internal Remotion webpack quirks - prefer Vite/esbuild greenfield.
 - Any verbatim source from the GitHub tree - license and clean-room policy.
 
 ## 6. Alignment with the explainer skill
 
-The skill currently assumes Remotion APIs (`useCurrentFrame`, `TransitionSeries`, `OffthreadVideo`, `staticFile`, etc.). Storyboard's long-term fit:
+The skill currently assumes Remotion APIs (`useCurrentFrame`, `TransitionSeries`, `OffthreadVideo`, `staticFile`, etc.). First Take's long-term fit:
 
 - Same **mental model** (frame-driven React, scenes, series audio).
 - Same **artefact shapes** (`scenes.json` timings, lead-in, formats).
 - Different **import paths** (`@levi-putna/storyboard-core` instead of `remotion`).
 
-When the engine matures, the skill's setup docs should be updated to Storyboard; until then, this `.doc` set is the bridge.
+When the engine matures, the skill's setup docs should be updated to First Take; until then, this `.doc` set is the bridge.
 
 ## 7. Research follow-ups (when implementing)
 
@@ -135,4 +135,4 @@ When the engine matures, the skill's setup docs should be updated to Storyboard;
 
 ## 8. One-sentence takeaway
 
-Remotion proves that **deterministic, frame-parameterised React** plus **headless Chromium screenshots** plus **FFmpeg** is a viable video engine; Storyboard adopts that architecture and specialises the authoring model around **testable components, scene data, and a JSON timeline** tuned for narrated explainers.
+Remotion proves that **deterministic, frame-parameterised React** plus **headless Chromium screenshots** plus **FFmpeg** is a viable video engine; First Take adopts that architecture and specialises the authoring model around **testable components, scene data, and a JSON timeline** tuned for narrated explainers.

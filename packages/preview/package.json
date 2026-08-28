@@ -38,19 +38,19 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
-  "description": "Local Storyboard studio",
+  "description": "Local First Take studio",
   "license": "MIT",
   "engines": {
     "node": ">=22"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/levi-putna/storyboard.git",
+    "url": "git+https://github.com/levi-putna/first-take.git",
     "directory": "packages/preview"
   },
-  "homepage": "https://github.com/levi-putna/storyboard#readme",
+  "homepage": "https://github.com/levi-putna/first-take#readme",
   "bugs": {
-    "url": "https://github.com/levi-putna/storyboard/issues"
+    "url": "https://github.com/levi-putna/first-take/issues"
   },
   "publishConfig": {
     "access": "public"

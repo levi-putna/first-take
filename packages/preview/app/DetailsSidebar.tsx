@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, ChevronDown, ChevronUp, Save } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Minus, Plus, Save } from "lucide-react";
 import type { Scene, VideoManifest } from "@levi-putna/storyboard-schema";
 import { PropFields } from "./PropFields";
+import {
+  clampDurationInFrames,
+  formatDurationSeconds,
+  parseDurationInput,
+} from "./durationInput";
 import { formatTimecode } from "./timecode";
 import type { TimelineLane } from "./timelineModel";
 
@@ -27,6 +32,7 @@ export function DetailsSidebar({
   onPropChange,
   onVideoTitleChange,
   onSceneTitleChange,
+  onSceneDurationChange,
   onTrackTitleChange,
   onTrackDescriptionChange,
   onTrackMoveUp,
@@ -50,6 +56,10 @@ export function DetailsSidebar({
   onPropChange: (next: Record<string, unknown>) => void;
   onVideoTitleChange: (args: { title: string }) => void;
   onSceneTitleChange: (args: { sceneId: string; title: string }) => void;
+  onSceneDurationChange: (args: {
+    sceneId: string;
+    durationInFrames: number;
+  }) => void;
   onTrackTitleChange: (args: { trackId: string; title: string }) => void;
   onTrackDescriptionChange: (args: {
     trackId: string;
@@ -124,10 +134,21 @@ export function DetailsSidebar({
           <SceneDetails
             key={selectedScene.id}
             scene={selectedScene}
+            fps={manifest.fps}
+            maxDurationInFrames={maxClipDurationInFrames({
+              lanes: fullLanes,
+              sceneId: selectedScene.id,
+            })}
             props={selectedProps}
             onPropChange={onPropChange}
             onTitleChange={(title) =>
               onSceneTitleChange({ sceneId: selectedScene.id, title })
+            }
+            onDurationChange={({ durationInFrames }) =>
+              onSceneDurationChange({
+                sceneId: selectedScene.id,
+                durationInFrames,
+              })
             }
           />
         ) : selectedTrack && selectedLane ? (
@@ -302,18 +323,24 @@ function TrackDetails({
 }
 
 /**
- * Editable scene title with live prop overrides and metadata in a bottom panel.
+ * Editable scene title and duration with live prop overrides and metadata in a bottom panel.
  */
 function SceneDetails({
   scene,
+  fps,
+  maxDurationInFrames,
   props,
   onPropChange,
   onTitleChange,
+  onDurationChange,
 }: {
   scene: Scene;
+  fps: number;
+  maxDurationInFrames: number | null;
   props: Record<string, unknown>;
   onPropChange: (next: Record<string, unknown>) => void;
   onTitleChange: (title: string) => void;
+  onDurationChange: (args: { durationInFrames: number }) => void;
 }) {
   const [metaOpen, setMetaOpen] = useState(false);
 
@@ -323,7 +350,7 @@ function SceneDetails({
 
   return (
     <div className="sb-stacked-details">
-      {/* Primary: editable title, then component props */}
+      {/* Primary: editable title and duration, then component props */}
       <div className="sb-stacked-details-main">
         {/* Scene name in the editor — not a rendered page element */}
         <BlurCommitField
@@ -331,6 +358,15 @@ function SceneDetails({
           label="Title"
           value={scene.title}
           onCommit={onTitleChange}
+        />
+
+        {/* Fine-grained duration: time in, frames stored at project fps */}
+        <DurationField
+          sceneId={scene.id}
+          durationInFrames={scene.durationInFrames}
+          fps={fps}
+          maxDurationInFrames={maxDurationInFrames}
+          onCommit={onDurationChange}
         />
 
         {/* Props that the scene component actually receives */}
@@ -357,11 +393,6 @@ function SceneDetails({
           <DetailRow label="Component" value={scene.component} mono />
           <DetailRow label="Visual type" value={scene.visualType} />
           <DetailRow
-            label="Duration"
-            value={`${scene.durationInFrames}f`}
-            mono
-          />
-          <DetailRow
             label="Gap before"
             value={`${scene.gapBeforeFrames ?? 0}f`}
             mono
@@ -370,6 +401,181 @@ function SceneDetails({
       </details>
     </div>
   );
+}
+
+/**
+ * Time-based duration editor that snaps to whole frames at the project frame rate.
+ */
+function DurationField({
+  sceneId,
+  durationInFrames,
+  fps,
+  maxDurationInFrames,
+  onCommit,
+}: {
+  sceneId: string;
+  durationInFrames: number;
+  fps: number;
+  maxDurationInFrames: number | null;
+  onCommit: (args: { durationInFrames: number }) => void;
+}) {
+  const formatted = formatDurationSeconds({ frames: durationInFrames, fps });
+  const [draft, setDraft] = useState(formatted);
+  const inputId = `scene-duration-${sceneId}`;
+  const framesId = `${inputId}-frames`;
+  const hintId = `${inputId}-hint`;
+  const atMinimum = durationInFrames <= 1;
+  const atMaximum =
+    maxDurationInFrames != null && durationInFrames >= maxDurationInFrames;
+  const limitHint = atMinimum
+    ? "Duration is already one frame."
+    : atMaximum
+      ? "The next clip starts here. Move it on the timeline to make room."
+      : null;
+
+  useEffect(() => {
+    setDraft(formatted);
+  }, [formatted]);
+
+  /**
+   * Write a snapped, clamped frame count when it differs from the current duration.
+   */
+  function commitFrames({ frames }: { frames: number }) {
+    const next = clampDurationInFrames({
+      durationInFrames: frames,
+      maxDurationInFrames,
+    });
+    setDraft(formatDurationSeconds({ frames: next, fps }));
+    if (next !== durationInFrames) {
+      onCommit({ durationInFrames: next });
+    }
+  }
+
+  /**
+   * Parse the draft as time and snap it to fps, or revert if it is not valid.
+   */
+  function commitDraft() {
+    const parsed = parseDurationInput({ text: draft, fps });
+    if (!parsed.ok) {
+      setDraft(formatted);
+      return;
+    }
+    commitFrames({ frames: parsed.frames });
+  }
+
+  /**
+   * Nudge duration by a whole-frame step from the stepper or arrow keys.
+   * Uses the draft when it is valid time so in-progress edits are not discarded.
+   */
+  function nudge({ deltaFrames }: { deltaFrames: number }) {
+    const parsed = parseDurationInput({ text: draft, fps });
+    const base = parsed.ok ? parsed.frames : durationInFrames;
+    commitFrames({ frames: base + deltaFrames });
+  }
+
+  return (
+    <div className="sb-field">
+      <label htmlFor={inputId}>Duration</label>
+      <div className="sb-duration-control">
+        {/* Time input with a visible seconds unit, plus frame steppers */}
+        <div className="sb-duration-control-row">
+          <div className="sb-duration-input-wrap">
+            <input
+              id={inputId}
+              className="sb-duration-input"
+              value={draft}
+              inputMode="decimal"
+              autoComplete="off"
+              spellCheck={false}
+              aria-describedby={
+                limitHint ? `${framesId} ${hintId}` : framesId
+              }
+              onChange={(event) => setDraft(event.target.value)}
+              onBlur={commitDraft}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  (event.target as HTMLInputElement).blur();
+                  return;
+                }
+                if (event.key === "ArrowUp") {
+                  event.preventDefault();
+                  nudge({ deltaFrames: 1 });
+                  return;
+                }
+                if (event.key === "ArrowDown") {
+                  event.preventDefault();
+                  nudge({ deltaFrames: -1 });
+                }
+              }}
+            />
+            <abbr className="sb-duration-unit" title="Seconds">
+              s
+            </abbr>
+          </div>
+          <div className="sb-duration-stepper" role="group" aria-label="Nudge by one frame">
+            <button
+              type="button"
+              className="sb-duration-stepper-btn"
+              aria-label="Decrease duration by one frame"
+              title="Decrease duration by one frame"
+              disabled={atMinimum}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => nudge({ deltaFrames: -1 })}
+            >
+              <Minus size={14} aria-hidden />
+            </button>
+            <button
+              type="button"
+              className="sb-duration-stepper-btn"
+              aria-label="Increase duration by one frame"
+              title="Increase duration by one frame"
+              disabled={atMaximum}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => nudge({ deltaFrames: 1 })}
+            >
+              <Plus size={14} aria-hidden />
+            </button>
+          </div>
+        </div>
+
+        {/* Non-editable: the snapped frame count at this project's fps */}
+        <p id={framesId} className="sb-duration-meta">
+          {durationInFrames} {durationInFrames === 1 ? "frame" : "frames"} at {fps}{" "}
+          fps
+        </p>
+      </div>
+      {limitHint ? (
+        <p id={hintId} className="sb-field-hint">
+          {limitHint}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * Longest duration this clip can take before overlapping the next clip on its lane.
+ */
+function maxClipDurationInFrames({
+  lanes,
+  sceneId,
+}: {
+  lanes: TimelineLane[];
+  sceneId: string;
+}): number | null {
+  for (const lane of lanes) {
+    const clips = [...lane.clips].sort(
+      (left, right) => left.startFrame - right.startFrame,
+    );
+    const index = clips.findIndex((clip) => clip.sceneId === sceneId);
+    if (index < 0) continue;
+    const current = clips[index];
+    const next = clips[index + 1];
+    if (!current || !next) return null;
+    return Math.max(1, next.startFrame - current.startFrame);
+  }
+  return null;
 }
 
 /**

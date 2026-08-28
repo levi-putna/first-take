@@ -23,8 +23,8 @@ const { version } = require("../package.json") as { version: string };
 const program = new Command();
 
 program
-  .name("storyboard")
-  .description("Frame-deterministic React video engine")
+  .name("first-take")
+  .description("Create, validate, preview, and render First Take videos")
   .version(version)
   .option(
     "--verbose",
@@ -89,8 +89,8 @@ program
         consola.success(`Created ${written.length} files in ${outDir}`);
         const cli = storyboardCliCommand();
         const maybeInstall = isStoryboardMonorepo()
-          ? "  yarn install\n"
-          : "  npm install   # or yarn, if you prefer\n";
+          ? "  pnpm install\n"
+          : "  pnpm install   # or npm install, if you prefer\n";
         consola.info(`Next:
 ${maybeInstall}  ${cli} validate ${path.join(outDir, "video.json")}${opts.withAudio ? " --no-assets" : ""}
   ${cli} preview ${path.join(outDir, "video.json")}

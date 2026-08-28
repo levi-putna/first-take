@@ -19,7 +19,7 @@ Catalogue: [examples/README.md](../README.md).
 ## Commands
 
 ```bash
-yarn storyboard validate examples/motion-basics/video.json
-yarn storyboard preview examples/motion-basics/video.json
-yarn storyboard render examples/motion-basics/video.json --format=16x9 --silent
+pnpm first-take validate examples/motion-basics/video.json
+pnpm first-take preview examples/motion-basics/video.json
+pnpm first-take render examples/motion-basics/video.json --format=16x9 --silent
 ```

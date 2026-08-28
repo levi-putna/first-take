@@ -48,6 +48,7 @@ import {
   type TimelineLane,
 } from "./timelineModel";
 import { useEditHistory } from "./editHistory";
+import logoSmallUrl from "./img/logo-small.svg?url";
 
 const isEmbed =
   typeof window !== "undefined" &&
@@ -115,6 +116,12 @@ export function App() {
   });
   const workingManifest = studioPresent.workingManifest;
   const propOverrides = studioPresent.propOverrides;
+
+  useEffect(() => {
+    const title = workingManifest.title?.trim();
+    document.title = title ? `First Take — ${title}` : "First Take";
+  }, [workingManifest.title]);
+
   const [dropTargetTrackId, setDropTargetTrackId] = useState<string | null>(
     null,
   );
@@ -884,10 +891,17 @@ export function App() {
         } as CSSProperties
       }
     >
-      {/* Top bar: title / video switcher + format pill */}
+      {/* Top bar: wordmark / video switcher + format control */}
       <header className="sb-header">
         <div className="sb-title">
-          <strong>Storyboard</strong>
+          <img
+            className="sb-mark"
+            src={logoSmallUrl}
+            width={36}
+            height={36}
+            alt="First Take"
+          />
+          <strong className="sb-wordmark">First Take</strong>
           <ProjectSwitcher title={workingManifest.title} />
         </div>
         <FormatSwitcher
@@ -940,6 +954,17 @@ export function App() {
               updater: (current) =>
                 updateScene({ manifest: current, sceneId, title }),
             });
+          }}
+          onSceneDurationChange={({ sceneId, durationInFrames }) => {
+            try {
+              commitManifest({
+                updater: (current) =>
+                  trimSceneEnd({ manifest: current, sceneId, durationInFrames }),
+              });
+              setSaveError(null);
+            } catch (err) {
+              setSaveError(err instanceof Error ? err.message : String(err));
+            }
           }}
           onTrackTitleChange={({ trackId, title }) => {
             commitManifest({

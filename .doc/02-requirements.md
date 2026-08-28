@@ -1,6 +1,6 @@
 # Product requirements
 
-Storyboard is a general-purpose, frame-deterministic React video engine. Requirements below adapt Remotion's proven ideas: pure React components, track + JSON assembly, CLI build, and in-scene audio.
+First Take is a general-purpose, frame-deterministic React video engine. Requirements below adapt Remotion's proven ideas: pure React components, track + JSON assembly, CLI build, and in-scene audio.
 
 ## 1. Goals
 
@@ -18,7 +18,7 @@ Storyboard is a general-purpose, frame-deterministic React video engine. Require
 | ID | Non-goal |
 |----|----------|
 | NG1 | Depend on or re-export any Remotion package. |
-| NG2 | Replace the full explainer *production pipeline* (brief, script, ElevenLabs, critic gates) - Storyboard is the **render/runtime** those artefacts feed. |
+| NG2 | Replace the full explainer *production pipeline* (brief, script, ElevenLabs, critic gates) - First Take is the **render/runtime** those artefacts feed. |
 | NG3 | Primary support for live-action NLE-style editing. |
 | NG4 | Wall-clock CSS animation as a supported motion path. |
 
@@ -27,7 +27,7 @@ Storyboard is a general-purpose, frame-deterministic React video engine. Require
 - **Component author** - builds reusable motion graphics; needs isolation preview and prop knobs.
 - **Scene author / agent** - wires components + data into scenes timed to narration.
 - **Pipeline / CI** - runs the CLI to produce `final.mp4` (and multi-format variants) without a GUI.
-- **Explainer skill** - produces `scenes.json`-like manifests, narration, and assets that Storyboard consumes.
+- **Explainer skill** - produces `scenes.json`-like manifests, narration, and assets that First Take consumes.
 
 ## 4. Functional requirements
 

@@ -1,6 +1,6 @@
 # Timing and audio
 
-How Storyboard lines up picture with sound. Audio is **in-scene**: components
+How First Take lines up picture with sound. Audio is **in-scene**: components
 mount `<Audio>` (and unmuted `<Video>`) whose file paths usually come from
 props. There is no root `seriesAudio` mix.
 

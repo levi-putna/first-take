@@ -21,7 +21,7 @@ Unmute the player to hear the V-shaped fade.
 ## Commands
 
 ```bash
-yarn storyboard validate examples/audio-volume-fade/video.json
-yarn storyboard preview examples/audio-volume-fade/video.json
-yarn storyboard render examples/audio-volume-fade/video.json --format=16x9
+pnpm first-take validate examples/audio-volume-fade/video.json
+pnpm first-take preview examples/audio-volume-fade/video.json
+pnpm first-take render examples/audio-volume-fade/video.json --format=16x9
 ```

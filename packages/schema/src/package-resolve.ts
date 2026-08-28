@@ -3,8 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Published npm names for the Storyboard workspace packages.
- * The CLI is `@levi-putna/storyboard`; libraries are `@levi-putna/storyboard-<id>`.
+ * Published npm names for the First Take workspace packages.
+ * The CLI is `first-take`; libraries are `@levi-putna/storyboard-<id>`.
  */
 export const STORYBOARD_PACKAGES = {
   schema: "@levi-putna/storyboard-schema",
@@ -13,14 +13,14 @@ export const STORYBOARD_PACKAGES = {
   transitions: "@levi-putna/storyboard-transitions",
   renderer: "@levi-putna/storyboard-renderer",
   preview: "@levi-putna/storyboard-preview",
-  cli: "@levi-putna/storyboard",
+  cli: "first-take",
 } as const;
 
 export type StoryboardPackageId = keyof typeof STORYBOARD_PACKAGES;
 
 /**
- * Resolve the on-disk root of a Storyboard package.
- * Works in this Yarn workspace and after `npx @levi-putna/storyboard`.
+ * Resolve the on-disk root of a First Take package.
+ * Works in this pnpm workspace and after `npx first-take`.
  */
 export function resolveStoryboardPackageRoot({
   pkg,
@@ -36,7 +36,7 @@ export function resolveStoryboardPackageRoot({
     return path.dirname(req.resolve(`${name}/package.json`));
   } catch {
     throw new Error(
-      `Could not resolve ${name}. Install @levi-putna/storyboard (or this monorepo) first.`,
+      `Could not resolve ${name}. Install first-take (or this monorepo) first.`,
     );
   }
 }
@@ -129,7 +129,7 @@ export function resolveReactPackageRoot({
     return path.dirname(req.resolve(`${name}/package.json`));
   } catch {
     throw new Error(
-      `Could not resolve "${name}". Install it in this project, or use npx @levi-putna/storyboard which depends on React.`,
+      `Could not resolve "${name}". Install it in this project, or use npx first-take which depends on React.`,
     );
   }
 }

@@ -3,13 +3,9 @@
   "private": true,
   "version": "0.3.0",
   "description": "Frame-deterministic React video engine",
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
   "scripts": {
-    "build": "yarn workspace @levi-putna/storyboard-schema build && yarn workspace @levi-putna/storyboard-core build && yarn workspace @levi-putna/storyboard-media build && yarn workspace @levi-putna/storyboard-transitions build && yarn workspace @levi-putna/storyboard-renderer build && yarn workspace @levi-putna/storyboard-preview build && yarn workspace @levi-putna/storyboard build",
-    "typecheck": "yarn workspace @levi-putna/storyboard-schema typecheck && yarn workspace @levi-putna/storyboard-core typecheck && yarn workspace @levi-putna/storyboard-media typecheck && yarn workspace @levi-putna/storyboard-transitions typecheck && yarn workspace @levi-putna/storyboard-renderer typecheck && yarn workspace @levi-putna/storyboard-preview typecheck && yarn workspace @levi-putna/storyboard typecheck",
+    "build": "pnpm -r --filter \"./packages/**\" run build",
+    "typecheck": "pnpm -r --filter \"./packages/**\" run typecheck",
     "test": "vitest run --project unit --project integration",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
@@ -20,12 +16,14 @@
     "test:watch": "vitest --project unit",
     "generate:fixture-audio": "bash scripts/generate-fixture-audio.sh",
     "storyboard": "node packages/cli/dist/cli.js",
+    "first-take": "node packages/cli/dist/cli.js",
     "lint": "eslint packages examples --ext .ts,.tsx",
     "set-version": "node scripts/set-version.mjs",
     "publish:npm": "node scripts/publish-packages.mjs"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "pnpm": ">=10"
   },
   "devDependencies": {
     "@levi-putna/storyboard-renderer": "0.3.0",
@@ -51,10 +49,18 @@
     "typescript": "^5.8.3",
     "vitest": "^3.1.2"
   },
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "pnpm@10.19.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "ffmpeg-static",
+      "ffprobe-static",
+      "playwright"
+    ]
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/levi-putna/storyboard.git"
+    "url": "git+https://github.com/levi-putna/first-take.git"
   }
 }

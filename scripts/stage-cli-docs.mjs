@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
  * Copy the root README and LICENSE into packages/cli so npm shows the
- * project docs on @levi-putna/storyboard. Repo-relative links are rewritten
+ * project docs on first-take. Repo-relative links are rewritten
  * to GitHub URLs so they work on npmjs.com, and a banner points back to
- * the git repo for detailed docs.
+ * the git repo for detailed docs and examples.
  *
  * Called by scripts/publish-packages.mjs before publish. Safe to run alone:
  *
@@ -16,13 +16,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const githubBlob = "https://github.com/levi-putna/storyboard/blob/main";
-const githubRaw = "https://raw.githubusercontent.com/levi-putna/storyboard/main";
-const githubRepo = "https://github.com/levi-putna/storyboard";
+const githubBlob = "https://github.com/levi-putna/first-take/blob/main";
+const githubRaw = "https://raw.githubusercontent.com/levi-putna/first-take/main";
+const githubRepo = "https://github.com/levi-putna/first-take";
 
 /** Banner inserted under the H1 so the npm listing points at git for long docs. */
 export const NPM_DOCS_BANNER =
-  "> Install and quick start below. Schema, authoring, examples, and the agent playbook live in the [GitHub repository](https://github.com/levi-putna/storyboard).\n";
+  "> Install and quick start below. Detailed documents, the `video.json` schema, authoring guides, and playable examples live in the [GitHub repository](https://github.com/levi-putna/first-take) — see [`.doc/`](https://github.com/levi-putna/first-take/tree/main/.doc) and [`examples/`](https://github.com/levi-putna/first-take/tree/main/examples).\n";
 
 /**
  * Turn a repo-relative href into a GitHub URL.
@@ -43,6 +43,7 @@ function githubHref({ href, raw }) {
 /**
  * Rewrite repo-relative markdown links so they resolve on npmjs.com.
  * Nested badge links (`[![alt](cdn)](./LICENSE)`) need a second pass.
+ * HTML `src` / `href` attributes (the centred logo) are rewritten too.
  */
 export function rewriteReadmeForNpm({ markdown }) {
   const once = markdown.replace(
@@ -53,10 +54,17 @@ export function rewriteReadmeForNpm({ markdown }) {
       return bang === "!" ? `![${text}](${next})` : `[${text}](${next})`;
     },
   );
-  return once.replace(/\]\(([^)]+)\)/g, (match, href) => {
+  const twice = once.replace(/\]\(([^)]+)\)/g, (match, href) => {
     const next = githubHref({ href, raw: false });
     return next ? `](${next})` : match;
   });
+  return twice.replace(
+    /\b(src|href)="(\.\/[^"]+|\.\.\/[^"]+)"/g,
+    (match, attr, href) => {
+      const next = githubHref({ href, raw: attr === "src" });
+      return next ? `${attr}="${next}"` : match;
+    },
+  );
 }
 
 /**

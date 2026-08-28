@@ -9,6 +9,7 @@ const SKIP_DIR_NAMES = new Set([
   "out",
   "coverage",
   ".yarn",
+  ".pnpm-store",
   ".next",
 ]);
 
@@ -113,7 +114,7 @@ function addProject({
 }
 
 /**
- * Find other Storyboard videos near the open manifest (siblings, cwd, examples/).
+ * Find other First Take videos near the open manifest (siblings, cwd, examples/).
  */
 export function discoverPreviewProjects({
   manifestPath,

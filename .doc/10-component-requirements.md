@@ -1,7 +1,7 @@
 # Component development requirements
 
 Normative requirements for React modules used as **scene entries** or **shared
-visuals** in a Storyboard video.
+visuals** in a First Take video.
 
 These modules are loaded from paths in [`video.json`](./06-video-json-schema.md)
 (`tracks[].scenes[].component`) and rendered once per composition
@@ -20,7 +20,7 @@ Related reading:
 
 ## 1. Role of a component
 
-A Storyboard component is a **pure visual function**:
+A First Take component is a **pure visual function**:
 
 ```
 pixels = f(localFrame, props, videoConfig)
@@ -59,7 +59,7 @@ Components must **not**:
 |-------------|--------|
 | JSON-serialisable | Props come from JSON — strings, numbers, booleans, plain objects/arrays only |
 | Defaults | Provide sensible defaults so incomplete props still render |
-| Typing | Type props in TypeScript; Storyboard does not validate prop shapes at validate-time |
+| Typing | Type props in TypeScript; First Take does not validate prop shapes at validate-time |
 | No scene coupling | Prefer generic names (`headline`, `items`) over video-specific globals |
 
 ```tsx
@@ -143,7 +143,7 @@ Uncontrolled `Math.random()` per render is forbidden.
 | Allowed | Caution |
 |---------|---------|
 | `delayRender` / `continueRender` / `cancelRender` for fonts, fetch, decode | Must resolve or cancel; never leave frames hanging |
-| Registering media via `<Img>`, `<Audio>`, `<Video>` | Use Storyboard media primitives so capture waits for readiness |
+| Registering media via `<Img>`, `<Audio>`, `<Video>` | Use First Take media primitives so capture waits for readiness |
 | `useEffect` for non-visual bookkeeping | Must not drive motion or assume order of frames |
 
 Do not fetch unique network content per frame without caching keyed by stable

@@ -15,6 +15,22 @@ export const TIMELINE_DEFAULT_VISIBLE_SECONDS = 45;
 /** Minimum visible duration when zoomed in (seconds). */
 export const TIMELINE_MIN_VISIBLE_SECONDS = 0.25;
 
+/**
+ * Trailing gutter is a share of the visible track, not a fixed frame count.
+ * Only enough empty pixels to land the trim handle; zoom still changes
+ * how many frames that represents.
+ */
+export const TIMELINE_TAIL_GUTTER_VIEWPORT_FRACTION = 0.01;
+
+/** Smallest gutter that still clears the trim handle plus a little slack. */
+export const TIMELINE_TAIL_GUTTER_MIN_PX = 20;
+
+/** Pointer distance from the scrollport edge that starts trim auto-scroll. */
+export const TIMELINE_TRIM_EDGE_ZONE_PX = 48;
+
+/** Fastest auto-scroll while the pointer sits in the edge zone (px per frame). */
+export const TIMELINE_TRIM_EDGE_MAX_STEP_PX = 14;
+
 const NICE_SECONDS = [
   0.025,
   0.05,
@@ -53,7 +69,72 @@ export type TimelineViewport = {
 };
 
 /**
- * Pixels per frame that fits the full composition in the track width.
+ * Trailing scroll gutter in pixels for the current visible track.
+ *
+ * Sized from the viewport (then converted to frames by zoom) so a tight zoom
+ * does not leave a huge empty region and a wide zoom still has a grab target.
+ */
+export function tailGutterPx({
+  trackWidth,
+}: {
+  trackWidth: number;
+}): number {
+  const width = Math.max(0, trackWidth);
+  const fromViewport = width * TIMELINE_TAIL_GUTTER_VIEWPORT_FRACTION;
+  return Math.round(Math.max(TIMELINE_TAIL_GUTTER_MIN_PX, fromViewport));
+}
+
+/**
+ * Frame count represented by the trailing gutter at the current zoom.
+ */
+export function tailGutterFrames({
+  trackWidth,
+  pixelsPerFrame,
+}: {
+  trackWidth: number;
+  pixelsPerFrame: number;
+}): number {
+  const ppf = Math.max(0.0001, pixelsPerFrame);
+  return tailGutterPx({ trackWidth }) / ppf;
+}
+
+/**
+ * Scrollable stack width: composition pixels plus the trailing gutter.
+ */
+export function timelineContentWidth({
+  durationInFrames,
+  pixelsPerFrame,
+  trackWidth,
+}: {
+  durationInFrames: number;
+  pixelsPerFrame: number;
+  trackWidth: number;
+}): number {
+  const ppf = Math.max(0.0001, pixelsPerFrame);
+  return Math.max(0, durationInFrames) * ppf + tailGutterPx({ trackWidth });
+}
+
+/**
+ * Composition length plus the trailing gutter, in frames at the current zoom.
+ * Used for pan/scroll so the last trim handle can sit inside the viewport.
+ */
+export function scrollableDurationInFrames({
+  durationInFrames,
+  trackWidth,
+  pixelsPerFrame,
+}: {
+  durationInFrames: number;
+  trackWidth: number;
+  pixelsPerFrame: number;
+}): number {
+  return (
+    Math.max(0, durationInFrames) +
+    tailGutterFrames({ trackWidth, pixelsPerFrame })
+  );
+}
+
+/**
+ * Pixels per frame that fits the composition plus trailing gutter.
  */
 export function fitPixelsPerFrame({
   trackWidth,
@@ -62,9 +143,75 @@ export function fitPixelsPerFrame({
   trackWidth: number;
   durationInFrames: number;
 }): number {
-  const width = Math.max(1, trackWidth);
+  const gutter = tailGutterPx({ trackWidth });
+  const width = Math.max(1, trackWidth - gutter);
   const duration = Math.max(1, durationInFrames);
   return width / duration;
+}
+
+/**
+ * How far to auto-scroll this frame while trimming near a scrollport edge.
+ * Speed ramps as the pointer approaches the edge; past the edge it keeps going.
+ */
+export function trimEdgeScrollDeltaPx({
+  clientX,
+  viewportLeft,
+  viewportRight,
+  zonePx = TIMELINE_TRIM_EDGE_ZONE_PX,
+  maxStepPx = TIMELINE_TRIM_EDGE_MAX_STEP_PX,
+}: {
+  clientX: number;
+  viewportLeft: number;
+  viewportRight: number;
+  zonePx?: number;
+  maxStepPx?: number;
+}): number {
+  const zone = Math.max(1, zonePx);
+  const maxStep = Math.max(0, maxStepPx);
+
+  if (clientX >= viewportRight - zone) {
+    if (clientX >= viewportRight) {
+      return maxStep + Math.min(20, (clientX - viewportRight) * 0.15);
+    }
+    const strength = Math.min(1, Math.max(0, (clientX - (viewportRight - zone)) / zone));
+    return strength ** 2 * maxStep;
+  }
+
+  if (clientX <= viewportLeft + zone) {
+    if (clientX <= viewportLeft) {
+      return -(maxStep + Math.min(20, (viewportLeft - clientX) * 0.15));
+    }
+    const strength = Math.min(1, Math.max(0, (viewportLeft + zone - clientX) / zone));
+    return -(strength ** 2 * maxStep);
+  }
+
+  return 0;
+}
+
+/**
+ * Trim-end duration from the pointer's position in the scrollable timeline.
+ * Scroll is included here, so edge auto-scroll must not add a second delta.
+ */
+export function durationFromTrimPointer({
+  clientX,
+  viewportLeft,
+  viewportWidth,
+  scrollLeft,
+  pixelsPerFrame,
+  startFrame,
+}: {
+  clientX: number;
+  viewportLeft: number;
+  viewportWidth: number;
+  scrollLeft: number;
+  pixelsPerFrame: number;
+  startFrame: number;
+}): number {
+  const ppf = Math.max(0.0001, pixelsPerFrame);
+  const width = Math.max(1, viewportWidth);
+  const localX = Math.min(Math.max(0, clientX - viewportLeft), width);
+  const endFrame = Math.round((scrollLeft + localX) / ppf);
+  return Math.max(1, endFrame - startFrame);
 }
 
 /**
@@ -167,11 +314,15 @@ export function defaultPixelsPerFrame({
     durationInFrames,
     Math.max(1, Math.round(targetVisibleSeconds * Math.max(1, fps))),
   );
+  const requestedPpf =
+    targetFrames >= durationInFrames
+      ? fitPixelsPerFrame({ trackWidth, durationInFrames })
+      : ppfFromVisibleFrames({
+          trackWidth,
+          visibleFrames: targetFrames,
+        });
   return clampPixelsPerFrame({
-    pixelsPerFrame: ppfFromVisibleFrames({
-      trackWidth,
-      visibleFrames: targetFrames,
-    }),
+    pixelsPerFrame: requestedPpf,
     trackWidth,
     durationInFrames,
     fps,
@@ -292,6 +443,7 @@ export function majorRulerStepFrames({
 
 /**
  * Derives the visible frame window from scroll position.
+ * `durationInFrames` is the scrollable max (composition plus trailing gutter).
  */
 export function viewportFromScroll({
   scrollLeft,

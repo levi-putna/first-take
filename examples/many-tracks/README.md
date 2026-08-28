@@ -15,9 +15,9 @@ Composition length is 60 frames. Track 30 paints on top in the preview.
 ## Commands
 
 ```bash
-yarn storyboard validate examples/many-tracks/video.json
-yarn storyboard preview examples/many-tracks/video.json
-yarn storyboard render examples/many-tracks/video.json --format=16x9 --silent
+pnpm first-take validate examples/many-tracks/video.json
+pnpm first-take preview examples/many-tracks/video.json
+pnpm first-take render examples/many-tracks/video.json --format=16x9 --silent
 ```
 
 ## Timeline testing

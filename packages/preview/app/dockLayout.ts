@@ -24,6 +24,27 @@ export const MIN_STAGE_WIDTH = 320;
 
 export const SIDEBAR_WIDTH_STORAGE_KEY = "storyboard-preview-sidebar-width";
 
+/** Default track-name column width in pixels. */
+export const LABEL_COLUMN_DEFAULT_WIDTH = 96;
+
+/** Extra column width reserved for the track reorder grip. */
+export const LABEL_COLUMN_REORDER_EXTRA = 16;
+
+/** Minimum track-name column so truncated titles stay readable. */
+export const LABEL_COLUMN_MIN_WIDTH = 72;
+
+/** Absolute cap so the clip track stays the main surface. */
+export const LABEL_COLUMN_MAX_WIDTH = 240;
+
+/** Keyboard step when resizing the track-name column. */
+export const LABEL_COLUMN_KEYBOARD_STEP = 8;
+
+/** Minimum remaining width for the clip scrollport. */
+export const MIN_TIMELINE_TRACK_WIDTH = 200;
+
+export const LABEL_COLUMN_WIDTH_STORAGE_KEY =
+  "storyboard-preview-label-column-width";
+
 /** Top chrome height (header). */
 export const SHELL_HEADER_HEIGHT = 48;
 
@@ -109,4 +130,73 @@ export function readStoredSidebarWidth({
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed)) return null;
   return clampSidebarWidth({ width: parsed, shellWidth });
+}
+
+/**
+ * Minimum track-name column width, including the reorder grip when shown.
+ */
+export function labelColumnMinWidth({
+  canReorderTracks,
+}: {
+  canReorderTracks: boolean;
+}): number {
+  return (
+    LABEL_COLUMN_MIN_WIDTH + (canReorderTracks ? LABEL_COLUMN_REORDER_EXTRA : 0)
+  );
+}
+
+/**
+ * Default track-name column width, including the reorder grip when shown.
+ */
+export function labelColumnDefaultWidth({
+  canReorderTracks,
+}: {
+  canReorderTracks: boolean;
+}): number {
+  return (
+    LABEL_COLUMN_DEFAULT_WIDTH +
+    (canReorderTracks ? LABEL_COLUMN_REORDER_EXTRA : 0)
+  );
+}
+
+/**
+ * Clamp the track-name column against logical min/max and remaining clip space.
+ */
+export function clampLabelColumnWidth({
+  width,
+  panelWidth,
+  canReorderTracks,
+}: {
+  width: number;
+  panelWidth: number;
+  canReorderTracks: boolean;
+}): number {
+  const min = labelColumnMinWidth({ canReorderTracks });
+  const maxByPanel =
+    panelWidth > 0
+      ? panelWidth - MIN_TIMELINE_TRACK_WIDTH
+      : LABEL_COLUMN_MAX_WIDTH;
+  const max = Math.min(LABEL_COLUMN_MAX_WIDTH, maxByPanel);
+  const safeMax = Math.max(min, max);
+  return Math.min(Math.max(width, min), safeMax);
+}
+
+/**
+ * Read a persisted track-name column width from localStorage, if valid.
+ */
+export function readStoredLabelColumnWidth(): number | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.localStorage.getItem(LABEL_COLUMN_WIDTH_STORAGE_KEY);
+  if (!raw) return null;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed)) return null;
+  return parsed;
+}
+
+/**
+ * Persist the track-name column width so it survives reloads.
+ */
+export function persistLabelColumnWidth({ width }: { width: number }): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(LABEL_COLUMN_WIDTH_STORAGE_KEY, String(width));
 }

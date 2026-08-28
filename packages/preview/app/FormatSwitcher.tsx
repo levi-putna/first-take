@@ -8,7 +8,7 @@ import {
 } from "./formatPresets";
 
 /**
- * Top-right format pill: switch the preview size, or add/remove formats on video.json.
+ * Top-right format control: switch the preview size, or add/remove formats on video.json.
  */
 export function FormatSwitcher({
   formats,

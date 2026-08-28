@@ -33,12 +33,10 @@ describe("create helpers", () => {
 
   it("detects the monorepo vs npx CLI command", () => {
     expect(isStoryboardMonorepo({ cwd: process.cwd() })).toBe(true);
-    expect(storyboardCliCommand({ cwd: process.cwd() })).toBe("yarn storyboard");
+    expect(storyboardCliCommand({ cwd: process.cwd() })).toBe("pnpm first-take");
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "sb-not-mono-"));
     expect(isStoryboardMonorepo({ cwd: tmp })).toBe(false);
-    expect(storyboardCliCommand({ cwd: tmp })).toBe(
-      "npx @levi-putna/storyboard",
-    );
+    expect(storyboardCliCommand({ cwd: tmp })).toBe("npx first-take");
   });
 });
 
@@ -109,5 +107,21 @@ describe("scaffoldVideoProject", () => {
     expect(raw.tracks[2]?.scenes[0]?.props?.src).toBe(
       "assets/audio/bed-loop.mp3",
     );
+  });
+
+  it("pins engine packages to the library version, not first-take's version", () => {
+    const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-scaffold-ver-"));
+    scaffoldVideoProject({
+      slug: "ver-pin",
+      outDir,
+      title: "Ver Pin",
+      withAudio: false,
+      force: false,
+    });
+    const pkg = JSON.parse(
+      fs.readFileSync(path.join(outDir, "package.json"), "utf8"),
+    ) as { dependencies: Record<string, string> };
+    expect(pkg.dependencies["@levi-putna/storyboard-core"]).toBe("0.3.0");
+    expect(pkg.dependencies["@levi-putna/storyboard-media"]).toBe("0.3.0");
   });
 });

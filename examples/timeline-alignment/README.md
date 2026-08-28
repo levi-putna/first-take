@@ -13,7 +13,7 @@ Catalogue: [examples/README.md](../README.md).
 ![Timeline alignment at 0:10](./preview.png)
 
 ```bash
-yarn storyboard preview examples/timeline-alignment/video.json
+pnpm first-take preview examples/timeline-alignment/video.json
 ```
 
 ## Tracks
@@ -26,7 +26,7 @@ yarn storyboard preview examples/timeline-alignment/video.json
 ## Commands
 
 ```bash
-yarn storyboard validate examples/timeline-alignment/video.json
-yarn storyboard preview examples/timeline-alignment/video.json
-yarn storyboard render examples/timeline-alignment/video.json --format=16x9 --silent
+pnpm first-take validate examples/timeline-alignment/video.json
+pnpm first-take preview examples/timeline-alignment/video.json
+pnpm first-take render examples/timeline-alignment/video.json --format=16x9 --silent
 ```

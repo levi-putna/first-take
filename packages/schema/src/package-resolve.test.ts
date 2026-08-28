@@ -19,8 +19,8 @@ describe("package-resolve", () => {
     ).toBe(true);
   });
 
-  it("names the CLI @levi-putna/storyboard", () => {
-    expect(STORYBOARD_PACKAGES.cli).toBe("@levi-putna/storyboard");
+  it("names the CLI first-take", () => {
+    expect(STORYBOARD_PACKAGES.cli).toBe("first-take");
     expect(STORYBOARD_PACKAGES.core).toBe("@levi-putna/storyboard-core");
   });
 });

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Set the lockstep version across the root workspace and every publishable
- * @levi-putna/storyboard* package (including inter-package dependency pins).
+ * engine package (`@levi-putna/storyboard*`), including inter-package pins.
+ * The CLI package `first-take` is versioned separately.
  *
  * Usage: node scripts/set-version.mjs 1.0.0
  */
@@ -18,16 +19,21 @@ if (!version || !/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(version)) {
 }
 
 const prefix = "@levi-putna/storyboard";
+const cliName = "first-take";
 
 /**
- * Pin every @levi-putna/storyboard* dependency to the release version.
+ * Pin every @levi-putna/storyboard* (and first-take) dependency to the release version.
  */
 function pinStoryboardDeps({ pkg }) {
   for (const key of ["dependencies", "devDependencies", "peerDependencies"]) {
     const block = pkg[key];
     if (!block) continue;
     for (const name of Object.keys(block)) {
-      if (name === prefix || name.startsWith(`${prefix}-`)) {
+      if (
+        name === cliName ||
+        name === prefix ||
+        name.startsWith(`${prefix}-`)
+      ) {
         block[name] = version;
       }
     }

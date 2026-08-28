@@ -10,12 +10,17 @@ coverage/
 tmp/
 .temp/
 *.log
+pnpm-debug.log*
 playwright/.cache/
 packages/*/dist/
 examples/*/out/
 examples/*/dist/
 out/
 *.tgz
+# This repo uses pnpm. Do not commit other lockfiles.
+yarn.lock
+package-lock.json
+npm-shrinkwrap.json
 packages/preview/app/.generated/
 # Staged from the repo root at publish time (scripts/stage-cli-docs.mjs)
 packages/cli/README.md

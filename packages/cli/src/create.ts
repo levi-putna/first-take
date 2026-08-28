@@ -5,14 +5,26 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
 /**
- * Read this CLI package's version (used to pin scaffolded workspace deps).
+ * Read this CLI package's version (`first-take` on npm).
  */
 export function cliPackageVersion(): string {
   return (require("../package.json") as { version: string }).version;
 }
 
 /**
- * True when cwd is the Storyboard yarn workspaces repo (not a consumer project).
+ * Engine library version pinned into scaffolded projects.
+ * `first-take` may use a different public version than `@levi-putna/storyboard-*`.
+ */
+export function enginePackageVersion(): string {
+  const pkg = require("../package.json") as {
+    version: string;
+    dependencies?: Record<string, string>;
+  };
+  return pkg.dependencies?.["@levi-putna/storyboard-schema"] ?? pkg.version;
+}
+
+/**
+ * True when cwd is the First Take pnpm workspaces repo (not a consumer project).
  */
 export function isStoryboardMonorepo({
   cwd = process.cwd(),
@@ -26,14 +38,20 @@ export function isStoryboardMonorepo({
       name?: string;
       workspaces?: unknown;
     };
-    return pkg.name === "storyboard" && Boolean(pkg.workspaces);
+    const hasPnpmWorkspace = fs.existsSync(
+      path.join(cwd, "pnpm-workspace.yaml"),
+    );
+    return (
+      pkg.name === "storyboard" &&
+      (Boolean(pkg.workspaces) || hasPnpmWorkspace)
+    );
   } catch {
     return false;
   }
 }
 
 /**
- * Command prefix for follow-up docs: local yarn script vs npx.
+ * Command prefix for follow-up docs: local pnpm script vs npx.
  */
 export function storyboardCliCommand({
   cwd = process.cwd(),
@@ -41,8 +59,8 @@ export function storyboardCliCommand({
   cwd?: string;
 } = {}): string {
   return isStoryboardMonorepo({ cwd })
-    ? "yarn storyboard"
-    : "npx @levi-putna/storyboard";
+    ? "pnpm first-take"
+    : "npx first-take";
 }
 
 export type CreateVideoOptions = {
@@ -59,7 +77,7 @@ export type CreateVideoOptions = {
 };
 
 /**
- * Convert a slug into a package name safe for yarn workspaces.
+ * Convert a slug into a package name safe for pnpm workspaces.
  */
 export function packageNameFromSlug({ slug }: { slug: string }): string {
   const cleaned = slug
@@ -133,7 +151,7 @@ function findTsconfigBase({
 }
 
 /**
- * Scaffold a new Storyboard video project on disk.
+ * Scaffold a new First Take video project on disk.
  * @returns list of relative file paths written
  */
 export function scaffoldVideoProject({
@@ -144,7 +162,7 @@ export function scaffoldVideoProject({
   force,
 }: CreateVideoOptions): string[] {
   const pkgName = packageNameFromSlug({ slug });
-  const engineVersion = cliPackageVersion();
+  const engineVersion = enginePackageVersion();
   const cli = storyboardCliCommand();
   const inMonorepo = isStoryboardMonorepo();
 
@@ -455,7 +473,7 @@ ${cli} render video.json --silent
     rel: "README.md",
     contents: `# ${title}
 
-Scaffolded Storyboard video project (\`${slug}\`).
+Scaffolded First Take video project (\`${slug}\`).
 
 ## Next steps
 

@@ -1,6 +1,6 @@
 # Video file specification (`video.json`)
 
-Normative specification for the Storyboard **video definition file** — the JSON
+Normative specification for the First Take **video definition file** — the JSON
 manifest that drives validation, preview, still capture, and MP4 render.
 
 Validated by `@levi-putna/storyboard-schema` (`videoManifestSchema`). Current
@@ -47,7 +47,7 @@ hardcode global scene order or composition length.
 | Typical filename | `video.json` (any path accepted by the CLI) |
 | Encoding | UTF-8 JSON object |
 | Schema | `schemaVersion: 3` |
-| Validate | `yarn storyboard validate <path-to-video.json>` |
+| Validate | `pnpm first-take validate <path-to-video.json>` |
 
 Invalid JSON, schema failures, illegal transitions, duplicate scene ids,
 unsupported `visualType`, or missing referenced audio files cause validation
@@ -136,7 +136,7 @@ The module **must** default-export a React component. See
 
 ### 4.3 Props
 
-`props` is an arbitrary JSON object. Storyboard does not validate prop shapes.
+`props` is an arbitrary JSON object. First Take does not validate prop shapes.
 Prefer serialisable values. Audio file paths in props (strings ending
 `.mp3` / `.wav` / `.m4a` / `.aac`) are scanned by `validate` and must exist
 under `assetsRoot` unless `--no-assets`.
@@ -214,7 +214,7 @@ visual track plus a spanning mix scene that mounts `<Audio>`.
 
 ## 7. Validation checklist
 
-`yarn storyboard validate <video.json>` (via `validateVideoFile`) checks:
+`pnpm first-take validate <video.json>` (via `validateVideoFile`) checks:
 
 1. File exists and parses as JSON
 2. Zod schema (`videoManifestSchema`)
@@ -229,7 +229,7 @@ It does **not** type-check React props or execute components.
 
 ## 8. Project layout convention
 
-Scaffolded by `yarn storyboard create <slug>`:
+Scaffolded by `pnpm first-take create <slug>`:
 
 ```
 my-video/

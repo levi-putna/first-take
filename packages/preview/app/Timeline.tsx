@@ -36,20 +36,31 @@ import { ClipWaveform } from "./ClipWaveform";
 import {
   clampPixelsPerFrame,
   defaultPixelsPerFrame,
+  durationFromTrimPointer,
   majorRulerStepFrames,
   minVisibleFrames,
   ppfFromVisibleFrames,
   scalePixelsPerFrame,
+  scrollableDurationInFrames,
+  timelineContentWidth,
+  trimEdgeScrollDeltaPx,
   viewportFromScroll,
   type TimelineViewport,
 } from "./timelineZoom";
 import { moveIndex, targetIndexFromDelta } from "./timelineEdit";
+import {
+  clampLabelColumnWidth,
+  LABEL_COLUMN_KEYBOARD_STEP,
+  LABEL_COLUMN_MAX_WIDTH,
+  labelColumnDefaultWidth,
+  labelColumnMinWidth,
+  persistLabelColumnWidth,
+  readStoredLabelColumnWidth,
+} from "./dockLayout";
 
-const LABEL_WIDTH = 96;
-const LABEL_WIDTH_WITH_HANDLE = 112;
 const RULER_HEIGHT = 28;
 const DRAG_THRESHOLD_PX = 4;
-const TRIM_HANDLE_PX = 7;
+const TRIM_HANDLE_PX = 12;
 /** Clips narrower than this cannot be moved, trimmed, or selected. */
 const MIN_CLIP_INTERACT_PX = 12;
 
@@ -66,6 +77,9 @@ type ClipDragState = {
   previewStart: number;
   previewDuration: number;
   targetTrackId: string;
+  lastClientX: number;
+  pendingScroll: number | null;
+  pointerId: number;
 };
 
 type TrackReorderState = {
@@ -168,6 +182,8 @@ export function Timeline({
   >(() => {});
   const dragging = useRef(false);
   const clipDragRef = useRef<ClipDragState | null>(null);
+  const trimRafRef = useRef(0);
+  const pixelsPerFrameRef = useRef(1);
   const trackReorderRef = useRef<TrackReorderState | null>(null);
   const onMoveSceneRef = useRef(onMoveScene);
   const onTrimSceneRef = useRef(onTrimScene);
@@ -185,6 +201,7 @@ export function Timeline({
   lanesRef.current = lanes;
 
   const [pixelsPerFrame, setPixelsPerFrame] = useState(1);
+  pixelsPerFrameRef.current = pixelsPerFrame;
   const [scrollMetrics, setScrollMetrics] = useState({
     scrollLeft: 0,
     clientWidth: 0,
@@ -200,7 +217,18 @@ export function Timeline({
   );
 
   const canReorderTracks = editable && !isolated && lanes.length > 1;
-  const labelWidth = canReorderTracks ? LABEL_WIDTH_WITH_HANDLE : LABEL_WIDTH;
+  const [labelWidth, setLabelWidth] = useState(
+    () =>
+      readStoredLabelColumnWidth() ??
+      labelColumnDefaultWidth({ canReorderTracks }),
+  );
+  const [labelResizing, setLabelResizing] = useState(false);
+  const labelResizeStart = useRef({
+    x: 0,
+    width: labelColumnDefaultWidth({ canReorderTracks: false }),
+  });
+  const canReorderTracksRef = useRef(canReorderTracks);
+  canReorderTracksRef.current = canReorderTracks;
   const displayLanes = useMemo(() => {
     if (!trackOrderPreview) return lanes;
     const byId = new Map(lanes.map((lane) => [lane.trackId, lane]));
@@ -211,7 +239,21 @@ export function Timeline({
   }, [lanes, trackOrderPreview]);
 
   const trackWidth = scrollMetrics.clientWidth;
-  const contentWidth = durationInFrames * pixelsPerFrame;
+  const previewEnd =
+    clipPreview != null
+      ? clipPreview.startFrame + clipPreview.durationInFrames
+      : 0;
+  const stackDurationInFrames = Math.max(durationInFrames, previewEnd);
+  const contentWidth = timelineContentWidth({
+    durationInFrames: stackDurationInFrames,
+    pixelsPerFrame,
+    trackWidth,
+  });
+  const scrollableDuration = scrollableDurationInFrames({
+    durationInFrames: stackDurationInFrames,
+    trackWidth,
+    pixelsPerFrame,
+  });
 
   const overviewClips = useMemo(
     () =>
@@ -239,11 +281,135 @@ export function Timeline({
 
   useLayoutEffect(() => {
     syncScrollMetrics();
-  }, [syncScrollMetrics, pixelsPerFrame, durationInFrames]);
+  }, [syncScrollMetrics, pixelsPerFrame, durationInFrames, contentWidth]);
 
-  useEffect(() => {
+  /**
+   * Clamp the track-name column against the current panel and grip state.
+   */
+  const applyLabelWidth = useCallback(
+    ({ width }: { width: number }) => {
+      const next = clampLabelColumnWidth({
+        width,
+        panelWidth: panelRef.current?.clientWidth ?? 0,
+        canReorderTracks: canReorderTracksRef.current,
+      });
+      setLabelWidth(next);
+      return next;
+    },
+    [],
+  );
+
+  /**
+   * Keep the column inside min/max when the dock or grip availability changes.
+   */
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    function clampToPanel() {
+      setLabelWidth((current) =>
+        clampLabelColumnWidth({
+          width: current,
+          panelWidth: panelRef.current?.clientWidth ?? 0,
+          canReorderTracks: canReorderTracksRef.current,
+        }),
+      );
+    }
+
+    clampToPanel();
+    const observer = new ResizeObserver(clampToPanel);
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, [canReorderTracks]);
+
+  /**
+   * Start a drag-resize on the track-name column.
+   */
+  function beginLabelColumnResize({
+    event,
+  }: {
+    event: ReactPointerEvent<HTMLButtonElement>;
+  }) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    labelResizeStart.current = { x: event.clientX, width: labelWidth };
+    setLabelResizing(true);
+  }
+
+  /**
+   * Follow the pointer while the track-name column is being resized.
+   */
+  function handleLabelResizeMove({
+    event,
+  }: {
+    event: ReactPointerEvent<HTMLButtonElement>;
+  }) {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    const delta = event.clientX - labelResizeStart.current.x;
+    applyLabelWidth({ width: labelResizeStart.current.width + delta });
+  }
+
+  /**
+   * Persist the column width when the resize pointer is released.
+   */
+  function finishLabelColumnResize({
+    event,
+  }: {
+    event: ReactPointerEvent<HTMLButtonElement>;
+  }) {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    setLabelResizing(false);
+    setLabelWidth((current) => {
+      persistLabelColumnWidth({ width: current });
+      return current;
+    });
+  }
+
+  /**
+   * Keyboard alternative to dragging the track-name column.
+   */
+  function handleLabelResizeKey({
+    event,
+  }: {
+    event: ReactKeyboardEvent<HTMLButtonElement>;
+  }) {
+    let next = labelWidth;
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      next = labelWidth - LABEL_COLUMN_KEYBOARD_STEP;
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      next = labelWidth + LABEL_COLUMN_KEYBOARD_STEP;
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      next = labelColumnMinWidth({ canReorderTracks });
+    } else if (event.key === "End") {
+      event.preventDefault();
+      next = LABEL_COLUMN_MAX_WIDTH;
+    } else {
+      return;
+    }
+    persistLabelColumnWidth({ width: applyLabelWidth({ width: next }) });
+  }
+
+  /**
+   * Reset the track-name column to the logical default.
+   */
+  function resetLabelColumnWidth() {
+    persistLabelColumnWidth({
+      width: applyLabelWidth({
+        width: labelColumnDefaultWidth({ canReorderTracks }),
+      }),
+    });
+  }
+  const prevIsolatedRef = useRef(isolated);
+  useLayoutEffect(() => {
+    if (prevIsolatedRef.current === isolated) return;
+    prevIsolatedRef.current = isolated;
     didInitZoomRef.current = false;
-  }, [durationInFrames]);
+  }, [isolated]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -293,7 +459,7 @@ export function Timeline({
     if (Math.abs(clamped - pixelsPerFrame) > 0.0005) {
       setPixelsPerFrame(clamped);
     }
-  }, [durationInFrames, fps, pixelsPerFrame, trackWidth]);
+  }, [durationInFrames, fps, pixelsPerFrame, trackWidth, isolated]);
 
   const viewport: TimelineViewport =
     trackWidth > 0
@@ -301,9 +467,9 @@ export function Timeline({
           scrollLeft: scrollMetrics.scrollLeft,
           clientWidth: trackWidth,
           pixelsPerFrame,
-          durationInFrames,
+          durationInFrames: scrollableDuration,
         })
-      : { startFrame: 0, endFrame: durationInFrames };
+      : { startFrame: 0, endFrame: scrollableDuration };
 
   const focusMinVisible =
     trackWidth > 0
@@ -320,9 +486,9 @@ export function Timeline({
       const rect = el.getBoundingClientRect();
       const x = clientX - rect.left + el.scrollLeft;
       const next = Math.round(x / Math.max(0.0001, pixelsPerFrame));
-      return Math.max(0, next);
+      return Math.max(0, Math.min(last, next));
     },
-    [pixelsPerFrame],
+    [last, pixelsPerFrame],
   );
 
   /**
@@ -366,6 +532,70 @@ export function Timeline({
     if (!editable) return;
 
     /**
+     * Maps the current pointer to a trim-end duration, then auto-scrolls
+     * when the pointer sits in the scrollport edge so the clip can keep growing.
+     */
+    function applyTrimFromPointer({
+      drag,
+      scrollLeft,
+    }: {
+      drag: ClipDragState;
+      scrollLeft: number;
+    }) {
+      const el = scrollRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const duration = durationFromTrimPointer({
+        clientX: drag.lastClientX,
+        viewportLeft: rect.left,
+        viewportWidth: el.clientWidth,
+        scrollLeft,
+        pixelsPerFrame: pixelsPerFrameRef.current,
+        startFrame: drag.originStart,
+      });
+      drag.previewDuration = duration;
+      setClipPreview({
+        sceneId: drag.sceneId,
+        trackId: drag.sourceTrackId,
+        startFrame: drag.originStart,
+        durationInFrames: duration,
+      });
+    }
+
+    /**
+     * Continues a trim while the pointer is held in the edge zone, even if still.
+     */
+    function tickTrimEdgeScroll() {
+      const drag = clipDragRef.current;
+      const el = scrollRef.current;
+      if (!drag || drag.mode !== "trim-end" || !drag.moved || !el) {
+        trimRafRef.current = 0;
+        return;
+      }
+
+      const rect = el.getBoundingClientRect();
+      const deltaPx = trimEdgeScrollDeltaPx({
+        clientX: drag.lastClientX,
+        viewportLeft: rect.left,
+        viewportRight: rect.right,
+      });
+      if (deltaPx !== 0) {
+        const nextScroll = Math.max(0, el.scrollLeft + deltaPx);
+        drag.pendingScroll = nextScroll;
+        applyTrimFromPointer({ drag, scrollLeft: nextScroll });
+      }
+      trimRafRef.current = requestAnimationFrame(tickTrimEdgeScroll);
+    }
+
+    /**
+     * Starts the edge-scroll loop once a trim is past the click threshold.
+     */
+    function startTrimEdgeScroll() {
+      if (trimRafRef.current) return;
+      trimRafRef.current = requestAnimationFrame(tickTrimEdgeScroll);
+    }
+
+    /**
      * Drag or trim a clip while the pointer is down.
      */
     function handlePointerMove(event: PointerEvent) {
@@ -373,6 +603,7 @@ export function Timeline({
       const drag = clipDragRef.current;
       if (!drag) return;
 
+      drag.lastClientX = event.clientX;
       const deltaX = event.clientX - drag.originX;
       if (!drag.moved && Math.abs(deltaX) < DRAG_THRESHOLD_PX) {
         return;
@@ -381,7 +612,7 @@ export function Timeline({
 
       if (drag.mode === "move") {
         const deltaFrames = Math.round(
-          deltaX / Math.max(0.0001, pixelsPerFrame),
+          deltaX / Math.max(0.0001, pixelsPerFrameRef.current),
         );
         const targetTrackId = trackIdFromClientY(event.clientY);
         drag.targetTrackId = targetTrackId;
@@ -396,23 +627,33 @@ export function Timeline({
         return;
       }
 
-      const deltaFrames = Math.round(
-        deltaX / Math.max(0.0001, pixelsPerFrame),
-      );
-      drag.previewDuration = Math.max(1, drag.originDuration + deltaFrames);
-      setClipPreview({
-        sceneId: drag.sceneId,
-        trackId: drag.sourceTrackId,
-        startFrame: drag.originStart,
-        durationInFrames: drag.previewDuration,
+      const el = scrollRef.current;
+      applyTrimFromPointer({
+        drag,
+        scrollLeft: el?.scrollLeft ?? 0,
       });
+      startTrimEdgeScroll();
     }
 
     /**
      * Commit or cancel the active clip drag.
      */
-    function finishPointer() {
+    function finishPointer(event?: Event) {
       const drag = clipDragRef.current;
+      if (
+        event &&
+        "pointerId" in event &&
+        drag &&
+        (event as PointerEvent).pointerId !== drag.pointerId
+      ) {
+        return;
+      }
+
+      if (trimRafRef.current) {
+        cancelAnimationFrame(trimRafRef.current);
+        trimRafRef.current = 0;
+      }
+
       clipDragRef.current = null;
       onDropTargetTrackChangeRef.current?.(null);
       setClipPreview(null);
@@ -442,12 +683,42 @@ export function Timeline({
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", finishPointer);
     window.addEventListener("pointercancel", finishPointer);
+    window.addEventListener("lostpointercapture", finishPointer);
     return () => {
+      if (trimRafRef.current) {
+        cancelAnimationFrame(trimRafRef.current);
+        trimRafRef.current = 0;
+      }
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", finishPointer);
       window.removeEventListener("pointercancel", finishPointer);
+      window.removeEventListener("lostpointercapture", finishPointer);
     };
-  }, [editable, pixelsPerFrame, trackIdFromClientY]);
+  }, [editable, trackIdFromClientY]);
+
+  /**
+   * Apply auto-scroll after the stack grows so the browser does not clamp it.
+   */
+  useLayoutEffect(() => {
+    const drag = clipDragRef.current;
+    const el = scrollRef.current;
+    if (!drag || drag.mode !== "trim-end" || drag.pendingScroll == null || !el) {
+      return;
+    }
+
+    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
+    const nextScroll = Math.min(maxScroll, drag.pendingScroll);
+    drag.pendingScroll = null;
+    if (Math.abs(nextScroll - el.scrollLeft) < 0.5) return;
+
+    applyingFocusRef.current = true;
+    el.scrollLeft = nextScroll;
+    setScrollMetrics({
+      scrollLeft: el.scrollLeft,
+      clientWidth: el.clientWidth,
+    });
+    applyingFocusRef.current = false;
+  }, [clipPreview, pixelsPerFrame]);
 
   useEffect(() => {
     if (!editable) return;
@@ -535,6 +806,11 @@ export function Timeline({
     }
     event.preventDefault();
     event.stopPropagation();
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Capture can fail if this pointer is no longer active.
+    }
     clipDragRef.current = {
       mode,
       sceneId: clip.sceneId,
@@ -546,6 +822,9 @@ export function Timeline({
       previewStart: clip.startFrame,
       previewDuration: clip.durationInFrames,
       targetTrackId: lane.trackId,
+      lastClientX: event.clientX,
+      pendingScroll: null,
+      pointerId: event.pointerId,
     };
   }
 
@@ -645,7 +924,11 @@ export function Timeline({
       }
       const maxScroll = Math.max(
         0,
-        durationInFrames * clamped - scrollEl.clientWidth,
+        timelineContentWidth({
+          durationInFrames,
+          pixelsPerFrame: clamped,
+          trackWidth: scrollEl.clientWidth,
+        }) - scrollEl.clientWidth,
       );
       let nextScroll = scrollEl.scrollLeft;
       if (anchorFrame != null && anchorOffsetPx != null) {
@@ -741,7 +1024,11 @@ export function Timeline({
     applyingFocusRef.current = true;
     const maxScroll = Math.max(
       0,
-      durationInFrames * pixelsPerFrame - el.clientWidth,
+      timelineContentWidth({
+        durationInFrames,
+        pixelsPerFrame,
+        trackWidth: el.clientWidth,
+      }) - el.clientWidth,
     );
     el.scrollLeft = Math.min(maxScroll, Math.max(0, startFrame * pixelsPerFrame));
     setScrollMetrics({
@@ -777,7 +1064,7 @@ export function Timeline({
 
   const majorStep = majorRulerStepFrames({ pixelsPerFrame, fps });
   const ticks: number[] = [];
-  for (let f = 0; f <= durationInFrames; f += majorStep) {
+  for (let f = 0; f <= stackDurationInFrames; f += majorStep) {
     ticks.push(f);
   }
   const tickDecimals = decimalsForTickFrames({ frames: ticks, fps });
@@ -819,7 +1106,7 @@ export function Timeline({
     return (
       <div
         key={clip.key}
-        className={`sb-clip-wrap${selectedSceneId === clip.sceneId ? " is-current" : ""}${isDragging ? " is-dragging" : ""}${isTooSmall ? " is-too-small" : ""}`}
+        className={`sb-clip-wrap${selectedSceneId === clip.sceneId ? " is-current" : ""}${isDragging ? " is-dragging" : ""}${isTooSmall ? " is-too-small" : ""}${isAltLane({ laneIndex }) ? " is-alt" : ""}`}
         style={{
           left: startFrame * pixelsPerFrame,
           width: clipWidth,
@@ -887,8 +1174,8 @@ export function Timeline({
   }
 
   return (
-    <div className="sb-dock">
-      {/* Play / pause + timecode */}
+    <div className={`sb-dock${labelResizing ? " is-resizing-labels" : ""}`}>
+      {/* Transport: play control, timecode, undo */}
       <div className="sb-transport">
         {isolated ? (
           <button
@@ -913,7 +1200,7 @@ export function Timeline({
         </button>
         <button
           type="button"
-          className="sb-icon-btn"
+          className="sb-icon-btn sb-play-btn"
           aria-pressed={playing}
           aria-label={playing ? "Pause" : "Play"}
           onClick={() => onPlayingChange(!playing)}
@@ -964,18 +1251,21 @@ export function Timeline({
       {/* Ruler + lanes (scroll vertically when dock is short) */}
       <div className="sb-timeline-body">
         <div ref={panelRef} className="sb-timeline-panel">
-          <div className={`sb-timeline${reorderingTrackId ? " is-reordering-tracks" : ""}`}>
+          <div
+            className={`sb-timeline${reorderingTrackId ? " is-reordering-tracks" : ""}${labelResizing ? " is-resizing-labels" : ""}`}
+          >
             {/* Track titles sit left of the scrollport; grip only when reorderable */}
             <div className="sb-timeline-labels" style={{ width: labelWidth }}>
               <div
                 className="sb-timeline-label-gutter"
                 style={{ height: RULER_HEIGHT }}
               />
-              {displayLanes.map((lane) => {
+              {displayLanes.map((lane, laneIndex) => {
                 const isCurrent = selectedTrackId === lane.trackId;
                 const isDropTarget = dropTargetTrackId === lane.trackId;
                 const isReordering = reorderingTrackId === lane.trackId;
-                const rowClass = `sb-timeline-label-row${canReorderTracks ? " has-reorder" : ""}${isCurrent ? " is-current" : ""}${isDropTarget ? " is-drop-target" : ""}${isReordering ? " is-reordering" : ""}`;
+                const isAlt = isAltLane({ laneIndex });
+                const rowClass = `sb-timeline-label-row${canReorderTracks ? " has-reorder" : ""}${isCurrent ? " is-current" : ""}${isDropTarget ? " is-drop-target" : ""}${isReordering ? " is-reordering" : ""}${isAlt ? " is-alt" : ""}`;
 
                 return (
                   <div key={lane.trackId} className={rowClass}>
@@ -1016,9 +1306,39 @@ export function Timeline({
                   </div>
                 );
               })}
+              {/* Drag the column edge to show more or less of the track names */}
+              <button
+                type="button"
+                className="sb-timeline-label-resize-handle"
+                aria-orientation="vertical"
+                aria-label="Resize track names"
+                aria-valuemin={labelColumnMinWidth({ canReorderTracks })}
+                aria-valuemax={LABEL_COLUMN_MAX_WIDTH}
+                aria-valuenow={labelWidth}
+                title="Drag to resize track names"
+                onPointerDown={(event) => {
+                  beginLabelColumnResize({ event });
+                }}
+                onPointerMove={(event) => {
+                  handleLabelResizeMove({ event });
+                }}
+                onPointerUp={(event) => {
+                  finishLabelColumnResize({ event });
+                }}
+                onPointerCancel={(event) => {
+                  finishLabelColumnResize({ event });
+                }}
+                onKeyDown={(event) => {
+                  handleLabelResizeKey({ event });
+                }}
+                onDoubleClick={(event) => {
+                  event.preventDefault();
+                  resetLabelColumnWidth();
+                }}
+              />
             </div>
 
-            {/* Scrollport: native scrollbar hidden; focus bar is the scroll UI */}
+            {/* Scrollport: native scrollbar hidden; trailing gutter keeps the last trim handle grabbable */}
             <div ref={scrollRef} className="sb-timeline-scroll">
               <div
                 className="sb-timeline-stack"
@@ -1073,7 +1393,7 @@ export function Timeline({
                       if (node) laneRefs.current.set(lane.trackId, node);
                       else laneRefs.current.delete(lane.trackId);
                     }}
-                    className={`sb-lane${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}${reorderingTrackId === lane.trackId ? " is-reordering" : ""}`}
+                    className={`sb-lane${dropTargetTrackId === lane.trackId ? " is-drop-target" : ""}${reorderingTrackId === lane.trackId ? " is-reordering" : ""}${isAltLane({ laneIndex }) ? " is-alt" : ""}`}
                     data-track-id={lane.trackId}
                   >
                     {lane.clips.map((clip) =>
@@ -1126,7 +1446,7 @@ export function Timeline({
         {/* Focus bar: full-width pan/zoom overview pinned to the dock bottom */}
         <div className="sb-timeline-focus">
           <TimelineFocusBar
-            durationInFrames={durationInFrames}
+            durationInFrames={scrollableDuration}
             viewport={viewport}
             overviewClips={overviewClips}
             minVisibleFrames={focusMinVisible}
@@ -1139,10 +1459,17 @@ export function Timeline({
 }
 
 /**
- * Quiet alternating lane colours.
+ * Whether this lane uses the high-contrast magenta-soft alt colour.
+ */
+function isAltLane({ laneIndex }: { laneIndex: number }): boolean {
+  return laneIndex % 2 === 1;
+}
+
+/**
+ * Alternating clip fills: dark plum-magenta, then magenta-soft.
  */
 function clipTone(laneIndex: number): string {
-  return laneIndex % 2 === 0 ? "var(--scene-a)" : "var(--scene-b)";
+  return isAltLane({ laneIndex }) ? "var(--scene-b)" : "var(--scene-a)";
 }
 
 /**

@@ -1,0 +1,15 @@
+packages:
+  - "packages/*"
+  - "examples/*"
+
+# Link matching @levi-putna/storyboard* versions from this repo instead of npm.
+linkWorkspacePackages: true
+preferWorkspacePackages: true
+# Hoist so Vitest, Playwright, and tsup keep resolving from the root.
+shamefullyHoist: true
+strictPeerDependencies: false
+onlyBuiltDependencies:
+  - esbuild
+  - ffmpeg-static
+  - ffprobe-static
+  - playwright

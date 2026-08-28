@@ -22,7 +22,7 @@ Composition length is **360 frames** (12 seconds at 30 fps).
 ## Commands
 
 ```bash
-yarn storyboard validate examples/circle-wipe/video.json
-yarn storyboard preview examples/circle-wipe/video.json
-yarn storyboard render examples/circle-wipe/video.json --format=16x9 --silent
+pnpm first-take validate examples/circle-wipe/video.json
+pnpm first-take preview examples/circle-wipe/video.json
+pnpm first-take render examples/circle-wipe/video.json --format=16x9 --silent
 ```

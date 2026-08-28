@@ -9,7 +9,7 @@ export type PreviewProjectItem = {
 };
 
 /**
- * Header control: muted title, or a pill to switch videos when more than one
+ * Header control: muted title, or a menu to switch videos when more than one
  * video.json is nearby.
  */
 export function ProjectSwitcher({ title }: { title: string }) {
@@ -92,7 +92,7 @@ export function ProjectSwitcher({ title }: { title: string }) {
 
   return (
     <div className="sb-format" ref={rootRef}>
-      {/* Video switcher — same pill language as the format control */}
+      {/* Video switcher — same control language as the format menu */}
       <button
         type="button"
         className="sb-format-trigger"

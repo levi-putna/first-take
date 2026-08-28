@@ -27,8 +27,8 @@ Catalogue: [examples/README.md](../README.md).
 ## Commands
 
 ```bash
-yarn storyboard validate examples/multi-format/video.json
-yarn storyboard preview examples/multi-format/video.json
-yarn storyboard render examples/multi-format/video.json --format=16x9 --silent
-yarn storyboard render examples/multi-format/video.json --format=9x16 --silent
+pnpm first-take validate examples/multi-format/video.json
+pnpm first-take preview examples/multi-format/video.json
+pnpm first-take render examples/multi-format/video.json --format=16x9 --silent
+pnpm first-take render examples/multi-format/video.json --format=9x16 --silent
 ```

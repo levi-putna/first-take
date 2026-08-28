@@ -1,6 +1,6 @@
 # Technical requirements
 
-Stack and architecture choices for Storyboard. Remotion is a **reference**, not a dependency - we reimplement the patterns we need.
+Stack and architecture choices for First Take. Remotion is a **reference**, not a dependency - we reimplement the patterns we need.
 
 ## 1. Architectural overview
 
@@ -40,7 +40,7 @@ Inspired by Remotion's pipeline ([render docs](https://www.remotion.dev/docs/ren
 
 ## 3. Proposed packages (monorepo)
 
-Prefer a small monorepo so the core API can be imported by CLI and preview without circular mess. Yarn workspaces (per project convention: **yarn**, not npm).
+Prefer a small monorepo so the core API can be imported by CLI and preview without circular mess. pnpm workspaces (per project convention: **pnpm**, not npm or yarn).
 
 | Package | Role |
 |---------|------|
@@ -62,7 +62,7 @@ Application / demo package: [`examples/hello-explainer`](../examples/hello-expla
 | UI | React 19 (or current stable used by the host app) |
 | Module | ESM |
 | Node | Current LTS (document exact floor in README when locked) |
-| Package manager | Yarn |
+| Package manager | pnpm |
 | OS | macOS (dev), Linux (CI) |
 
 ## 5. Key dependencies (intended)
@@ -98,7 +98,7 @@ These are **building blocks**, not Remotion:
 | `remotion` and all `@remotion/*` | Project must not import Remotion |
 | Wall-clock animation libs as motion source | Breaks determinism (`react-spring`, etc.) |
 
-Chart libs (e.g. visx) may appear in **content** projects that consume Storyboard; they are not core engine deps. If used in videos, animation must still be frame-driven.
+Chart libs (e.g. visx) may appear in **content** projects that consume First Take; they are not core engine deps. If used in videos, animation must still be frame-driven.
 
 ## 6. Core API surface (v1 target)
 
@@ -170,11 +170,11 @@ storyboard/
         components/
       assets/
         audio/
-  package.json              # yarn workspaces root
+  package.json              # pnpm workspaces root (see pnpm-workspace.yaml)
   README.md
 ```
 
-Content projects (e.g. a Next.js app) may later vendor Storyboard and keep productions under their own tree; the engine itself should not assume Next.js.
+Content projects (e.g. a Next.js app) may later vendor First Take and keep productions under their own tree; the engine itself should not assume Next.js.
 
 ## 8. video.json technical rules
 
@@ -224,7 +224,7 @@ Normative detail lives in [08-testing-strategy.md](./08-testing-strategy.md). Su
 | Unit | `interpolate`, spring, duration math, schema parsing, scene timing helpers |
 | Component | Render a component at frames 0, mid, end with `@testing-library` + fixed frame provider; assert styles / text |
 | Golden stills | `renderStill` → `pixelmatch` against committed PNGs under `examples/*/expected/` |
-| Integration | Short render (e.g. 30 frames) + ffprobe duration/audio stream checks; `yarn test:smoke` for hello-explainer |
+| Integration | Short render (e.g. 30 frames) + ffprobe duration/audio stream checks; `pnpm test:smoke` for hello-explainer |
 
 ## 12. Tooling
 
@@ -238,7 +238,7 @@ Normative detail lives in [08-testing-strategy.md](./08-testing-strategy.md). Su
 | Dependency | Required for |
 |------------|--------------|
 | Node.js LTS | CLI, bundling |
-| Yarn | Install |
+| pnpm | Install |
 | Chromium/Chrome | Frame paint |
 | FFmpeg + ffprobe | Encode / probe |
 

@@ -30,7 +30,7 @@ Composition length is 315 frames (no tail). Double-click a clip in preview to is
 ## Commands
 
 ```bash
-yarn storyboard validate examples/hello-explainer/video.json
-yarn storyboard preview examples/hello-explainer/video.json
-yarn storyboard render examples/hello-explainer/video.json --format=16x9
+pnpm first-take validate examples/hello-explainer/video.json
+pnpm first-take preview examples/hello-explainer/video.json
+pnpm first-take render examples/hello-explainer/video.json --format=16x9
 ```

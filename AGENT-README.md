@@ -1,4 +1,4 @@
-# Agent guide: generate a Storyboard video
+# Agent guide: generate a First Take video
 
 Read this before scaffolding a video, writing scene components, or editing `video.json`.
 
@@ -34,8 +34,8 @@ Pick a working directory first.
 
 | Context | CLI | Where `create` writes |
 |---------|-----|------------------------|
-| This monorepo | `yarn storyboard` | `examples/<slug>/` (then `yarn install` to link the workspace) |
-| A consumer project | `npx @levi-putna/storyboard` | `./<slug>/` |
+| This monorepo | `pnpm first-take` | `examples/<slug>/` (then `pnpm install` to link the workspace) |
+| A consumer project | `npx first-take` | `./<slug>/` |
 
 Then:
 
@@ -48,22 +48,22 @@ Then:
 
 ```bash
 # monorepo
-yarn storyboard create my-video --title "My Video"
-yarn install
-yarn storyboard validate examples/my-video/video.json
-yarn storyboard still examples/my-video/video.json --frame=0 --out=out/still.png
-yarn storyboard preview examples/my-video/video.json
-yarn storyboard render examples/my-video/video.json --format=16x9
+pnpm first-take create my-video --title "My Video"
+pnpm install
+pnpm first-take validate examples/my-video/video.json
+pnpm first-take still examples/my-video/video.json --frame=0 --out=out/still.png
+pnpm first-take preview examples/my-video/video.json
+pnpm first-take render examples/my-video/video.json --format=16x9
 ```
 
 ```bash
 # consumer project
-npx @levi-putna/storyboard create my-video --title "My Video"
-cd my-video && yarn install
-npx @levi-putna/storyboard validate video.json
-npx @levi-putna/storyboard still video.json --frame=0 --out=out/still.png
-npx @levi-putna/storyboard preview video.json
-npx @levi-putna/storyboard render video.json --format=16x9
+npx first-take create my-video --title "My Video"
+cd my-video && pnpm install
+npx first-take validate video.json
+npx first-take still video.json --frame=0 --out=out/still.png
+npx first-take preview video.json
+npx first-take render video.json --format=16x9
 ```
 
 `--with-audio` on `create` adds a second **bed** track: a transparent scene with `<Audio loop />` whose duration matches the visual track, pointing at `assets/audio/bed-loop.mp3`. `--force` overwrites a non-empty folder.
@@ -271,7 +271,7 @@ Schema v3. Full field list: [`.doc/06-video-json-schema.md`](.doc/06-video-json-
 |-------|------|
 | `id` | Stable string (`"01"`, `"hook"`). Unique **across all tracks** |
 | `component` | Path relative to `video.json`. Module must default-export |
-| `props` | Arbitrary JSON. Storyboard does **not** type-check props. Audio paths here are validated |
+| `props` | Arbitrary JSON. First Take does **not** type-check props. Audio paths here are validated |
 | `durationInFrames` | Local length. For narrated scenes, derive from speech (below) |
 | `gapBeforeFrames` | Empty time on this track before the clip (default 0) |
 

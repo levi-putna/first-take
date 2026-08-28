@@ -94,7 +94,7 @@ export async function renderAndAssertStill({
 
   if (!fs.existsSync(goldenPath)) {
     throw new Error(
-      `Missing golden ${goldenPath}. Run yarn test:update-goldens first.`,
+      `Missing golden ${goldenPath}. Run pnpm test:update-goldens first.`,
     );
   }
 

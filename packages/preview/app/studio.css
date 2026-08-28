@@ -1,23 +1,39 @@
+/* First Take tokens: DESIGN.md. Dark plum chrome, magenta playhead. */
 :root {
   color-scheme: dark;
-  --bg: #0e1014;
-  --panel: #141820;
-  --panel-2: #1a1f2a;
-  --text: #e8ecf4;
-  --muted: #8b93a7;
-  --faint: #5c6578;
-  --accent: #3d8bfd;
-  --accent-soft: rgba(61, 139, 253, 0.18);
-  --playhead: #ff5c8a;
-  --border: #262c3a;
-  --lead: #4b5568;
-  --scene-a: #2a4a7a;
-  --scene-b: #1f5c62;
-  --scene-locked: #3d4658;
-  --tail: #3f3a4a;
-  --audio: #34d399;
-  --danger: #f87171;
+  --font-display: "Radio Canada Big", "Segoe UI", sans-serif;
+  --font-ui: Inter, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --bg: #12040d;
+  --panel: #1a0612;
+  --panel-2: #3d0f28;
+  --text: #ffffff;
+  --muted: #c9a3b5;
+  --faint: rgb(255 255 255 / 45%);
+  --accent: #ff0073;
+  --accent-hover: #db0062;
+  --accent-soft: rgb(255 0 115 / 22%);
+  --playhead: #ff0073;
+  --border: rgb(255 255 255 / 12%);
+  --lead: #3d0f28;
+  --color-magenta: #ff0073;
+  --color-magenta-soft: #ffd6e8;
+  --color-magenta-hover: #db0062;
+  --color-plum: #1a0612;
+  --color-plum-mid: #3d0f28;
+  --scene-a: #5c1840;
+  --scene-b: var(--color-magenta-soft);
+  --scene-b-fg: var(--color-plum-mid);
+  --scene-locked: #2a0e1c;
+  --tail: #3d0f28;
+  --audio: var(--color-magenta-soft);
+  --danger: #c44b47;
+  --danger-soft: rgb(196 75 71 / 22%);
   --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --radius-xs: 2px;
+  --radius-sm: 4px;
 }
 
 * {
@@ -32,7 +48,7 @@ body,
 }
 
 body {
-  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  font-family: var(--font-ui);
   background: var(--bg);
   color: var(--text);
   font-size: 13px;
@@ -53,7 +69,7 @@ button {
 .sb-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--sb-sidebar-width, 280px);
-  grid-template-rows: 48px minmax(0, 1fr) 1px auto;
+  grid-template-rows: 56px minmax(0, 1fr) 1px auto;
   height: 100%;
   min-height: 0;
   background: var(--bg);
@@ -66,13 +82,15 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: 48px;
-  padding: 0 14px 0 16px;
+  height: 56px;
+  min-height: 0;
+  padding: 0 16px;
   border-bottom: 1px solid var(--border);
   background: var(--panel);
   flex-shrink: 0;
   position: relative;
   z-index: 40;
+  overflow: visible;
 }
 
 .sb-title {
@@ -80,12 +98,25 @@ button {
   align-items: center;
   gap: 10px;
   min-width: 0;
+  overflow: visible;
 }
 
-.sb-title strong {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+.sb-mark {
+  width: 36px;
+  height: 36px;
+  margin-block: -6px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+}
+
+.sb-wordmark {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  white-space: nowrap;
 }
 
 .sb-title span {
@@ -111,8 +142,7 @@ button {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at center, #1a2030 0%, #0c0e14 72%);
+  background: var(--bg);
 }
 
 .sb-sidebar-host {
@@ -143,7 +173,7 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  height: 48px;
+  height: 56px;
   padding: 0 12px 0 10px;
   border-bottom: 1px solid var(--border);
   background: var(--panel);
@@ -180,17 +210,25 @@ button {
   justify-content: center;
   gap: 5px;
   border: 0;
-  background: var(--accent);
+  background: var(--color-magenta);
   color: #fff;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 5px 10px;
   font-weight: 600;
   font-size: 12px;
   white-space: nowrap;
 }
 
+.sb-save-btn:hover:not(:disabled) {
+  background: var(--color-magenta-hover);
+  color: #fff;
+}
+
 .sb-save-btn:disabled {
-  opacity: 0.5;
+  opacity: 1;
+  background: transparent;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px var(--border);
   cursor: default;
 }
 
@@ -198,7 +236,7 @@ button {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 12px;
+  padding: 16px;
 }
 
 .sb-details-body.is-stacked-meta {
@@ -223,13 +261,13 @@ button {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 12px;
+  padding: 16px;
 }
 
 .sb-details-meta {
   flex-shrink: 0;
   border-top: 1px solid var(--border);
-  background: var(--panel-2);
+  background: var(--bg);
 }
 
 .sb-details-meta-summary {
@@ -295,9 +333,9 @@ button {
 
 .sb-details-label {
   margin: 0;
-  font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
 }
@@ -370,7 +408,7 @@ button {
   padding: 3px;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .sb-segmented button {
@@ -379,7 +417,7 @@ button {
   background: transparent;
   color: var(--muted);
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 550;
 }
@@ -406,9 +444,9 @@ button {
 
 .sb-list-label {
   padding: 6px 8px 4px;
-  font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
 }
@@ -421,7 +459,7 @@ button {
   text-align: left;
   border: 1px solid transparent;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 7px 8px;
   color: var(--text);
 }
@@ -443,7 +481,7 @@ button {
 .sb-swatch {
   width: 8px;
   height: 28px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }
 
@@ -492,9 +530,9 @@ button {
 
 .sb-props h2 {
   margin: 0;
-  font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
 }
@@ -545,7 +583,7 @@ button {
 
 .sb-order-control {
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--bg);
   overflow: hidden;
 }
@@ -609,12 +647,110 @@ button {
   color: var(--muted);
 }
 
+.sb-duration-control {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.sb-duration-control-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.sb-duration-input-wrap {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  padding: 0 8px 0 10px;
+}
+
+.sb-duration-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 8px 4px 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.sb-duration-input:focus {
+  outline: none;
+}
+
+.sb-duration-control:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--focus);
+}
+
+.sb-duration-unit {
+  flex-shrink: 0;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.sb-duration-stepper {
+  display: flex;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+}
+
+.sb-duration-stepper-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  min-height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+}
+
+.sb-duration-stepper-btn + .sb-duration-stepper-btn {
+  border-left: 1px solid var(--border);
+}
+
+.sb-duration-stepper-btn:hover:not(:disabled) {
+  background: var(--panel-2);
+}
+
+.sb-duration-stepper-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+.sb-duration-stepper-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  color: var(--muted);
+}
+
+.sb-duration-meta {
+  margin: 0;
+  padding: 6px 10px 8px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .sb-input,
 .sb-textarea {
   width: 100%;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 6px 8px;
   color: var(--text);
 }
@@ -630,7 +766,7 @@ button {
 .sb-textarea {
   min-height: 72px;
   resize: vertical;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
 }
 
@@ -638,9 +774,9 @@ button {
   position: relative;
   width: 32px;
   height: 18px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   border: 0;
-  background: #3a4152;
+  background: var(--border);
   padding: 0;
   flex-shrink: 0;
 }
@@ -655,7 +791,7 @@ button {
   left: 2px;
   width: 14px;
   height: 14px;
-  border-radius: 50%;
+  border-radius: var(--radius-xs);
   background: #fff;
   transition: transform 120ms ease;
 }
@@ -666,8 +802,10 @@ button {
 
 .sb-frame {
   background: #000;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  outline: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow-menu);
+  outline: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
 .sb-empty {
@@ -680,7 +818,8 @@ button {
   user-select: none;
 }
 
-.sb-shell.is-sidebar-resizing {
+.sb-shell.is-sidebar-resizing,
+.sb-shell:has(.sb-dock.is-resizing-labels) {
   cursor: ew-resize;
   user-select: none;
 }
@@ -761,7 +900,7 @@ button {
   width: 32px;
   height: 32px;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text);
 }
@@ -789,8 +928,26 @@ button {
   background: transparent;
 }
 
+.sb-play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.sb-play-btn:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+.sb-play-btn[aria-pressed="true"] {
+  background: var(--accent);
+  color: #fff;
+}
+
 .sb-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 12px;
   color: var(--muted);
@@ -801,7 +958,7 @@ button {
   align-items: center;
   gap: 6px;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-xs);
   background: var(--panel-2);
   border: 1px solid var(--border);
   color: var(--text);
@@ -828,11 +985,49 @@ button {
   cursor: grabbing;
 }
 
+.sb-timeline.is-resizing-labels {
+  cursor: ew-resize;
+  user-select: none;
+}
+
 .sb-timeline-labels {
+  position: relative;
   flex-shrink: 0;
   width: 92px;
   border-right: 1px solid var(--border);
   background: var(--panel);
+}
+
+.sb-timeline-label-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  bottom: 0;
+  width: 11px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: ew-resize;
+  touch-action: none;
+  z-index: 20;
+}
+
+.sb-timeline-labels:has(.sb-timeline-label-resize-handle:hover),
+.sb-timeline-labels:has(.sb-timeline-label-resize-handle:focus-visible),
+.sb-timeline.is-resizing-labels .sb-timeline-labels {
+  border-right-color: var(--accent);
+}
+
+.sb-timeline-panel:has(.sb-timeline-label-resize-handle:hover) .sb-timeline-add-label,
+.sb-timeline-panel:has(.sb-timeline-label-resize-handle:focus-visible) .sb-timeline-add-label,
+.sb-timeline.is-resizing-labels + .sb-timeline-add-bar .sb-timeline-add-label {
+  border-right-color: var(--accent);
+}
+
+.sb-timeline-label-resize-handle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
 }
 
 .sb-timeline-label-gutter {
@@ -845,6 +1040,10 @@ button {
   align-items: stretch;
   height: 32px;
   border-bottom: 1px solid var(--border);
+}
+
+.sb-timeline-label-row.is-alt {
+  background: color-mix(in srgb, var(--color-magenta-soft) 12%, var(--panel));
 }
 
 .sb-timeline-label-row.is-current,
@@ -973,7 +1172,7 @@ button.sb-timeline-label:focus-visible {
   position: absolute;
   left: 0;
   bottom: 10px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   color: var(--muted);
   white-space: nowrap;
@@ -1004,6 +1203,11 @@ button.sb-timeline-label:focus-visible {
   height: 32px;
   border-bottom: 1px solid var(--border);
   background: var(--bg);
+  overflow: visible;
+}
+
+.sb-lane.is-alt {
+  background: color-mix(in srgb, var(--color-magenta-soft) 10%, var(--bg));
 }
 
 .sb-lane.is-drop-target,
@@ -1016,10 +1220,11 @@ button.sb-timeline-label:focus-visible {
   top: 3px;
   bottom: 3px;
   min-width: 0;
+  overflow: visible;
 }
 
 .sb-clip-wrap.is-current .sb-clip {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 2px var(--playhead);
 }
 
 .sb-clip-wrap.is-dragging {
@@ -1034,7 +1239,7 @@ button.sb-timeline-label:focus-visible {
   border: 0;
   border-radius: 4px;
   padding: 0 8px;
-  color: #eef3ff;
+  color: #fff;
   font-size: 11px;
   font-weight: 600;
   overflow: hidden;
@@ -1080,6 +1285,27 @@ button.sb-timeline-label:focus-visible {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
 }
 
+.sb-clip-wrap.is-alt .sb-clip {
+  color: var(--scene-b-fg);
+}
+
+.sb-clip-wrap.is-alt .sb-clip-title {
+  text-shadow: none;
+}
+
+.sb-clip-wrap.is-alt .sb-clip-wave {
+  color: var(--accent);
+  opacity: 0.45;
+}
+
+.sb-clip-wrap.is-alt.is-current .sb-clip-wave {
+  opacity: 0.65;
+}
+
+.sb-clip-wrap.is-alt .sb-clip-trim-handle::after {
+  background: rgb(26 6 18 / 40%);
+}
+
 .sb-clip:active {
   cursor: grabbing;
 }
@@ -1098,9 +1324,9 @@ button.sb-timeline-label:focus-visible {
 .sb-clip-trim-handle {
   position: absolute;
   top: 0;
-  right: 0;
+  right: -6px;
   bottom: 0;
-  width: 7px;
+  width: 14px;
   cursor: ew-resize;
   border-radius: 0 4px 4px 0;
 }
@@ -1110,7 +1336,7 @@ button.sb-timeline-label:focus-visible {
   position: absolute;
   top: 4px;
   bottom: 4px;
-  right: 2px;
+  right: 8px;
   width: 2px;
   border-radius: 1px;
   background: rgba(255, 255, 255, 0.45);
@@ -1148,7 +1374,7 @@ button.sb-timeline-label:focus-visible {
 .sb-track-description-input {
   width: 100%;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--bg);
   padding: 5px 7px;
   font-size: 12px;
@@ -1301,7 +1527,7 @@ button.sb-timeline-label:focus-visible {
   top: 4px;
   bottom: 4px;
   border-radius: 2px;
-  background: var(--accent-soft);
+  background: var(--panel-2);
   opacity: 0.85;
 }
 
@@ -1310,8 +1536,8 @@ button.sb-timeline-label:focus-visible {
   top: 0;
   bottom: 0;
   border-radius: 4px;
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent);
+  background: rgb(255 255 255 / 10%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 18%);
   cursor: grab;
 }
 
@@ -1331,7 +1557,7 @@ button.sb-timeline-label:focus-visible {
   padding: 0;
   border: 0;
   cursor: ew-resize;
-  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: rgb(255 255 255 / 22%);
 }
 
 .sb-timeline-focus-handle-start {
@@ -1354,7 +1580,7 @@ button.sb-timeline-label:focus-visible {
   gap: 6px;
   height: 32px;
   padding: 0 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
@@ -1386,11 +1612,11 @@ button.sb-timeline-label:focus-visible {
   width: 260px;
   max-height: min(420px, calc(100vh - 64px));
   overflow: auto;
-  background: var(--panel-2);
+  background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 6px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-menu);
   z-index: 50;
 }
 
@@ -1408,7 +1634,7 @@ button.sb-timeline-label:focus-visible {
   text-align: left;
   border: 0;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 8px;
   color: var(--text);
 }
@@ -1496,8 +1722,8 @@ button.sb-timeline-label:focus-visible {
 
 .sb-menu h3 {
   margin: 4px 8px 8px;
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
 }
@@ -1517,10 +1743,14 @@ button.sb-timeline-label:focus-visible {
   border: 0;
   background: var(--accent);
   color: #fff;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 7px 8px;
   font-weight: 600;
   font-size: 12px;
+}
+
+.sb-add-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
 }
 
 .sb-add-btn:disabled {

@@ -1,6 +1,6 @@
 # Real video clips (v1)
 
-Storyboard embeds real footage with a Remotion-style **offthread** path so every composition frame is deterministic.
+First Take embeds real footage with a Remotion-style **offthread** path so every composition frame is deterministic.
 
 ## How Remotion does it
 
@@ -8,7 +8,7 @@ Storyboard embeds real footage with a Remotion-style **offthread** path so every
 - Render: **`OffthreadVideo`** asks FFmpeg (outside the browser) for the exact source frame and shows it as an `<img>`. That avoids Chromium seek drift during concurrent screenshot capture.
 - Trim props (`startFrom` / `endAt`, now `trimBefore` / `trimAfter`) select a window in the *source* file; composition duration is authored separately.
 
-## How Storyboard mirrors that
+## How First Take mirrors that
 
 1. `<Video src startFrom endAt />` registers the clip and computes media time from `useCurrentFrame()`.
 2. During `renderMedia`, Playwright mounts the composition, collects video descriptors, then **pre-extracts** a JPEG sequence for the trim window at composition `fps` (`packages/renderer/src/video-frames.ts`).

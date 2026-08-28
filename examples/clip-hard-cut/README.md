@@ -19,7 +19,7 @@ Catalogue: [examples/README.md](../README.md).
 ## Commands
 
 ```bash
-yarn storyboard validate examples/clip-hard-cut/video.json
-yarn storyboard preview examples/clip-hard-cut/video.json
-yarn storyboard render examples/clip-hard-cut/video.json --format=16x9 --silent
+pnpm first-take validate examples/clip-hard-cut/video.json
+pnpm first-take preview examples/clip-hard-cut/video.json
+pnpm first-take render examples/clip-hard-cut/video.json --format=16x9 --silent
 ```

@@ -48,17 +48,17 @@ my-video/
 Scaffold that layout with:
 
 ```bash
-yarn storyboard create my-video
+pnpm first-take create my-video
 ```
 
 ## CLI
 
 ```bash
-yarn storyboard create my-video
-yarn storyboard validate my-video/video.json
-yarn storyboard still my-video/video.json --frame=0 --out=out/still.png
-yarn storyboard render my-video/video.json --format=16x9
-yarn storyboard preview my-video/video.json
+pnpm first-take create my-video
+pnpm first-take validate my-video/video.json
+pnpm first-take still my-video/video.json --frame=0 --out=out/still.png
+pnpm first-take render my-video/video.json --format=16x9
+pnpm first-take preview my-video/video.json
 ```
 
 By default, render/still print progress and errors only. Pass `--verbose` (global) for FFmpeg output and detailed phase logs. `--silent` / `--no-audio` mute audio in the encode — they do not quiet logging.

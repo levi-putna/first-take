@@ -34,7 +34,7 @@ export type PreviewServerHandle = {
 };
 
 /**
- * Start the Storyboard preview studio for a video.json project.
+ * Start the First Take preview studio for a video.json project.
  *
  * Regenerates the Vite `project.ts` module when `video.json` or overlay
  * sources change so First Take / other hosts can live-reload after edits.
@@ -313,7 +313,7 @@ export const manifestPath = ${JSON.stringify(manifestFile)};
   await server.listen();
   const info = server.resolvedUrls;
   const url = info?.local?.[0] ?? `http://127.0.0.1:${port}`;
-  console.log(`Storyboard preview: ${url}`);
+  console.log(`First Take preview: ${url}`);
 
   return {
     url,

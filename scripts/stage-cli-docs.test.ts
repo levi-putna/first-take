@@ -12,10 +12,10 @@ describe("rewriteReadmeForNpm", () => {
       markdown: "See [schema](.doc/06-video-json-schema.md) and [playbook](./AGENT-README.md).",
     });
     expect(out).toContain(
-      "https://github.com/levi-putna/storyboard/blob/main/.doc/06-video-json-schema.md",
+      "https://github.com/levi-putna/first-take/blob/main/.doc/06-video-json-schema.md",
     );
     expect(out).toContain(
-      "https://github.com/levi-putna/storyboard/blob/main/AGENT-README.md",
+      "https://github.com/levi-putna/first-take/blob/main/AGENT-README.md",
     );
     expect(out).not.toMatch(/\]\(\.\/AGENT-README/);
   });
@@ -25,13 +25,26 @@ describe("rewriteReadmeForNpm", () => {
       markdown: "![studio](./img/preview-studio.png)",
     });
     expect(out).toBe(
-      "![studio](https://raw.githubusercontent.com/levi-putna/storyboard/main/img/preview-studio.png)",
+      "![studio](https://raw.githubusercontent.com/levi-putna/first-take/main/img/preview-studio.png)",
+    );
+  });
+
+  it("rewrites HTML src and href attributes to GitHub URLs", () => {
+    const out = rewriteReadmeForNpm({
+      markdown:
+        '<img src="./img/logo-icon.svg" alt="First Take">\n<a href="./LICENSE">licence</a>',
+    });
+    expect(out).toContain(
+      'src="https://raw.githubusercontent.com/levi-putna/first-take/main/img/logo-icon.svg"',
+    );
+    expect(out).toContain(
+      'href="https://github.com/levi-putna/first-take/blob/main/LICENSE"',
     );
   });
 
   it("leaves already-absolute and fragment links alone", () => {
     const markdown =
-      "[npm](https://www.npmjs.com/package/@levi-putna/storyboard) and [preview](#preview)";
+      "[npm](https://www.npmjs.com/package/first-take) and [preview](#preview)";
     expect(rewriteReadmeForNpm({ markdown })).toBe(markdown);
   });
 });
@@ -39,15 +52,15 @@ describe("rewriteReadmeForNpm", () => {
 describe("insertDocsBanner", () => {
   it("inserts the GitHub docs banner under the H1", () => {
     const out = insertDocsBanner({
-      markdown: "# Storyboard\n\nFrame-deterministic engine.\n",
+      markdown: "# First Take\n\nFrame-deterministic engine.\n",
     });
-    expect(out.startsWith("# Storyboard\n")).toBe(true);
+    expect(out.startsWith("# First Take\n")).toBe(true);
     expect(out).toContain(NPM_DOCS_BANNER.trim());
-    expect(out).toContain("https://github.com/levi-putna/storyboard");
+    expect(out).toContain("https://github.com/levi-putna/first-take");
   });
 
   it("does not duplicate the banner", () => {
-    const once = insertDocsBanner({ markdown: "# Storyboard\n\nBody.\n" });
+    const once = insertDocsBanner({ markdown: "# First Take\n\nBody.\n" });
     const twice = insertDocsBanner({ markdown: once });
     expect(twice).toBe(once);
   });

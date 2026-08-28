@@ -24,7 +24,7 @@ There is no series mix and no tail hold. Composition length is the longest track
 ## Commands
 
 ```bash
-yarn storyboard validate examples/audio-mix/video.json
-yarn storyboard preview examples/audio-mix/video.json
-yarn storyboard render examples/audio-mix/video.json --format=16x9
+pnpm first-take validate examples/audio-mix/video.json
+pnpm first-take preview examples/audio-mix/video.json
+pnpm first-take render examples/audio-mix/video.json --format=16x9
 ```

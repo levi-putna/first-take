@@ -1,8 +1,8 @@
 # Shared series audio: intro jingle + soft bed
 
-## Storyboard mapping
+## First Take mapping
 
-When the **render target is Storyboard** (`video.json` / this engine), do **not**
+When the **render target is First Take** (`video.json` / this engine), do **not**
 write Remotion `seriesAudio.ts`, root `seriesAudio`, or `leadIn`. Map the mix
 to `tracks[]` and in-scene `<Audio>`:
 

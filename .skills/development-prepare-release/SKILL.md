@@ -3,19 +3,19 @@ name: development-prepare-release
 id: 09440bb4-561c-4c5b-b1d0-29e6a1c813d8
 version: 1.1.0
 author: Levi Putna
-repo: https://github.com/levi-putna/storyboard
+repo: https://github.com/levi-putna/first-take
 description: >-
-  Prepare a Storyboard npm release: run the code-review and docs-readiness
+  Prepare a First Take npm release: run the code-review and docs-readiness
   checks, confirm the semver bump and changelog, lockstep-version all
   @levi-putna/storyboard* packages, and verify git is shippable. Stops before
   the registry; publishing is development-release-npm. Use when asked to cut a
   release, prepare a release, bump version, or get this ready to publish.
 dependencies:
   - type: cli
-    name: yarn
+    name: pnpm
     required: true
-    description: Yarn 1.x — this repo uses workspaces and yarn scripts.
-    instructions: Install Yarn Classic (`npm i -g yarn@1`) or use the repo packageManager.
+    description: pnpm — this repo uses pnpm workspaces and pnpm scripts.
+    instructions: Install pnpm (`corepack enable && corepack prepare pnpm@10.19.0 --activate`) or use the repo packageManager.
   - type: cli
     name: npm
     required: true
@@ -35,7 +35,7 @@ requires:
     name: development-check-release-readiness
 ---
 
-# Preparing a Storyboard release
+# Preparing a First Take release
 
 Orchestrates the two check skills, decides the version bump, updates the
 changelog, locksteps every publishable package, verifies nothing is
@@ -44,7 +44,7 @@ stranded locally, and **stops short of publishing**. Hand off to
 
 Same shape as `dot-skills` (`development-prepare-release`) and the same
 confirm-each-gate style as MarkDoc. The publish target is public npm so
-consumers can run `npx @levi-putna/storyboard`.
+consumers can run `npx first-take`.
 
 ```
 Release progress:
@@ -62,22 +62,22 @@ Release progress:
 
 | Field | Value |
 |-------|--------|
-| npx / CLI package | `@levi-putna/storyboard` (`packages/cli`, bin `storyboard`) |
+| npx / CLI package | `first-take` (`packages/cli`, bin `first-take`) |
 | Libraries | `@levi-putna/storyboard-{schema,core,media,transitions,renderer,preview}` |
 | Root | `storyboard` — always `"private": true`; never publish the root or `examples/*` |
 
 ## Hard rules
 
-- Use **yarn**, not npm, for install/build/test in this repo.
-- **Never** run `yarn publish:npm`, `yarn workspace … publish`, or `npm publish`
+- Use **pnpm**, not npm or yarn, for install/build/test in this repo.
+- **Never** run `pnpm publish:npm`, `pnpm --filter … publish`, or `npm publish`
   from this skill. Publishing is `development-release-npm`. Never guess or
   fabricate an OTP.
 - **Never** publish the root workspace or any `examples/*` package.
 - Do **not** create a git commit or push unless the user explicitly asks.
-- Keep package versions **in lockstep**. Use `yarn set-version <ver>` —
+- Keep package versions **in lockstep**. Use `pnpm set-version <ver>` —
   do not hand-edit eight `package.json` files.
 - Inter-package dependencies must use the **same exact version** string
-  (Yarn 1 does not rewrite `workspace:*` on publish).
+  (do not use `workspace:*`; it is not rewritten on publish).
 - Never skip the version-confirm or changelog-confirm steps.
 
 ---
@@ -136,19 +136,19 @@ Run from the repo root, in order. Stop and report every failure together
 rather than releasing on a red build:
 
 ```bash
-yarn install
-yarn build
-yarn typecheck
-yarn lint
-yarn test
+pnpm install
+pnpm build
+pnpm typecheck
+pnpm lint
+pnpm test
 ```
 
 Optional but recommended for a first public cut (skip only with an
 explicit waiver):
 
 ```bash
-yarn test:render
-yarn test:smoke
+pnpm test:render
+pnpm test:smoke
 ```
 
 Also verify each publishable package has:
@@ -158,17 +158,17 @@ Also verify each publishable package has:
 - `"files"` including `"dist"` (`preview` also includes `"app"`)
 - `"main"` / `"types"` / `"exports"` pointing at built artefacts
 - No `"private": true` (root and examples only)
-- CLI has `"bin": { "storyboard": "./dist/cli.js" }`
+- CLI has `"bin": { "first-take": "./dist/cli.js" }`
 
-Confirm `dist/` exists after `yarn build` for every package.
+Confirm `dist/` exists after `pnpm build` for every package.
 
 ## 6. Bump lockstep versions
 
 After the user confirms the version:
 
 ```bash
-yarn set-version <ver>
-yarn build
+pnpm set-version <ver>
+pnpm build
 ```
 
 Check that no `@levi-putna/storyboard*` dependency is still on the old
@@ -188,7 +188,7 @@ runtime — do not hardcode it in `cli.ts`.
 ## 8. Hand off to development-release-npm — do not publish here
 
 Once everything above is clean, **do not** print an `--otp=` command and
-**do not** run `yarn publish:npm`. Tell the user prepare-release is done
+**do not** run `pnpm publish:npm`. Tell the user prepare-release is done
 and continue with `development-release-npm` (or wait if they only asked
 to prepare).
 

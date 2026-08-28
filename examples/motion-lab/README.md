@@ -28,7 +28,7 @@ Every scene includes a bottom **frame timeline** (absolute frame index, seconds,
 ## Commands
 
 ```bash
-yarn storyboard validate examples/motion-lab/video.json
-yarn storyboard preview examples/motion-lab/video.json
-yarn storyboard render examples/motion-lab/video.json --format=16x9 --silent
+pnpm first-take validate examples/motion-lab/video.json
+pnpm first-take preview examples/motion-lab/video.json
+pnpm first-take render examples/motion-lab/video.json --format=16x9 --silent
 ```

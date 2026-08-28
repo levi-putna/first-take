@@ -21,7 +21,7 @@ Unmute the player to hear the clip soundtrack.
 ## Commands
 
 ```bash
-yarn storyboard validate examples/clip-sound-move/video.json
-yarn storyboard preview examples/clip-sound-move/video.json
-yarn storyboard render examples/clip-sound-move/video.json --format=16x9
+pnpm first-take validate examples/clip-sound-move/video.json
+pnpm first-take preview examples/clip-sound-move/video.json
+pnpm first-take render examples/clip-sound-move/video.json --format=16x9
 ```

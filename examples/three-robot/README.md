@@ -25,12 +25,12 @@ RobotExpressive by [Tomás Laulhé](https://www.patreon.com/quaternius), CC0. Mo
 ## Commands
 
 ```bash
-yarn storyboard validate examples/three-robot/video.json
-yarn storyboard still examples/three-robot/video.json --frame=0 --out=out/three-robot-0.png
-yarn storyboard still examples/three-robot/video.json --frame=165 --out=out/three-robot-165.png
-yarn storyboard still examples/three-robot/video.json --frame=329 --out=out/three-robot-329.png
-yarn storyboard preview examples/three-robot/video.json
-yarn storyboard render examples/three-robot/video.json --format=16x9 --concurrency=1 --silent
+pnpm first-take validate examples/three-robot/video.json
+pnpm first-take still examples/three-robot/video.json --frame=0 --out=out/three-robot-0.png
+pnpm first-take still examples/three-robot/video.json --frame=165 --out=out/three-robot-165.png
+pnpm first-take still examples/three-robot/video.json --frame=329 --out=out/three-robot-329.png
+pnpm first-take preview examples/three-robot/video.json
+pnpm first-take render examples/three-robot/video.json --format=16x9 --concurrency=1 --silent
 ```
 
 `--concurrency=1` keeps a single WebGL context during the first encode. Raise it once stills look correct.

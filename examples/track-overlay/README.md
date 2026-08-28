@@ -25,7 +25,7 @@ Composition length is 240 frames (the background).
 ## Commands
 
 ```bash
-yarn storyboard validate examples/track-overlay/video.json
-yarn storyboard preview examples/track-overlay/video.json
-yarn storyboard render examples/track-overlay/video.json --format=16x9 --silent
+pnpm first-take validate examples/track-overlay/video.json
+pnpm first-take preview examples/track-overlay/video.json
+pnpm first-take render examples/track-overlay/video.json --format=16x9 --silent
 ```

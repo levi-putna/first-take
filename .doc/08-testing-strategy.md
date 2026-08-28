@@ -1,6 +1,6 @@
 # Testing strategy and plan
 
-Normative testing strategy for Storyboard. Complements the stub in [03-technical-requirements.md](./03-technical-requirements.md) §11.
+Normative testing strategy for First Take. Complements the stub in [03-technical-requirements.md](./03-technical-requirements.md) §11.
 
 ## 1. Goals
 
@@ -37,13 +37,13 @@ flowchart TB
 
 | Command | Scope |
 |---------|-------|
-| `yarn test` | Unit + component + golden stills |
-| `yarn test:unit` | Package unit/component only (jsdom) |
-| `yarn test:integration` | Golden stills only |
-| `yarn test:render` | Short fixture MP4s + ffprobe |
-| `yarn test:smoke` | Full `hello-explainer` dual-format render + ffprobe |
-| `yarn test:update-goldens` | Regenerate `examples/*/expected/still-frame-*.png` |
-| `yarn test:coverage` | Vitest coverage for packages |
+| `pnpm test` | Unit + component + golden stills |
+| `pnpm test:unit` | Package unit/component only (jsdom) |
+| `pnpm test:integration` | Golden stills only |
+| `pnpm test:render` | Short fixture MP4s + ffprobe |
+| `pnpm test:smoke` | Full `hello-explainer` dual-format render + ffprobe |
+| `pnpm test:update-goldens` | Regenerate `examples/*/expected/still-frame-*.png` |
+| `pnpm test:coverage` | Vitest coverage for packages |
 
 ## 4. Accuracy contract
 
@@ -54,7 +54,7 @@ flowchart TB
 - Per-pixel colour threshold: **0.1**.
 - Fail if more than **0.5%** of pixels differ.
 - On failure, write a diff PNG to `out/test-diffs/<fixture>-frame-<n>-diff.png`.
-- Update goldens only after intentional visual changes via `yarn test:update-goldens`.
+- Update goldens only after intentional visual changes via `pnpm test:update-goldens`.
 
 ### Rendered MP4s
 
@@ -104,11 +104,11 @@ Golden still filenames are `still-frame-<formatId>-<n>.png` (for example `still-
 ## 6. CI prerequisites
 
 - Node.js 22+
-- Yarn 1.x
+- pnpm
 - FFmpeg + ffprobe on `PATH`
-- Chromium via `yarn workspace @levi-putna/storyboard-renderer exec playwright install chromium`
+- Chromium via `pnpm --filter @levi-putna/storyboard-renderer exec playwright install chromium`
 
-Suggested CI matrix: `yarn test` on every PR; `yarn test:render` on every PR; `yarn test:smoke` optional / nightly (slower).
+Suggested CI matrix: `pnpm test` on every PR; `pnpm test:render` on every PR; `pnpm test:smoke` optional / nightly (slower).
 
 ## 7. Mapped test cases
 
@@ -129,9 +129,9 @@ Suggested CI matrix: `yarn test` on every PR; `yarn test:render` on every PR; `y
 ## 8. Updating goldens
 
 1. Change visual behaviour intentionally.
-2. Run `yarn test:update-goldens`.
+2. Run `pnpm test:update-goldens`.
 3. Visually inspect changed PNGs under `examples/*/expected/`.
 4. Commit the updated goldens with the code change.
-5. Re-run `yarn test` to confirm diffs pass.
+5. Re-run `pnpm test` to confirm diffs pass.
 
 Do not update goldens to silence a flaky failure without understanding the pixel change.

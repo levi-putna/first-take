@@ -6,7 +6,7 @@ Today 0.3.0 ships **seven** public packages. This note describes publishing **on
 
 ## Why one
 
-A Storyboard project always needs both the React APIs and the CLI. Scene files import `useCurrentFrame`; `npx` runs `preview` / `render`. Splitting those across npm names means two installs of one product, seven OTP publishes, and lockstep versioning that is already treated as a single release.
+A First Take project always needs both the React APIs and the CLI. Scene files import `useCurrentFrame`; `npx` runs `preview` / `render`. Splitting those across npm names means two installs of one product, seven OTP publishes, and lockstep versioning that is already treated as a single release.
 
 The seven folders are a convenient way to keep frame-clock code away from Playwright. They are not seven products.
 
@@ -16,9 +16,9 @@ One install, one name, one version.
 
 ```bash
 pnpm add -D @levi-putna/storyboard
-npx @levi-putna/storyboard create my-feature
-npx @levi-putna/storyboard preview video.json
-npx @levi-putna/storyboard render video.json --format=16x9
+npx first-take create my-feature
+npx first-take preview video.json
+npx first-take render video.json --format=16x9
 ```
 
 Scene files import from that same package:
@@ -33,7 +33,7 @@ import {
 import { Audio, staticFile, Video } from "@levi-putna/storyboard/media";
 ```
 
-`npx @levi-putna/storyboard` stays the CLI. That does not change.
+The CLI binary is `first-take` (`npx first-take`). That does not change.
 
 ### Suggested public exports
 
@@ -43,7 +43,7 @@ import { Audio, staticFile, Video } from "@levi-putna/storyboard/media";
 | `@levi-putna/storyboard/media` | `Img`, `Audio`, `Video`, `staticFile` | `@levi-putna/storyboard-media` |
 | `@levi-putna/storyboard/schema` | `video.json` types and validation | `@levi-putna/storyboard-schema` |
 | `@levi-putna/storyboard/transitions` | `CompositionFromManifest`, `TransitionSeries` | `@levi-putna/storyboard-transitions` |
-| `bin`: `storyboard` | create / validate / preview / still / render | `@levi-putna/storyboard` (CLI only) |
+| `bin`: `first-take` | create / validate / preview / still / render | `first-take` (CLI only) |
 
 Renderer and preview stay **inside** the package. The CLI imports them as `./dist/renderer` and `./dist/preview`. They are not extra npm names, and scene authors do not import them.
 
@@ -95,7 +95,7 @@ git (this repo)                         npm tarball
 ─────────────────                       ────────────
 packages/schema          ─┐
 packages/core            │
-packages/media           │  yarn build
+packages/media           │  pnpm build
 packages/transitions     ├──────────►   dist/schema, dist/core, …
 packages/renderer        │              dist/renderer, dist/preview
 packages/preview         │              dist/cli.js
@@ -106,7 +106,7 @@ package.json root        (private)
 
 Keep the folders. They still prevent circular imports and keep tests small. Mark every workspace except the published one `"private": true`. Do not publish `examples/*` or the repo root.
 
-Yarn workspaces remain the local development layout. The change is **registry surface**, not “delete `packages/core`”.
+pnpm workspaces remain the local development layout. The change is **registry surface**, not “delete `packages/core`”.
 
 ## What the tarball contains
 
@@ -119,30 +119,30 @@ Same idea as today’s CLI pack, plus the authoring and engine artefacts that cu
 - `dist/preview` plus `app/` (studio UI)
 - no `examples/`, no `.doc/`, no tests
 
-`yarn pack` on that package should list those paths and nothing from another `@levi-putna/*` name.
+`pnpm pack` on that package should list those paths and nothing from another `@levi-putna/*` name.
 
 ## How a release runs
 
-Today: `yarn set-version`, then `yarn publish:npm`, which publishes seven workspaces in dependency order, each needing OTP under `auth-and-writes`.
+Today: `pnpm set-version`, then `pnpm publish:npm`, which publishes seven workspaces in dependency order, each needing OTP under `auth-and-writes`.
 
 Proposed:
 
-1. Quality gates (`yarn build`, `typecheck`, `lint`, `test`) as now.
-2. `yarn set-version 1.0.0` pins **this** package and example `package.json` dependencies to `@levi-putna/storyboard@1.0.0` (no more seven inter-package pins).
+1. Quality gates (`pnpm build`, `typecheck`, `lint`, `test`) as now.
+2. `pnpm set-version 1.0.0` pins **this** package and example `package.json` dependencies to `@levi-putna/storyboard@1.0.0` (no more seven inter-package pins).
 3. Stage README + LICENSE into the published package directory.
 4. **One** publish:
 
 ```sh
-yarn publish:npm --otp=<code-from-your-authenticator>
+pnpm publish:npm --otp=<code-from-your-authenticator>
 ```
 
-That script becomes “assemble dist if needed, then `npm publish` / `yarn publish` once”. No loop over seven names.
+That script becomes “assemble dist if needed, then `npm publish` / `pnpm publish` once”. No loop over seven names.
 
 5. Smoke-check:
 
 ```bash
-npx @levi-putna/storyboard@1.0.0 --help
-npx @levi-putna/storyboard@1.0.0 validate examples/hello-explainer/video.json
+npx first-take@1.0.0 --help
+npx first-take@1.0.0 validate examples/hello-explainer/video.json
 ```
 
 Confirm the npm listing shows the project README.
@@ -165,7 +165,7 @@ Deprecate the six library names so installs print a pointer:
 npm deprecate @levi-putna/storyboard-core@ "*" "Use @levi-putna/storyboard (core is the package root export)."
 ```
 
-Same for `media`, `schema`, `transitions`, `renderer`, `preview`. The CLI name stays `@levi-putna/storyboard`; it just grows the authoring exports.
+Same for `media`, `schema`, `transitions`, `renderer`, `preview`. The CLI binary stays `first-take`; the unified package just grows the authoring exports.
 
 ## What has to change in this repo (when we do it)
 
@@ -184,7 +184,7 @@ First Take’s scene kit would import the same package the CLI ships.
 ## What does not change
 
 - Node 22+.
-- Yarn 1 workspaces in git.
+- pnpm workspaces in git.
 - Frame-deterministic React, `video.json`, the CLI commands.
 - 2FA on publish (`auth-and-writes`).
 - README staging for npmjs.com.

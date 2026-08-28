@@ -12,7 +12,7 @@ const repoRoot = path.resolve(
 const cliPath = path.join(repoRoot, "packages/cli/dist/cli.js");
 
 /**
- * Run the storyboard CLI via spawnSync (avoids execa + jsdom AbortSignal issues).
+ * Run the first-take CLI via spawnSync (avoids execa + jsdom AbortSignal issues).
  */
 function runCli({ args }: { args: string[] }) {
   return spawnSync("node", [cliPath, ...args], {
@@ -21,7 +21,7 @@ function runCli({ args }: { args: string[] }) {
   });
 }
 
-describe("storyboard CLI validate", () => {
+describe("first-take CLI validate", () => {
   it("exits 0 for a valid fixture", () => {
     const manifest = path.join(
       repoRoot,

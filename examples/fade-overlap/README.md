@@ -20,7 +20,7 @@ Catalogue: [examples/README.md](../README.md).
 ## Commands
 
 ```bash
-yarn storyboard validate examples/fade-overlap/video.json
-yarn storyboard preview examples/fade-overlap/video.json
-yarn storyboard render examples/fade-overlap/video.json --format=16x9 --silent
+pnpm first-take validate examples/fade-overlap/video.json
+pnpm first-take preview examples/fade-overlap/video.json
+pnpm first-take render examples/fade-overlap/video.json --format=16x9 --silent
 ```
