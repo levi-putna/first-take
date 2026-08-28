@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "@levi-putna/storyboard-core";
+import { AbsoluteFill } from "first-take";
 
 /**
  * First hold — teal field with a centred circle motif.

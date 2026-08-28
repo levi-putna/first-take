@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  cliPackageVersion,
   isStoryboardMonorepo,
   packageNameFromSlug,
   resolveDefaultOutDir,
@@ -109,7 +110,7 @@ describe("scaffoldVideoProject", () => {
     );
   });
 
-  it("pins engine packages to the library version, not first-take's version", () => {
+  it("pins first-take to this CLI version", () => {
     const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-scaffold-ver-"));
     scaffoldVideoProject({
       slug: "ver-pin",
@@ -121,7 +122,23 @@ describe("scaffoldVideoProject", () => {
     const pkg = JSON.parse(
       fs.readFileSync(path.join(outDir, "package.json"), "utf8"),
     ) as { dependencies: Record<string, string> };
-    expect(pkg.dependencies["@levi-putna/storyboard-core"]).toBe("0.3.0");
-    expect(pkg.dependencies["@levi-putna/storyboard-media"]).toBe("0.3.0");
+    expect(pkg.dependencies["first-take"]).toBe(cliPackageVersion());
+  });
+
+  it("scaffolds scenes that import first-take", () => {
+    const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "sb-scaffold-imp-"));
+    scaffoldVideoProject({
+      slug: "imp-check",
+      outDir,
+      title: "Import Check",
+      withAudio: false,
+      force: false,
+    });
+    const intro = fs.readFileSync(
+      path.join(outDir, "src/scenes/01-Intro.tsx"),
+      "utf8",
+    );
+    expect(intro).toContain('from "first-take"');
+    expect(intro).not.toContain("@levi-putna/storyboard");
   });
 });

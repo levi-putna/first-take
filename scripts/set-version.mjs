@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Set the lockstep version across the root workspace and every publishable
- * engine package (`@levi-putna/storyboard*`), including inter-package pins.
- * The CLI package `first-take` is versioned separately.
+ * Set the lockstep version across the root workspace, every packages/*
+ * folder (including private engine packages), and `first-take` pins in
+ * examples.
  *
- * Usage: node scripts/set-version.mjs 1.0.0
+ * Usage: node scripts/set-version.mjs 0.2.0
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -22,7 +22,7 @@ const prefix = "@levi-putna/storyboard";
 const cliName = "first-take";
 
 /**
- * Pin every @levi-putna/storyboard* (and first-take) dependency to the release version.
+ * Pin first-take and private @levi-putna/storyboard* workspace deps.
  */
 function pinStoryboardDeps({ pkg }) {
   for (const key of ["dependencies", "devDependencies", "peerDependencies"]) {
@@ -53,11 +53,12 @@ const jsonFiles = [
 for (const file of jsonFiles) {
   if (!fs.existsSync(file)) continue;
   const pkg = JSON.parse(fs.readFileSync(file, "utf8"));
-  const isPublishable =
+  const isCli = pkg.name === cliName;
+  const isInner =
     typeof pkg.name === "string" &&
     (pkg.name === prefix || pkg.name.startsWith(`${prefix}-`));
   const isRoot = pkg.name === "storyboard";
-  if (isPublishable || isRoot) {
+  if (isCli || isInner || isRoot) {
     pkg.version = version;
   }
   pinStoryboardDeps({ pkg });

@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "@levi-putna/storyboard-core";
+import { AbsoluteFill } from "first-take";
 
 /**
  * Content scene for audio-mix (solid teal).

@@ -18,7 +18,7 @@ It is **inspired by** [Remotion](https://github.com/remotion-dev/remotion) (fram
 | [08-testing-strategy.md](./08-testing-strategy.md) | Test pyramid, fixtures, golden stills, accuracy contract |
 | [09-video-clips.md](./09-video-clips.md) | Real footage via `<Video />` (trim, PIP, overlays) |
 | [10-component-requirements.md](./10-component-requirements.md) | Normative requirements for scene / lead-in components |
-| [11-single-package-publish.md](./11-single-package-publish.md) | **Proposal:** publish one `@levi-putna/storyboard` instead of seven |
+| [11-single-package-publish.md](./11-single-package-publish.md) | One public npm package (`first-take`); git still has seven folders |
 
 Playable example catalogue: [`examples/README.md`](../examples/README.md). Studio UI: [README.md § Preview](../README.md#preview).
 

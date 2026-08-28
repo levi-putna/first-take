@@ -12,18 +12,6 @@ export function cliPackageVersion(): string {
 }
 
 /**
- * Engine library version pinned into scaffolded projects.
- * `first-take` may use a different public version than `@levi-putna/storyboard-*`.
- */
-export function enginePackageVersion(): string {
-  const pkg = require("../package.json") as {
-    version: string;
-    dependencies?: Record<string, string>;
-  };
-  return pkg.dependencies?.["@levi-putna/storyboard-schema"] ?? pkg.version;
-}
-
-/**
  * True when cwd is the First Take pnpm workspaces repo (not a consumer project).
  */
 export function isStoryboardMonorepo({
@@ -162,7 +150,7 @@ export function scaffoldVideoProject({
   force,
 }: CreateVideoOptions): string[] {
   const pkgName = packageNameFromSlug({ slug });
-  const engineVersion = enginePackageVersion();
+  const engineVersion = cliPackageVersion();
   const cli = storyboardCliCommand();
   const inMonorepo = isStoryboardMonorepo();
 
@@ -196,9 +184,7 @@ export function scaffoldVideoProject({
           typecheck: "tsc --noEmit -p tsconfig.json",
         },
         dependencies: {
-          "@levi-putna/storyboard-core": engineVersion,
-          "@levi-putna/storyboard-media": engineVersion,
-          "@levi-putna/storyboard-transitions": engineVersion,
+          "first-take": engineVersion,
         },
         devDependencies: {
           typescript: "^5.8.3",
@@ -319,7 +305,7 @@ export function scaffoldVideoProject({
 
   add({
     rel: "src/scenes/01-Intro.tsx",
-    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "first-take";
 
 /**
  * Opening scene — headline fades in.
@@ -370,7 +356,7 @@ export default function IntroScene({
 
   add({
     rel: "src/scenes/02-Point.tsx",
-    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
+    contents: `import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "first-take";
 
 /**
  * Second beat — fades in over the intro on a higher track.
@@ -417,8 +403,8 @@ export default function PointScene({
   if (withAudio) {
     add({
       rel: "src/scenes/Bed.tsx",
-      contents: `import { AbsoluteFill } from "@levi-putna/storyboard-core";
-import { Audio, staticFile } from "@levi-putna/storyboard-media";
+      contents: `import { AbsoluteFill } from "first-take";
+import { Audio, staticFile } from "first-take/media";
 
 /**
  * Transparent full-length bed. Duration must match the visual track.

@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "@levi-putna/storyboard-core";
+import { AbsoluteFill } from "first-take";
 
 /**
  * Full-frame colour strip labelled for multi-track timeline testing.

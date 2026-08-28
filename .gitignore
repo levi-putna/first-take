@@ -22,6 +22,8 @@ yarn.lock
 package-lock.json
 npm-shrinkwrap.json
 packages/preview/app/.generated/
+# Assembled into packages/cli at build time (scripts/assemble-first-take.mjs)
+packages/cli/app/
 # Staged from the repo root at publish time (scripts/stage-cli-docs.mjs)
 packages/cli/README.md
 packages/cli/LICENSE

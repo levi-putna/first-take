@@ -1,5 +1,5 @@
-import { AbsoluteFill, interpolate, useCurrentFrame, useSequenceDuration, useVideoConfig } from "@levi-putna/storyboard-core";
-import { Audio, staticFile } from "@levi-putna/storyboard-media";
+import { AbsoluteFill, interpolate, useCurrentFrame, useSequenceDuration, useVideoConfig } from "first-take";
+import { Audio, staticFile } from "first-take/media";
 
 /**
  * Brand hold during the opening bumper, with an optional jingle.

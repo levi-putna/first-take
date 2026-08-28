@@ -1,4 +1,4 @@
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "first-take";
 
 /**
  * Opening hook scene — headline fades in.

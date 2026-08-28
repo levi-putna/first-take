@@ -46,7 +46,7 @@ export function assertChromiumHint(): void {
     require("playwright");
   } catch {
     throw new Error(
-      "playwright is not installed. From this repo run: pnpm --filter @levi-putna/storyboard-renderer exec playwright install chromium. After npx, run: npx playwright install chromium",
+      "playwright is not installed. From this repo run: pnpm --filter @levi-putna/storyboard-renderer exec playwright install chromium. After npx first-take, run: npx playwright install chromium",
     );
   }
 }

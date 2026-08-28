@@ -1,6 +1,6 @@
 {
   "name": "@levi-putna/storyboard-media",
-  "version": "0.3.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,7 +23,7 @@
     "react": "^19.0.0"
   },
   "dependencies": {
-    "@levi-putna/storyboard-core": "0.3.0"
+    "@levi-putna/storyboard-core": "0.2.0"
   },
   "devDependencies": {
     "typescript": "^5.8.3",
@@ -44,7 +44,5 @@
   "bugs": {
     "url": "https://github.com/levi-putna/first-take/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "private": true
 }

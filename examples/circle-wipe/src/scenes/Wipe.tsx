@@ -4,7 +4,7 @@ import {
   useCurrentFrame,
   useSequenceDuration,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 
 /**
  * Convert a millisecond hold into whole frames, leaving at least one frame

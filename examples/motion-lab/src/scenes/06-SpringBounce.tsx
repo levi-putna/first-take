@@ -1,4 +1,4 @@
-import { spring, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
+import { spring, useCurrentFrame, useVideoConfig } from "first-take";
 import { SceneShell, useCrossfadeOpacity } from "../components/SceneShell";
 
 /**

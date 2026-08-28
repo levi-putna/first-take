@@ -13,7 +13,7 @@ Normative testing strategy for First Take. Complements the stub in [03-technical
 | Schema / asset validation fails fast | F-CLI4, F-CLI6 |
 | Frame-driven motion APIs behave correctly | F-C2 |
 
-Coverage is **requirement-mapped**, not a raw percentage target. Every public export in `@levi-putna/storyboard-core`, `@levi-putna/storyboard-schema`, and `@levi-putna/storyboard-transitions` should have at least one unit or component test.
+Coverage is **requirement-mapped**, not a raw percentage target. Every public export in `first-take`, `first-take/schema`, and `first-take/transitions` should have at least one unit or component test.
 
 ## 2. Test pyramid
 

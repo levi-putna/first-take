@@ -3,8 +3,8 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
-import { Audio, staticFile } from "@levi-putna/storyboard-media";
+} from "first-take";
+import { Audio, staticFile } from "first-take/media";
 
 const PEAK = 0.75;
 /** Hold peak, then fade to silence. */

@@ -170,9 +170,16 @@ export function assertCliPackIncludesDocs() {
     (filePath) => filePath === "README.md" || filePath.endsWith("/README.md"),
   );
   const hasLicense = paths.some((filePath) => /LICENSE/i.test(filePath));
+  const hasCore = paths.some((filePath) => filePath.replace(/\\/g, "/").includes("dist/core/index.js"));
+  const hasApp = paths.some((filePath) => filePath.replace(/\\/g, "/").includes("app/index.html"));
   if (!hasReadme || !hasLicense) {
     throw new Error(
       `CLI tarball is missing ${!hasReadme ? "README.md" : "LICENSE"}. Packed: ${paths.join(", ") || "(none)"}`,
+    );
+  }
+  if (!hasCore || !hasApp) {
+    throw new Error(
+      `CLI tarball is missing assembled engine (${!hasCore ? "dist/core/index.js" : "app/index.html"}). Run pnpm build. Packed: ${paths.join(", ") || "(none)"}`,
     );
   }
   return paths;
@@ -200,7 +207,7 @@ if (isMain) {
   if (checkPack) {
     const paths = assertCliPackIncludesDocs();
     console.log(
-      `CLI tarball includes README.md and LICENSE (${paths.length} files).`,
+      `CLI tarball includes README.md, LICENSE, and assembled engine (${paths.length} files).`,
     );
   }
 }

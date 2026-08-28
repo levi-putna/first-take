@@ -108,7 +108,7 @@ export async function startPreview({
 
     fs.writeFileSync(
       path.join(generatedDir, "project.ts"),
-      `import type { VideoManifest } from "@levi-putna/storyboard-schema";
+      `import type { VideoManifest } from "first-take/schema";
 ${importLines}
 
 export const manifest = ${JSON.stringify(next, null, 2)} as VideoManifest;

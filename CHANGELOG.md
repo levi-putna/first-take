@@ -6,6 +6,13 @@ uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [first-take 0.2.0] - 2026-08-28
+
+### Changed
+
+- Breaking: one public npm package. Install `first-take` and import scenes from `first-take`, `first-take/media`, `first-take/schema`, and `first-take/transitions`. The CLI, renderer, and preview studio ship in the same tarball.
+- `@levi-putna/storyboard`, `@levi-putna/storyboard-schema`, `@levi-putna/storyboard-core`, `@levi-putna/storyboard-media`, `@levi-putna/storyboard-transitions`, `@levi-putna/storyboard-renderer`, and `@levi-putna/storyboard-preview` are deprecated; use `first-take`. Git still keeps those folders as private workspaces.
+
 ## [first-take 0.1.0] - 2026-08-28
 
 ### Added

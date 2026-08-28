@@ -3,7 +3,7 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 
 /**
  * Second transparent lower-third, after a gap on the overlay track.

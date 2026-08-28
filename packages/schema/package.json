@@ -1,6 +1,6 @@
 {
   "name": "@levi-putna/storyboard-schema",
-  "version": "0.3.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -45,7 +45,5 @@
   "bugs": {
     "url": "https://github.com/levi-putna/first-take/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "private": true
 }

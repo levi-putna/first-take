@@ -2,8 +2,8 @@ import {
   AbsoluteFill,
   interpolate,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
-import { Audio, staticFile } from "@levi-putna/storyboard-media";
+} from "first-take";
+import { Audio, staticFile } from "first-take/media";
 
 /**
  * Transparent full-length mix: looping bed plus delayed narration.

@@ -1,5 +1,5 @@
-import { AbsoluteFill } from "@levi-putna/storyboard-core";
-import { staticFile, Video } from "@levi-putna/storyboard-media";
+import { AbsoluteFill } from "first-take";
+import { staticFile, Video } from "first-take/media";
 
 /**
  * Full-screen source clip trimmed to seconds 10–30 (20s of footage).

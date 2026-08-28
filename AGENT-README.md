@@ -4,7 +4,7 @@ Read this before scaffolding a video, writing scene components, or editing `vide
 
 This file is for **agents**. Humans can follow it too. Normative specs live under [`.doc/`](.doc/); this page is the operational playbook.
 
-**Do not import Remotion.** Use `@levi-putna/storyboard-core`, `@levi-putna/storyboard-media`, and `@levi-putna/storyboard-transitions` only.
+**Do not import Remotion.** Use `first-take`, `first-take/media`, and `first-take/transitions` only.
 
 ---
 
@@ -119,7 +119,7 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 
 /**
  * Opening hook: headline fades and rises into place.
@@ -170,7 +170,7 @@ export default function HookScene({
 
 Copy motion patterns from [`examples/motion-lab`](./examples/motion-lab/README.md) (typewriter, float, pulse, slide, stagger, spring, progress, rotate). Copy a full explainer from [`examples/hello-explainer`](./examples/hello-explainer/README.md).
 
-### Motion APIs (`@levi-putna/storyboard-core`)
+### Motion APIs (`first-take`)
 
 | API | Use |
 |-----|-----|
@@ -197,7 +197,7 @@ Multi-beat motion inside one scene:
 
 Cross-track blends (fades, wipes) use **overlapping tracks** and **in-scene** opacity or masks via `useCurrentFrame()` / `interpolate`. Same-lane overlap is not allowed. See [`fade-overlap`](./examples/fade-overlap/README.md) and [`circle-wipe`](./examples/circle-wipe/README.md).
 
-### Media (`@levi-putna/storyboard-media`)
+### Media (`first-take/media`)
 
 Prefer these over raw `<img>` / `<video>` / `<audio>` so capture waits for readiness.
 
@@ -213,7 +213,7 @@ Prefer these over raw `<img>` / `<video>` / `<audio>` so capture waits for readi
 Mute clip audio under series narration unless the beat is meant to be heard.
 
 ```tsx
-import { staticFile, Video } from "@levi-putna/storyboard-media";
+import { staticFile, Video } from "first-take/media";
 
 <Video
   src={staticFile("assets/clips/broll.mp4")}
@@ -365,7 +365,7 @@ Before presenting a scene or render:
 - [ ] All motion from `useCurrentFrame()` / `interpolate` / `spring` / `Easing`
 - [ ] No CSS / Tailwind / rAF / wall-clock animation for motion
 - [ ] Multi-format layout uses `width` / `height` from `useVideoConfig()`
-- [ ] Media uses `@levi-putna/storyboard-media` (`staticFile`, `Img`, `Audio`, `Video`)
+- [ ] Media uses `first-take/media` (`staticFile`, `Img`, `Audio`, `Video`)
 - [ ] No Remotion imports; no hard-coded scene index or sibling scenes
 - [ ] `video.json` uses `schemaVersion` 3 and `tracks[]`; scene ids unique across tracks; blends use overlapping tracks + in-scene motion
 - [ ] Narrated durations derived from alignment + lead-out, not guessed

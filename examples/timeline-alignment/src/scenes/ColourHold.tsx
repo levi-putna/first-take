@@ -1,4 +1,4 @@
-import { AbsoluteFill, useVideoConfig } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, useVideoConfig } from "first-take";
 import { formatClock } from "../formatClock";
 
 /**

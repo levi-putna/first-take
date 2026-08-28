@@ -1,4 +1,4 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, interpolate, useCurrentFrame } from "first-take";
 
 /**
  * Solid blue scene — fades in over the red hold on a higher track.

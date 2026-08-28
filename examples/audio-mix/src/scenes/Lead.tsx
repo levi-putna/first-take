@@ -3,8 +3,8 @@ import {
   interpolate,
   useSequenceDuration,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
-import { Audio, staticFile } from "@levi-putna/storyboard-media";
+} from "first-take";
+import { Audio, staticFile } from "first-take/media";
 
 /**
  * Lead-in bumper with an optional jingle that fades out as the VO starts.

@@ -1,36 +1,50 @@
 {
   "name": "first-take",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "bin": {
     "first-take": "./dist/cli.js"
   },
-  "main": "./dist/cli.js",
+  "main": "./dist/core/index.js",
+  "types": "./dist/core/index.d.ts",
   "files": [
     "dist",
+    "app",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node ../../scripts/assemble-first-take.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "storyboard": "node ./dist/cli.js",
     "first-take": "node ./dist/cli.js"
   },
   "dependencies": {
-    "@levi-putna/storyboard-preview": "0.3.0",
-    "@levi-putna/storyboard-renderer": "0.3.0",
-    "@levi-putna/storyboard-schema": "0.3.0",
     "commander": "^13.1.0",
     "consola": "^3.4.2",
+    "execa": "^9.5.2",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "lucide-react": "^0.511.0",
+    "playwright": "^1.52.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "sirv": "^3.0.1",
+    "vite": "^6.3.5",
+    "zod": "^3.24.4"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@levi-putna/storyboard-preview": "0.2.0",
+    "@levi-putna/storyboard-renderer": "0.2.0",
+    "@levi-putna/storyboard-schema": "0.2.0",
     "typescript": "^5.8.3",
     "tsup": "^8.4.0"
   },
-  "description": "CLI to create, validate, preview, and render First Take videos",
+  "description": "AI-first video editor: React scenes, JSON timeline, preview studio, and CLI",
   "license": "MIT",
   "engines": {
     "node": ">=22"
@@ -58,8 +72,44 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/cli.js",
-      "default": "./dist/cli.js"
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js",
+      "default": "./dist/core/index.js"
+    },
+    "./media": {
+      "types": "./dist/media/index.d.ts",
+      "import": "./dist/media/index.js",
+      "default": "./dist/media/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "import": "./dist/schema/index.js",
+      "default": "./dist/schema/index.js"
+    },
+    "./schema/browser": {
+      "types": "./dist/schema/browser.d.ts",
+      "import": "./dist/schema/browser.js",
+      "default": "./dist/schema/browser.js"
+    },
+    "./transitions": {
+      "types": "./dist/transitions/index.d.ts",
+      "import": "./dist/transitions/index.js",
+      "default": "./dist/transitions/index.js"
+    },
+    "./renderer": {
+      "types": "./dist/renderer/index.d.ts",
+      "import": "./dist/renderer/index.js",
+      "default": "./dist/renderer/index.js"
+    },
+    "./renderer/client": {
+      "types": "./dist/renderer/client.d.ts",
+      "import": "./dist/renderer/client.js",
+      "default": "./dist/renderer/client.js"
+    },
+    "./preview": {
+      "types": "./dist/preview/index.d.ts",
+      "import": "./dist/preview/index.js",
+      "default": "./dist/preview/index.js"
     },
     "./package.json": "./package.json"
   }

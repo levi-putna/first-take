@@ -38,19 +38,21 @@ Inspired by Remotion's pipeline ([render docs](https://www.remotion.dev/docs/ren
 3. **Concurrency** - pool of browser pages; frames may run out of order → authors must stay deterministic.
 4. **Audio is metadata + files** - not painted; volume curves evaluated per frame or as envelopes, then mixed/encoded.
 
-## 3. Proposed packages (monorepo)
+## 3. Packages (monorepo vs npm)
 
 Prefer a small monorepo so the core API can be imported by CLI and preview without circular mess. pnpm workspaces (per project convention: **pnpm**, not npm or yarn).
 
-| Package | Role |
-|---------|------|
-| `@levi-putna/storyboard-core` | Frame context, `useCurrentFrame`, `useVideoConfig`, `Sequence`, `Series`, `interpolate`, `spring`, `Easing`, `AbsoluteFill`, delay-render hooks |
-| `@levi-putna/storyboard-media` | `Img`, `Audio`, `Video` (off-thread or seek-accurate strategy), `staticFile` helpers |
-| `@levi-putna/storyboard-transitions` | Fade (v1); slide/wipe later |
-| `@levi-putna/storyboard-renderer` | Bundle orchestration, Chromium control, frame capture, FFmpeg stitch, stills |
-| `@levi-putna/storyboard` | `storyboard` binary: render, still, preview, validate |
-| `@levi-putna/storyboard-preview` | Local studio UI |
-| `@levi-putna/storyboard-schema` | Zod (or similar) schemas for `video.json`; types shared with CLI |
+Git keeps one folder per concern. npm publishes **one** package: `first-take`.
+
+| Git folder | Public import | Role |
+|------------|---------------|------|
+| `packages/core` | `first-take` | Frame context, `useCurrentFrame`, `useVideoConfig`, `Sequence`, `Series`, `interpolate`, `spring`, `Easing`, `AbsoluteFill`, delay-render hooks |
+| `packages/media` | `first-take/media` | `Img`, `Audio`, `Video` (off-thread or seek-accurate strategy), `staticFile` helpers |
+| `packages/transitions` | `first-take/transitions` | Fade (v1); slide/wipe later |
+| `packages/schema` | `first-take/schema` | Zod schemas for `video.json`; types shared with CLI |
+| `packages/renderer` | (inside the tarball) | Bundle orchestration, Chromium control, frame capture, FFmpeg stitch, stills |
+| `packages/preview` | (inside the tarball) | Local studio UI |
+| `packages/cli` | `first-take` (bin) | `first-take` binary: create, render, still, preview, validate |
 
 Application / demo package: [`examples/hello-explainer`](../examples/hello-explainer/README.md) with sample components + JSON. Full catalogue: [`examples/README.md`](../examples/README.md).
 
@@ -178,7 +180,7 @@ Content projects (e.g. a Next.js app) may later vendor First Take and keep produ
 
 ## 8. video.json technical rules
 
-- Validate with `@levi-putna/storyboard-schema` before render.
+- Validate with `first-take/schema` before render.
 - Resolve component paths relative to the JSON file or a configured `rootDir`.
 - Compute:
 
@@ -213,7 +215,7 @@ totalFrames = max(trackLengths)
 - Vite-based app loading the same components as render.
 - Timeline scrubber bound to `currentFrame` state (not wall-clock alone - play mode advances frame by `fps`).
 - Scene isolate: double-click a timeline clip; sidebar props editor.
-- Must use the same `@levi-putna/storyboard-core` hooks so preview matches render.
+- Must use the same `first-take` hooks so preview matches render.
 
 ## 11. Testing strategy
 

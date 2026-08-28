@@ -13,6 +13,7 @@ export default defineConfig({
             "packages/**/*.test.tsx",
             "scripts/**/*.test.ts",
           ],
+          exclude: ["packages/cli/app/**"],
         },
       },
       {

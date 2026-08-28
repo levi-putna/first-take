@@ -9,10 +9,10 @@ importers:
   .:
     devDependencies:
       '@levi-putna/storyboard-renderer':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:packages/renderer
       '@levi-putna/storyboard-schema':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:packages/schema
       '@testing-library/dom':
         specifier: ^10.4.1
@@ -75,14 +75,24 @@ importers:
         specifier: ^3.1.2
         version: 3.2.7(@types/node@22.20.1)(jsdom@26.1.0)
 
+  examples/about-first-take:
+    dependencies:
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
+    devDependencies:
+      react:
+        specifier: ^19.1.0
+        version: 19.2.8
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   examples/audio-mix:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -93,12 +103,9 @@ importers:
 
   examples/audio-volume-fade:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -109,9 +116,9 @@ importers:
 
   examples/circle-wipe:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -122,12 +129,9 @@ importers:
 
   examples/clip-hard-cut:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -138,12 +142,9 @@ importers:
 
   examples/clip-overlay-shapes:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -154,12 +155,9 @@ importers:
 
   examples/clip-pip-presenter:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -170,12 +168,9 @@ importers:
 
   examples/clip-sound-move:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -186,12 +181,9 @@ importers:
 
   examples/clip-trim-fullscreen:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -202,12 +194,9 @@ importers:
 
   examples/clip-zoom-presenter:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -218,9 +207,9 @@ importers:
 
   examples/fade-overlap:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -229,19 +218,17 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
-  examples/first-take-kit: {}
+  examples/first-take-kit:
+    dependencies:
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
 
   examples/hello-explainer:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
-      '@levi-putna/storyboard-transitions':
-        specifier: 0.3.0
-        version: link:../../packages/transitions
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -252,9 +239,9 @@ importers:
 
   examples/many-tracks:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -265,9 +252,9 @@ importers:
 
   examples/motion-basics:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -278,9 +265,9 @@ importers:
 
   examples/motion-lab:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -291,9 +278,9 @@ importers:
 
   examples/multi-format:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -304,9 +291,9 @@ importers:
 
   examples/solid-frames:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -317,12 +304,9 @@ importers:
 
   examples/three-robot:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
-      '@levi-putna/storyboard-media':
-        specifier: 0.3.0
-        version: link:../../packages/media
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
       three:
         specifier: ^0.170.0
         version: 0.170.0
@@ -339,9 +323,9 @@ importers:
 
   examples/timeline-alignment:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -352,9 +336,9 @@ importers:
 
   examples/track-overlay:
     dependencies:
-      '@levi-putna/storyboard-core':
-        specifier: 0.3.0
-        version: link:../../packages/core
+      first-take:
+        specifier: 0.2.0
+        version: link:../../packages/cli
     devDependencies:
       react:
         specifier: ^19.1.0
@@ -365,28 +349,52 @@ importers:
 
   packages/cli:
     dependencies:
-      '@levi-putna/storyboard-preview':
-        specifier: 0.3.0
-        version: link:../preview
-      '@levi-putna/storyboard-renderer':
-        specifier: 0.3.0
-        version: link:../renderer
-      '@levi-putna/storyboard-schema':
-        specifier: 0.3.0
-        version: link:../schema
       commander:
         specifier: ^13.1.0
         version: 13.1.0
       consola:
         specifier: ^3.4.2
         version: 3.4.2
+      execa:
+        specifier: ^9.5.2
+        version: 9.6.1
+      ffmpeg-static:
+        specifier: ^5.3.0
+        version: 5.3.0
+      ffprobe-static:
+        specifier: ^3.1.0
+        version: 3.1.0
+      lucide-react:
+        specifier: ^0.511.0
+        version: 0.511.0(react@19.2.8)
+      playwright:
+        specifier: ^1.52.0
+        version: 1.62.1
       react:
         specifier: ^19.1.0
         version: 19.2.8
       react-dom:
         specifier: ^19.1.0
         version: 19.2.8(react@19.2.8)
+      sirv:
+        specifier: ^3.0.1
+        version: 3.0.2
+      vite:
+        specifier: ^6.3.5
+        version: 6.4.3(@types/node@22.20.1)
+      zod:
+        specifier: ^3.24.4
+        version: 3.25.76
     devDependencies:
+      '@levi-putna/storyboard-preview':
+        specifier: 0.2.0
+        version: link:../preview
+      '@levi-putna/storyboard-renderer':
+        specifier: 0.2.0
+        version: link:../renderer
+      '@levi-putna/storyboard-schema':
+        specifier: 0.2.0
+        version: link:../schema
       tsup:
         specifier: ^8.4.0
         version: 8.5.1(postcss@8.5.26)(typescript@5.9.3)
@@ -397,7 +405,7 @@ importers:
   packages/core:
     dependencies:
       '@levi-putna/storyboard-schema':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../schema
     devDependencies:
       react:
@@ -416,7 +424,7 @@ importers:
   packages/media:
     dependencies:
       '@levi-putna/storyboard-core':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../core
     devDependencies:
       react:
@@ -432,16 +440,16 @@ importers:
   packages/preview:
     dependencies:
       '@levi-putna/storyboard-core':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../core
       '@levi-putna/storyboard-media':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../media
       '@levi-putna/storyboard-schema':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../schema
       '@levi-putna/storyboard-transitions':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../transitions
       lucide-react:
         specifier: ^0.511.0
@@ -466,16 +474,16 @@ importers:
   packages/renderer:
     dependencies:
       '@levi-putna/storyboard-core':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../core
       '@levi-putna/storyboard-media':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../media
       '@levi-putna/storyboard-schema':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../schema
       '@levi-putna/storyboard-transitions':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../transitions
       execa:
         specifier: ^9.5.2
@@ -525,13 +533,13 @@ importers:
   packages/transitions:
     dependencies:
       '@levi-putna/storyboard-core':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../core
       '@levi-putna/storyboard-media':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../media
       '@levi-putna/storyboard-schema':
-        specifier: 0.3.0
+        specifier: 0.2.0
         version: link:../schema
     devDependencies:
       react:

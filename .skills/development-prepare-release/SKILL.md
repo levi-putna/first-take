@@ -6,8 +6,8 @@ author: Levi Putna
 repo: https://github.com/levi-putna/first-take
 description: >-
   Prepare a First Take npm release: run the code-review and docs-readiness
-  checks, confirm the semver bump and changelog, lockstep-version all
-  @levi-putna/storyboard* packages, and verify git is shippable. Stops before
+  checks, confirm the semver bump and changelog, lockstep-version first-take
+  and the private workspace folders, and verify git is shippable. Stops before
   the registry; publishing is development-release-npm. Use when asked to cut a
   release, prepare a release, bump version, or get this ready to publish.
 dependencies:
@@ -38,7 +38,7 @@ requires:
 # Preparing a First Take release
 
 Orchestrates the two check skills, decides the version bump, updates the
-changelog, locksteps every publishable package, verifies nothing is
+changelog, locksteps first-take and the private workspace folders, verifies nothing is
 stranded locally, and **stops short of publishing**. Hand off to
 `development-release-npm` for the registry (browser 2FA in Safari, no typed OTP).
 
@@ -62,8 +62,8 @@ Release progress:
 
 | Field | Value |
 |-------|--------|
-| npx / CLI package | `first-take` (`packages/cli`, bin `first-take`) |
-| Libraries | `@levi-putna/storyboard-{schema,core,media,transitions,renderer,preview}` |
+| Public npm package | `first-take` (`packages/cli`, bin `first-take`) |
+| Private workspaces | `@levi-putna/storyboard-{schema,core,media,transitions,renderer,preview}` — `"private": true`; never publish |
 | Root | `storyboard` — always `"private": true`; never publish the root or `examples/*` |
 
 ## Hard rules
@@ -76,9 +76,10 @@ Release progress:
 - Do **not** create a git commit or push unless the user explicitly asks.
 - Keep package versions **in lockstep**. Use `pnpm set-version <ver>` —
   do not hand-edit eight `package.json` files.
-- Inter-package dependencies must use the **same exact version** string
-  (do not use `workspace:*`; it is not rewritten on publish).
+- Inter-package dependencies (private workspaces) must use the **same exact version** string
+  (do not use `workspace:*`).
 - Never skip the version-confirm or changelog-confirm steps.
+- Publish **one** tarball (`first-take`). Do not publish the private `@levi-putna/storyboard*` folders.
 
 ---
 
@@ -97,8 +98,8 @@ dispositioned yet.** Surface them and wait.
 
 Report both before asking anything:
 
-- **Repo version**: root `package.json` `"version"` (must match every
-  `@levi-putna/storyboard*` package).
+- **Repo version**: root `package.json` `"version"` (must match `first-take` and every
+  private `@levi-putna/storyboard*` workspace).
 - **Latest on npm**: `npm view first-take version`
   (404 / not found is expected before the first publish — say so).
 - **Latest git tag**: `git fetch --tags && git tag --list --sort=-v:refname | head -1`.
@@ -151,16 +152,18 @@ pnpm test:render
 pnpm test:smoke
 ```
 
-Also verify each publishable package has:
+Also verify the **one** public package (`packages/cli` / `first-take`) has:
 
-- `"name"` under `@levi-putna/storyboard` / `@levi-putna/storyboard-*`
+- `"name": "first-take"`
 - `"publishConfig": { "access": "public" }`
-- `"files"` including `"dist"` (`preview` also includes `"app"`)
-- `"main"` / `"types"` / `"exports"` pointing at built artefacts
-- No `"private": true` (root and examples only)
-- CLI has `"bin": { "first-take": "./dist/cli.js" }`
+- `"files"` including `"dist"` and `"app"`
+- `"main"` / `"types"` / `"exports"` pointing at assembled artefacts (`dist/core`, `dist/media`, …)
+- `"bin": { "first-take": "./dist/cli.js" }`
+- No runtime dependency on `@levi-putna/storyboard*`
 
-Confirm `dist/` exists after `pnpm build` for every package.
+Inner engine folders must have `"private": true` and no `"publishConfig"`.
+
+Confirm `dist/` exists after `pnpm build` for every package, plus `packages/cli/dist/core/index.js` and `packages/cli/app/index.html` (assemble).
 
 ## 6. Bump lockstep versions
 
@@ -171,7 +174,7 @@ pnpm set-version <ver>
 pnpm build
 ```
 
-Check that no `@levi-putna/storyboard*` dependency is still on the old
+Check that no `first-take` or `@levi-putna/storyboard*` dependency is still on the old
 version. The CLI reads its version from `packages/cli/package.json` at
 runtime — do not hardcode it in `cli.ts`.
 
@@ -192,10 +195,9 @@ and continue with `development-release-npm` (or wait if they only asked
 to prepare).
 
 That skill stages the README for npmjs.com, opens the default browser
-for npm web 2FA, publishes the seven packages in dependency order
-(schema → core → media → transitions → renderer → preview → CLI), then
-pushes git, tags `vX.Y.Z` (reusing the tag if it already exists), and
-creates the GitHub release from the changelog.
+for npm web 2FA, publishes **one** package (`first-take`), deprecates the old
+`@levi-putna/storyboard*` names, then pushes git, tags `vX.Y.Z` (reusing the
+tag if it already exists), and creates the GitHub release from the changelog.
 
 ## 9. Summarise
 

@@ -1,0 +1,91 @@
+{
+  "fps": 30,
+  "leadInFrames": 120,
+  "leadOutFrames": 4,
+  "voSeconds": 168.576,
+  "totalFrames": 5181,
+  "strippedLength": 2773,
+  "alignedLength": 2773,
+  "scenes": [
+    {
+      "id": "01",
+      "title": "Hook",
+      "audioStartSeconds": 0,
+      "audioEndSeconds": 11.645,
+      "charStart": 0,
+      "charEnd": 174,
+      "narration": "Most AI video tools give you a finished clip. If something is wrong, you regenerate it and hope the next version is better. <break time=\"0.4s\" /> First Take works differently.",
+      "durationInFrames": 374
+    },
+    {
+      "id": "02",
+      "title": "What it is",
+      "audioStartSeconds": 12.458,
+      "audioEndSeconds": 33.007,
+      "charStart": 176,
+      "charEnd": 477,
+      "narration": "It is a code-based video editor, designed from the ground up so your coding agent can create and edit alongside you. <break time=\"0.3s\" /> Describe the video you want. Ask your agent to build the scenes, create graphics, add overlays, animate elements, cut footage, adjust timing, or make another pass.",
+      "durationInFrames": 625
+    },
+    {
+      "id": "03",
+      "title": "The project",
+      "audioStartSeconds": 33.286,
+      "audioEndSeconds": 57.423,
+      "charStart": 479,
+      "charEnd": 848,
+      "narration": "The video is the project. <break time=\"0.3s\" /> Scenes are React components. The timeline is JSON. Your images, video and audio sit alongside the rest of the source. <break time=\"0.3s\" /> That means your agent can work on a video the same way it works on your application: reading the project, making precise edits, previewing the result and iterating on your direction.",
+      "durationInFrames": 753
+    },
+    {
+      "id": "04",
+      "title": "In the repo",
+      "audioStartSeconds": 58.375,
+      "audioEndSeconds": 83.765,
+      "charStart": 850,
+      "charEnd": 1224,
+      "narration": "Build an explainer video alongside the feature it documents. Create launch content in the same repo as your product. Update a screen recording when the UI changes. Commit the video with the code that changed it. <break time=\"0.4s\" /> And because the composition is code, the same project can publish to landscape, portrait or square without rebuilding the video from scratch.",
+      "durationInFrames": 783
+    },
+    {
+      "id": "05",
+      "title": "Real media",
+      "audioStartSeconds": 84.462,
+      "audioEndSeconds": 108.913,
+      "charStart": 1226,
+      "charEnd": 1631,
+      "narration": "You are not limited to generated motion graphics either. <break time=\"0.3s\" /> Drop in video, audio and images. Cut them. Trim them. Position them anywhere. <break time=\"0.3s\" /> A talking head in the corner. A screen recording full frame. A still behind the type. Product UI with animated callouts. Music underneath. <break time=\"0.3s\" /> Your agent can create the graphics and animation around all of it.",
+      "durationInFrames": 743
+    },
+    {
+      "id": "06",
+      "title": "Direct the pass",
+      "audioStartSeconds": 109.238,
+      "audioEndSeconds": 132.864,
+      "charStart": 1633,
+      "charEnd": 2152,
+      "narration": "You start with the vision. <break time=\"0.25s\" /> Your agent does the editing. <break time=\"0.3s\" /> Then you open the preview studio, watch it back and direct the next pass. <break time=\"0.4s\" /> Make this section faster. <break time=\"0.25s\" /> Highlight the new button. <break time=\"0.25s\" /> Add a title here. <break time=\"0.25s\" /> Turn this into a vertical version. <break time=\"0.25s\" /> Replace this screen with the latest UI. <break time=\"0.4s\" /> Those become edits to the project, not another roll of the dice.",
+      "durationInFrames": 719
+    },
+    {
+      "id": "07",
+      "title": "The studio",
+      "audioStartSeconds": 133.19,
+      "audioEndSeconds": 158.72,
+      "charStart": 2154,
+      "charEnd": 2571,
+      "narration": "And when you want to work manually, the studio is there too. <break time=\"0.3s\" /> Details on the right. The stage in the middle. The timeline underneath. <break time=\"0.3s\" /> Scrub the playhead. Double-click a clip to isolate it. Tweak a prop in the sidebar. Add a track. Drag a clip. Undo a change. <break time=\"0.3s\" /> The files remain the source of truth, so every manual change is there for the next agent pass.",
+      "durationInFrames": 779
+    },
+    {
+      "id": "08",
+      "title": "Land",
+      "audioStartSeconds": 159.161,
+      "audioEndSeconds": 168.576,
+      "charStart": 2573,
+      "charEnd": 2772,
+      "narration": "You stay the director. <break time=\"0.25s\" /> Your agent does the work. <break time=\"0.25s\" /> And your video stays editable. <break time=\"0.4s\" /> First Take is the video toolchain for coding agents.",
+      "durationInFrames": 286
+    }
+  ]
+}

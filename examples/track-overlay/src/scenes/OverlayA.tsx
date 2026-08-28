@@ -3,7 +3,7 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 
 /**
  * Transparent lower-third. The rest of the frame stays empty so the background shows through.

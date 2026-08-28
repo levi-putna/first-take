@@ -1,4 +1,4 @@
-import { Easing, interpolate } from "@levi-putna/storyboard-core";
+import { Easing, interpolate } from "first-take";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 

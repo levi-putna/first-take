@@ -2,7 +2,7 @@ import {
   AbsoluteFill,
   useAbsoluteFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 
 const TIMELINE_HEIGHT = 48;
 

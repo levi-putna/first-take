@@ -3,7 +3,7 @@
 Normative specification for the First Take **video definition file** — the JSON
 manifest that drives validation, preview, still capture, and MP4 render.
 
-Validated by `@levi-putna/storyboard-schema` (`videoManifestSchema`). Current
+Validated by `first-take/schema` (`videoManifestSchema`). Current
 `schemaVersion` is **`3`** (v2 removed framework `transitionIn`).
 
 Companion docs:
@@ -120,7 +120,7 @@ Fades, wipes, and other blends are **not** schema fields. Use overlapping tracks
 | `generated-video` | Reserved — rejected in MVP validation |
 | `real-video` | Reserved — rejected in MVP validation |
 
-Real footage is embedded **inside** a component via `@levi-putna/storyboard-media` `<Video />`,
+Real footage is embedded **inside** a component via `first-take/media` `<Video />`,
 not via `visualType: "real-video"`. See [09-video-clips.md](./09-video-clips.md).
 
 ### 4.2 Component path resolution
@@ -159,7 +159,7 @@ trackLength = cursor
 totalFrames = max(trackLengths)
 ```
 
-Implemented in `@levi-putna/storyboard-schema` as `trackDurationInFrames`,
+Implemented in `first-take/schema` as `trackDurationInFrames`,
 `totalDurationInFrames`, `scenePlacements`, and `sceneStartFrames`.
 
 A looping bed that should last the whole video is a scene whose
@@ -255,7 +255,7 @@ This layout is conventional, not schema-enforced.
 |--------|----------|
 | v1 `scenes` / `leadIn` / `seriesAudio` | Removed. Rewrite as `tracks[]` and in-scene `<Audio>` |
 | Add optional root/scene fields | Prefer backward-compatible additions; keep `schemaVersion: 3` until a break |
-| Rename/remove fields or change types | Bump `schemaVersion` and update this doc + `@levi-putna/storyboard-schema` |
+| Rename/remove fields or change types | Bump `schemaVersion` and update this doc + `first-take/schema` |
 | v2 `transitionIn` | Removed in v3. Use overlapping tracks and in-scene fades/wipes |
 
 Schema source of truth in code: `packages/schema/src/manifest.ts`.

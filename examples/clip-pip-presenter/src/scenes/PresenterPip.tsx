@@ -4,8 +4,8 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
-import { staticFile, Video } from "@levi-putna/storyboard-media";
+} from "first-take";
+import { staticFile, Video } from "first-take/media";
 
 /**
  * Presenter talking-head in the bottom-left, with animated graphics filling the frame.

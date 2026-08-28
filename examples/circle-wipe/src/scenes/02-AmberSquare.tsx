@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "@levi-putna/storyboard-core";
+import { AbsoluteFill } from "first-take";
 
 /**
  * Second hold — amber field with a centred rounded square.

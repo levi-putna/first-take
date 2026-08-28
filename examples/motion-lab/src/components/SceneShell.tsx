@@ -4,7 +4,7 @@ import {
   useCurrentFrame,
   useSequenceDuration,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 import type { CSSProperties, ReactNode } from "react";
 import { FrameTimeline, TIMELINE_HEIGHT } from "./FrameTimeline";
 

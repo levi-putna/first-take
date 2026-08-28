@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 3,
+  "slug": "about-first-take",
+  "title": "About First Take",
+  "fps": 30,
+  "formats": [
+    {
+      "id": "16x9",
+      "aspectRatio": "16:9",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "assetsRoot": ".",
+  "tracks": [
+    {
+      "id": "visual",
+      "title": "Graphics",
+      "description": "Component scenes for the concept. Gaps during the live studio beat.",
+      "scenes": [
+        {
+          "id": "lead",
+          "title": "Lead-in",
+          "visualType": "component",
+          "component": "src/components/LeadIn.tsx",
+          "props": {
+            "label": "First Take",
+            "subtitle": "Explainer videos you can edit, not just generate."
+          },
+          "durationInFrames": 120
+        },
+        {
+          "id": "01",
+          "title": "Hook",
+          "visualType": "component",
+          "component": "src/scenes/01-Hook.tsx",
+          "props": {
+            "eyebrow": "Finished clip",
+            "headline": "Most AI video tools give you a finished clip.",
+            "support": "First Take works differently.",
+            "audioStartSeconds": 0,
+            "audioEndSeconds": 11.645
+          },
+          "durationInFrames": 374
+        },
+        {
+          "id": "02",
+          "title": "What it is",
+          "visualType": "component",
+          "component": "src/scenes/01-Hook.tsx",
+          "props": {
+            "eyebrow": "Code-based",
+            "headline": "A code-based video editor.",
+            "support": "Designed so your coding agent can create and edit alongside you.",
+            "audioStartSeconds": 12.458,
+            "audioEndSeconds": 33.007
+          },
+          "durationInFrames": 625
+        },
+        {
+          "id": "03",
+          "title": "The project",
+          "visualType": "component",
+          "component": "src/scenes/02-Concept.tsx",
+          "props": {
+            "headline": "The video is the project.",
+            "audioStartSeconds": 33.286,
+            "audioEndSeconds": 57.423
+          },
+          "durationInFrames": 753
+        },
+        {
+          "id": "04",
+          "title": "In the repo",
+          "visualType": "component",
+          "component": "src/scenes/03-Loop.tsx",
+          "props": {
+            "headline": "Same project. Landscape, portrait or square.",
+            "audioStartSeconds": 58.375,
+            "audioEndSeconds": 83.765
+          },
+          "durationInFrames": 783
+        },
+        {
+          "id": "05",
+          "title": "Real media",
+          "visualType": "component",
+          "component": "src/scenes/01-Hook.tsx",
+          "props": {
+            "eyebrow": "Real media",
+            "headline": "Drop in video, audio and images.",
+            "support": "Cut them. Trim them. Position them anywhere.",
+            "audioStartSeconds": 84.462,
+            "audioEndSeconds": 108.913
+          },
+          "durationInFrames": 743
+        },
+        {
+          "id": "06",
+          "title": "Direct the pass",
+          "visualType": "component",
+          "component": "src/scenes/01-Hook.tsx",
+          "props": {
+            "eyebrow": "You direct",
+            "headline": "You start with the vision.",
+            "support": "Your agent does the editing.",
+            "audioStartSeconds": 109.238,
+            "audioEndSeconds": 132.864
+          },
+          "durationInFrames": 719
+        },
+        {
+          "id": "08",
+          "title": "Land",
+          "visualType": "component",
+          "component": "src/scenes/07-Land.tsx",
+          "props": {
+            "headline": "You stay the director.",
+            "support": "Your agent does the work. And your video stays editable.",
+            "command": "the video toolchain for coding agents",
+            "audioStartSeconds": 159.164,
+            "audioEndSeconds": 168.576
+          },
+          "durationInFrames": 286,
+          "gapBeforeFrames": 779
+        }
+      ]
+    },
+    {
+      "id": "screen",
+      "title": "Screen",
+      "description": "Preview studio capture. Replace assets/clips/screen.mp4.",
+      "scenes": [
+        {
+          "id": "screen-clip",
+          "title": "Studio screen",
+          "visualType": "component",
+          "component": "src/scenes/04-Screen.tsx",
+          "props": {
+            "src": "assets/clips/screen.mp4",
+            "startFrom": 0
+          },
+          "durationInFrames": 779,
+          "gapBeforeFrames": 4117
+        }
+      ]
+    },
+    {
+      "id": "presenter",
+      "title": "Presenter",
+      "description": "Talking-head PIP. Replace assets/clips/presenter.mp4. Muted under VO.",
+      "scenes": [
+        {
+          "id": "presenter-clip",
+          "title": "Talking head",
+          "visualType": "component",
+          "component": "src/scenes/05-Presenter.tsx",
+          "props": {
+            "src": "assets/clips/presenter.mp4",
+            "startFrom": 0
+          },
+          "durationInFrames": 779,
+          "gapBeforeFrames": 4117
+        }
+      ]
+    },
+    {
+      "id": "cursor-keys",
+      "title": "Mouse and keyboard",
+      "description": "Cursor and key overlay. Replace assets/clips/cursor-keys.mp4. Record on black.",
+      "scenes": [
+        {
+          "id": "cursor-clip",
+          "title": "Cursor and keys",
+          "visualType": "component",
+          "component": "src/scenes/06-CursorKeys.tsx",
+          "props": {
+            "src": "assets/clips/cursor-keys.mp4",
+            "startFrom": 0
+          },
+          "durationInFrames": 779,
+          "gapBeforeFrames": 4117
+        }
+      ]
+    },
+    {
+      "id": "audio",
+      "title": "Audio",
+      "description": "ElevenLabs narration from frame 120. Bed optional.",
+      "scenes": [
+        {
+          "id": "mix",
+          "title": "Mix",
+          "visualType": "component",
+          "component": "src/scenes/Mix.tsx",
+          "props": {
+            "narration": "assets/audio/narration.mp3",
+            "voStartFrame": 120
+          },
+          "durationInFrames": 5182
+        }
+      ]
+    }
+  ]
+}

@@ -77,7 +77,7 @@ pnpm add -D first-take
 npx first-take render video.json
 ```
 
-Scene files import the library packages: `@levi-putna/storyboard-core`, `@levi-putna/storyboard-media`, `@levi-putna/storyboard-transitions`, and `@levi-putna/storyboard-schema`.
+Scene files import that same package: `first-take` (frame clock and layout), `first-take/media`, `first-take/schema`, and `first-take/transitions`.
 
 ## Quick start
 
@@ -157,17 +157,18 @@ npx first-take still video.json --frame=0 --out=out/still.png
 npx first-take render video.json --verbose
 ```
 
-## Packages
+## Package
 
-| Package | Role |
-|---------|------|
-| [`first-take`](https://www.npmjs.com/package/first-take) | `first-take` CLI |
-| [`@levi-putna/storyboard-schema`](https://www.npmjs.com/package/@levi-putna/storyboard-schema) | `video.json` Zod schema and duration helpers |
-| [`@levi-putna/storyboard-core`](https://www.npmjs.com/package/@levi-putna/storyboard-core) | Frame context, Sequence, interpolate, spring, composition |
-| [`@levi-putna/storyboard-media`](https://www.npmjs.com/package/@levi-putna/storyboard-media) | Img, Audio, staticFile |
-| [`@levi-putna/storyboard-transitions`](https://www.npmjs.com/package/@levi-putna/storyboard-transitions) | Fade TransitionSeries |
-| [`@levi-putna/storyboard-renderer`](https://www.npmjs.com/package/@levi-putna/storyboard-renderer) | Vite bundle, Playwright capture, FFmpeg encode |
-| [`@levi-putna/storyboard-preview`](https://www.npmjs.com/package/@levi-putna/storyboard-preview) | Studio: multi-lane timeline and audible preview |
+One public package: [`first-take`](https://www.npmjs.com/package/first-take). The git repo still has folders under `packages/` (core, media, schema, transitions, renderer, preview, cli); npm gets a single tarball.
+
+| Import | Role |
+|--------|------|
+| `first-take` | Frame context, Sequence, interpolate, spring, composition; CLI binary `first-take` |
+| `first-take/media` | Img, Audio, Video, staticFile |
+| `first-take/schema` | `video.json` Zod schema and duration helpers |
+| `first-take/transitions` | Fade TransitionSeries, CompositionFromManifest |
+
+Renderer and preview stay inside that tarball. Scene authors do not import them. Older `@levi-putna/storyboard*` names on npm are deprecated.
 
 ## Develop
 

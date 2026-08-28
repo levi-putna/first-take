@@ -3,7 +3,7 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 import { SceneShell, useCrossfadeOpacity } from "../components/SceneShell";
 
 /**

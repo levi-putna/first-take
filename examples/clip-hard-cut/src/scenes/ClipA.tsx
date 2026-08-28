@@ -1,5 +1,5 @@
-import { AbsoluteFill } from "@levi-putna/storyboard-core";
-import { staticFile, Video } from "@levi-putna/storyboard-media";
+import { AbsoluteFill } from "first-take";
+import { staticFile, Video } from "first-take/media";
 
 /**
  * First shot — b-roll for 5 seconds (hard cut into the next scene).

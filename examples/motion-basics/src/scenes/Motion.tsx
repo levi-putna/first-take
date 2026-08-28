@@ -4,7 +4,7 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 
 /**
  * Frame-driven opacity and scale for golden motion checks (no text).

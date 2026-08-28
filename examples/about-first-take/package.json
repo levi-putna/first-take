@@ -1,0 +1,17 @@
+{
+  "name": "@storyboard/about-first-take",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "echo \"example — no build\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "first-take": "0.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "react": "^19.1.0"
+  }
+}

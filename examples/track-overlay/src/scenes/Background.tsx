@@ -1,4 +1,4 @@
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "first-take";
 
 /**
  * Opaque full-frame background that the overlay tracks sit on.

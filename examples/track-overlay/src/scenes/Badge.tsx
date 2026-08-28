@@ -3,7 +3,7 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 
 /**
  * Small corner badge on a third track, overlapping both overlays.

@@ -3,7 +3,7 @@ import {
   useAbsoluteFrame,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
+} from "first-take";
 import { formatClock } from "../formatClock";
 
 /**

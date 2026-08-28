@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Publish the seven public packages to npm in dependency order.
+ * Publish first-take to npm, then deprecate the old @levi-putna/storyboard* names.
  *
  * Default path is npm web 2FA: the script opens the default browser
  * (Safari when that is the macOS default) and never asks for a typed OTP.
@@ -20,18 +20,24 @@ import {
   parseNpmJson,
   stageCliDocs,
 } from "./stage-cli-docs.mjs";
+import { assembleFirstTake } from "./assemble-first-take.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-const order = [
+const publicPackage = "first-take";
+
+const deprecateNames = [
+  "@levi-putna/storyboard",
   "@levi-putna/storyboard-schema",
   "@levi-putna/storyboard-core",
   "@levi-putna/storyboard-media",
   "@levi-putna/storyboard-transitions",
   "@levi-putna/storyboard-renderer",
   "@levi-putna/storyboard-preview",
-  "first-take",
 ];
+
+const deprecateMessage =
+  'Use first-take. Scene imports: "first-take", "first-take/media", "first-take/schema", "first-take/transitions". CLI: npx first-take.';
 
 /**
  * Map each public package name to its directory under packages/.
@@ -188,29 +194,107 @@ async function publishPackage({ name, dir, otp }) {
 }
 
 /**
- * Stage docs, verify the CLI tarball, then publish every public package.
+ * Run `npm deprecate` with the same web-auth retry as publish.
+ */
+function runNpmDeprecate({ name, message, otp }) {
+  const args = [
+    "deprecate",
+    `${name}@*`,
+    message,
+    "--auth-type=web",
+    "--json",
+  ];
+  if (otp) args.push(`--otp=${otp}`);
+  return spawnSync("npm", args, {
+    cwd: root,
+    encoding: "utf8",
+    env: process.env,
+  });
+}
+
+/**
+ * Deprecate one old package name, reusing the web 2FA grant when possible.
+ */
+async function deprecatePackage({ name, otp }) {
+  console.log(`\n→ npm deprecate ${name}@*`);
+  let currentOtp = otp;
+
+  for (;;) {
+    const result = runNpmDeprecate({
+      name,
+      message: deprecateMessage,
+      otp: currentOtp,
+    });
+    if (result.status === 0) {
+      console.log(`Deprecated ${name}`);
+      return currentOtp;
+    }
+
+    const parsed = parseNpmJson({
+      stdout: result.stdout ?? "",
+      stderr: result.stderr ?? "",
+    });
+    const err = parsed?.error;
+    const code = err?.code;
+    const authUrl = err?.authUrl;
+    const doneUrl = err?.doneUrl;
+    const canWebAuth =
+      code === "EOTP" &&
+      authUrl &&
+      doneUrl &&
+      !isRedactedUrl({ url: authUrl }) &&
+      !isRedactedUrl({ url: doneUrl });
+
+    if (canWebAuth) {
+      console.log(
+        "npm needs web 2FA. Opening the default browser (Safari if that is the default).",
+      );
+      console.log(authUrl);
+      openInDefaultBrowser({ url: authUrl });
+      currentOtp = await pollDoneUrl({ doneUrl });
+      continue;
+    }
+
+    if (code === "EOTP" && currentOtp) {
+      currentOtp = undefined;
+      continue;
+    }
+
+    const detail = (result.stderr || result.stdout || "").trim();
+    throw new Error(
+      `Deprecate failed for ${name}${code ? ` (${code})` : ""}.\n${detail.slice(0, 2000)}`,
+    );
+  }
+}
+
+/**
+ * Assemble the single tarball, stage docs, publish first-take, deprecate old names.
  */
 async function main() {
   const otpArg = process.argv.find((arg) => arg.startsWith("--otp="));
   let otp = otpArg ? otpArg.slice("--otp=".length) : process.env.OTP;
 
+  assembleFirstTake();
+  console.log("Assembled first-take engine dists into packages/cli.");
   stageCliDocs();
   console.log("Staged packages/cli README.md and LICENSE from the repo root.");
   const packed = assertCliPackIncludesDocs();
   console.log(
-    `CLI tarball includes README.md and LICENSE (${packed.length} files).`,
+    `CLI tarball includes README.md, LICENSE, and assembled engine (${packed.length} files).`,
   );
 
   const dirs = packageDirectories();
-  for (const name of order) {
-    const dir = dirs.get(name);
-    if (!dir) {
-      throw new Error(`No packages/* directory found for ${name}`);
-    }
-    otp = await publishPackage({ name, dir, otp });
+  const dir = dirs.get(publicPackage);
+  if (!dir) {
+    throw new Error(`No packages/* directory found for ${publicPackage}`);
+  }
+  otp = await publishPackage({ name: publicPackage, dir, otp });
+
+  for (const name of deprecateNames) {
+    otp = await deprecatePackage({ name, otp });
   }
 
-  console.log("\nPublished first-take and @levi-putna/storyboard-* packages.");
+  console.log("\nPublished first-take and deprecated @levi-putna/storyboard*.");
   console.log("Verify: npx first-take --help");
 }
 

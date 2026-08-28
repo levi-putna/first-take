@@ -6,8 +6,8 @@ import {
   delayRender,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
-import { staticFile } from "@levi-putna/storyboard-media";
+} from "first-take";
+import { staticFile } from "first-take/media";
 import * as THREE from "three";
 import {
   createRobotRenderer,

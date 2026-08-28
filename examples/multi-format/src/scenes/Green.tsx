@@ -1,4 +1,4 @@
-import { AbsoluteFill, useVideoConfig } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, useVideoConfig } from "first-take";
 
 /**
  * Solid green scene; layout can read width/height from video config.

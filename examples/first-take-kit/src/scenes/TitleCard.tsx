@@ -1,4 +1,4 @@
-import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "@levi-putna/storyboard-core";
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "first-take";
 
 /** Animated title card for First Take lead-in / outro scenes. */
 export default function TitleCard({

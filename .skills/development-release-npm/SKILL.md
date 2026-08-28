@@ -57,12 +57,12 @@ Release:
 
 | Field | Value |
 |-------|--------|
-| npx / CLI package | `first-take` (`packages/cli`, bin `first-take`) |
-| Libraries | `@levi-putna/storyboard-{schema,core,media,transitions,renderer,preview}` |
+| Public npm package | `first-take` (`packages/cli`, bin `first-take`) |
+| Deprecated names | `@levi-putna/storyboard` and `@levi-putna/storyboard-{schema,core,media,transitions,renderer,preview}` |
 | Root | `storyboard` — `"private": true`; never publish the root or `examples/*` |
 | Git tag / GitHub release | `vX.Y.Z` matching the `first-take` package version |
 
-Publish order: schema → core → media → transitions → renderer → preview → CLI (`first-take`).
+Publish once: assemble into `packages/cli`, `npm publish` that folder, then `npm deprecate` the old names.
 
 ## Hard rules
 
@@ -78,8 +78,7 @@ Publish order: schema → core → media → transitions → renderer → previe
 - If the tag already exists, **do not move it** (no `git tag -f`, no
   force-push). Still create the GitHub release on that tag if one is missing.
 - Never skip the “publish now?” confirmation.
-- Today this still publishes **seven** packages. Do not implement the
-  single-tarball plan in `.doc/11-single-package-publish.md` from this skill.
+- Publish **one** tarball (`first-take`). Then deprecate the old `@levi-putna/storyboard*` names. Do not publish the private workspace folders.
 
 ---
 
@@ -99,7 +98,7 @@ confirmed.
 Report before continuing:
 
 - CLI version (`packages/cli/package.json` — this is `first-take`)
-- Engine version (root `package.json` / `@levi-putna/storyboard-*`)
+- Workspace version (root `package.json` / private `@levi-putna/storyboard-*` folders)
 - `npm view first-take version` (404 is fine on a first publish)
 - Confirm this `first-take` version is **not** already on npm
 
@@ -142,18 +141,16 @@ That command must succeed. It:
 - Inserts a banner pointing at https://github.com/levi-putna/first-take for
   schema, authoring, examples, and the agent playbook
 - Rewrites repo-relative markdown and HTML `src`/`href` to GitHub blob/raw URLs
-- `npm pack --dry-run` and refuses if `README.md` or `LICENSE` are missing
+- `npm pack --dry-run` and refuses if `README.md`, `LICENSE`, `dist/core/index.js`, or `app/index.html` are missing
 
 If it fails, stop and fix staging — do not publish a listing without docs.
 
 Show the user that the staged README points at GitHub for detailed docs. The
-six library packages stay description-only; their `homepage` already points at
-the repo.
+old library names are deprecated after publish; they are not published again.
 
 ## 4. Confirm before publishing
 
-Ask clearly: publish **vX.Y.Z** of `first-take` and the six `@levi-putna/storyboard*` libraries
-to the public npm registry, then push git and create the GitHub release now?
+Ask clearly: publish **vX.Y.Z** of `first-take` to the public npm registry, deprecate the old `@levi-putna/storyboard*` names, then push git and create the GitHub release now?
 
 Do not proceed without an explicit yes.
 
@@ -163,11 +160,11 @@ Do not proceed without an explicit yes.
 pnpm publish:npm
 ```
 
-`scripts/publish-packages.mjs` stages docs again, re-checks the CLI tarball,
-then publishes with `npm publish --auth-type=web`. On EOTP it **opens the
+`scripts/publish-packages.mjs` assembles the engine into `packages/cli`, stages docs, re-checks the CLI tarball,
+then publishes **once** with `npm publish --auth-type=web`. On EOTP it **opens the
 default browser** (`open <authUrl>` on macOS — Safari if that is the default)
 and polls npm until you finish 2FA there. The short-lived grant is reused for
-the remaining packages. If npm rejects reuse, Safari opens again. You should
+the deprecates. If npm rejects reuse, Safari opens again. You should
 not be asked to type a code.
 
 Tell the user to look at Safari and complete npm’s prompt. Stay with the
@@ -176,7 +173,7 @@ command until it finishes; do not background it and move on.
 If they already passed `--otp=` on purpose, `pnpm publish:npm --otp=…` still
 works as an escape hatch. Do not offer that as the default.
 
-Stop the whole run if any package fails. Do not skip a package and continue.
+Stop the whole run if publish or any deprecate fails. Do not skip a name and continue.
 Do not tag or create the GitHub release if npm publish failed.
 
 ## 6. Smoke-check

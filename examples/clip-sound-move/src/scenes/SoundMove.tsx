@@ -3,8 +3,8 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-} from "@levi-putna/storyboard-core";
-import { staticFile, Video } from "@levi-putna/storyboard-media";
+} from "first-take";
+import { staticFile, Video } from "first-take/media";
 
 /**
  * Sound-on clip that drifts around the frame to show animated positioning.

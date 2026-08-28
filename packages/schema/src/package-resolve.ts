@@ -3,8 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Published npm names for the First Take workspace packages.
- * The CLI is `first-take`; libraries are `@levi-putna/storyboard-<id>`.
+ * Workspace npm names (private except `cli` / `first-take`).
+ * After assemble, the published tarball is only `first-take`.
  */
 export const STORYBOARD_PACKAGES = {
   schema: "@levi-putna/storyboard-schema",
@@ -19,8 +19,22 @@ export const STORYBOARD_PACKAGES = {
 export type StoryboardPackageId = keyof typeof STORYBOARD_PACKAGES;
 
 /**
+ * Dist folder under a published `first-take` install (preview app lives at the package root).
+ */
+const PUBLISHED_DIST: Record<StoryboardPackageId, string | null> = {
+  schema: "schema",
+  core: "core",
+  media: "media",
+  transitions: "transitions",
+  renderer: "renderer",
+  preview: null,
+  cli: null,
+};
+
+/**
  * Resolve the on-disk root of a First Take package.
- * Works in this pnpm workspace and after `npx first-take`.
+ * In this monorepo that is `packages/<id>`. After `npx first-take`, everything
+ * lives inside the `first-take` package (`dist/<id>` or the package root for preview/cli).
  */
 export function resolveStoryboardPackageRoot({
   pkg,
@@ -30,15 +44,26 @@ export function resolveStoryboardPackageRoot({
   /** `import.meta.url` of the calling module, so Node walks the right node_modules tree. */
   from: string;
 }): string {
-  const name = STORYBOARD_PACKAGES[pkg];
   const req = createRequire(from);
+  const workspaceName = STORYBOARD_PACKAGES[pkg];
   try {
-    return path.dirname(req.resolve(`${name}/package.json`));
+    return path.dirname(req.resolve(`${workspaceName}/package.json`));
+  } catch {
+    // Published single package: no `@levi-putna/storyboard-*` installs.
+  }
+
+  let cliRoot: string;
+  try {
+    cliRoot = path.dirname(req.resolve("first-take/package.json"));
   } catch {
     throw new Error(
-      `Could not resolve ${name}. Install first-take (or this monorepo) first.`,
+      `Could not resolve ${workspaceName} or first-take. Install first-take (or this monorepo) first.`,
     );
   }
+
+  const distName = PUBLISHED_DIST[pkg];
+  if (distName === null) return cliRoot;
+  return path.join(cliRoot, "dist", distName);
 }
 
 /**
@@ -62,7 +87,8 @@ export function resolveStoryboardAliasTarget({
 }
 
 /**
- * Vite aliases for authoring imports (`@storyboard/*`) and published names.
+ * Vite aliases for authoring imports (`first-take`, `@storyboard/*`, and the
+ * private workspace names still used by preview/app and engine packages).
  */
 export function storyboardViteAliases({
   from,
@@ -73,31 +99,31 @@ export function storyboardViteAliases({
     pkg: "core",
     from,
     srcFile: "src/index.ts",
-    distFile: "dist/index.js",
+    distFile: "index.js",
   });
   const media = resolveStoryboardAliasTarget({
     pkg: "media",
     from,
     srcFile: "src/index.ts",
-    distFile: "dist/index.js",
+    distFile: "index.js",
   });
   const schema = resolveStoryboardAliasTarget({
     pkg: "schema",
     from,
     srcFile: "src/browser.ts",
-    distFile: "dist/browser.js",
+    distFile: "browser.js",
   });
   const transitions = resolveStoryboardAliasTarget({
     pkg: "transitions",
     from,
     srcFile: "src/index.ts",
-    distFile: "dist/index.js",
+    distFile: "index.js",
   });
   const rendererClient = resolveStoryboardAliasTarget({
     pkg: "renderer",
     from,
     srcFile: "src/client.tsx",
-    distFile: "dist/client.js",
+    distFile: "client.js",
   });
 
   return {
@@ -111,6 +137,12 @@ export function storyboardViteAliases({
     "@levi-putna/storyboard-schema": schema,
     "@levi-putna/storyboard-transitions": transitions,
     "@levi-putna/storyboard-renderer/client": rendererClient,
+    "first-take/media": media,
+    "first-take/schema/browser": schema,
+    "first-take/schema": schema,
+    "first-take/transitions": transitions,
+    "first-take/renderer/client": rendererClient,
+    "first-take": core,
   };
 }
 

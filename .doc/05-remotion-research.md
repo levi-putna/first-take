@@ -120,7 +120,7 @@ The skill currently assumes Remotion APIs (`useCurrentFrame`, `TransitionSeries`
 
 - Same **mental model** (frame-driven React, scenes, series audio).
 - Same **artefact shapes** (`scenes.json` timings, lead-in, formats).
-- Different **import paths** (`@levi-putna/storyboard-core` instead of `remotion`).
+- Different **import paths** (`first-take` instead of `remotion`).
 
 When the engine matures, the skill's setup docs should be updated to First Take; until then, this `.doc` set is the bridge.
 

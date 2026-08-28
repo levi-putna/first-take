@@ -25,7 +25,7 @@ export async function assertFfmpeg({
     await execa(ffprobe, ["-version"]);
   } catch {
     throw new Error(
-      `ffmpeg/ffprobe not found (tried ${ffmpeg} and ${ffprobe}). Reinstall @levi-putna/storyboard-renderer so the bundled binaries download, or set STORYBOARD_FFMPEG and STORYBOARD_FFPROBE.`,
+      `ffmpeg/ffprobe not found (tried ${ffmpeg} and ${ffprobe}). Reinstall first-take so the bundled binaries download, or set STORYBOARD_FFMPEG and STORYBOARD_FFPROBE.`,
     );
   }
 }
