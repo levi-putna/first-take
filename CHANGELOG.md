@@ -6,15 +6,15 @@ uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Changed
-
-- Preview studio wordmark, document title, and console URL log use **First Take**. In-repo CLI docs and scaffold follow-ups use `pnpm first-take` (consumers still run `npx first-take`).
-
 ## [first-take 0.1.0] - 2026-08-28
 
 ### Added
 
 - Public unscoped CLI package [`first-take`](https://www.npmjs.com/package/first-take) so consumers can run `npx first-take`, `npx first-take preview video.json`, and `npx first-take render video.json --format=16x9`. The npm listing ships the project README with links back to the [GitHub repository](https://github.com/levi-putna/first-take) for schema, authoring, and examples. Engine libraries remain `@levi-putna/storyboard-*` at 0.3.0.
+
+### Changed
+
+- Preview studio wordmark, document title, and console URL log use **First Take**. In-repo CLI docs and scaffold follow-ups use `pnpm first-take` (consumers still run `npx first-take`).
 
 ## [0.3.0] - 2026-08-27
 

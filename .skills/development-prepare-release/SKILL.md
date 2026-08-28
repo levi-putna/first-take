@@ -20,13 +20,13 @@ dependencies:
     name: npm
     required: true
     description: >-
-      Used to check the published version (`npm view @levi-putna/storyboard
-      version`). Publishing itself is development-release-npm.
+      Used to check the published version (`npm view first-take version`).
+      Publishing itself is development-release-npm.
     instructions: Install Node.js (bundles npm) from https://nodejs.org.
   - type: cli
     name: gh
     required: false
-    description: Used to double-check the GitHub remote and optional tags.
+    description: The follow-on skill uses gh to create the GitHub release.
     instructions: Install via `brew install gh`, then run `gh auth login`.
 requires:
   - id: 56824965-a4de-4b74-bf8d-5d04b598de77
@@ -55,7 +55,7 @@ Release progress:
 - [ ] 5. Quality gates
 - [ ] 6. Bump lockstep versions
 - [ ] 7. Verify git is shippable
-- [ ] 8. Hand off to development-release-npm (do not publish here)
+- [ ] 8. Hand off to development-release-npm (npm + git tag + GitHub release)
 ```
 
 ## Naming
@@ -99,7 +99,7 @@ Report both before asking anything:
 
 - **Repo version**: root `package.json` `"version"` (must match every
   `@levi-putna/storyboard*` package).
-- **Latest on npm**: `npm view @levi-putna/storyboard version`
+- **Latest on npm**: `npm view first-take version`
   (404 / not found is expected before the first publish — say so).
 - **Latest git tag**: `git fetch --tags && git tag --list --sort=-v:refname | head -1`.
 
@@ -178,12 +178,11 @@ runtime — do not hardcode it in `cli.ts`.
 ## 7. Verify git is shippable
 
 - `git status` must be clean enough to ship. If the changelog/version
-  bump is still uncommitted, tell the user what needs committing; do not
-  commit on their behalf without asking.
+  bump is still uncommitted, tell the user; `development-release-npm`
+  commits leftover release files after a successful npm publish.
 - The current branch should be pushed (`git status -sb`). If anything is
-  unpushed, say so and ask before pushing.
-- Suggested commit message if they ask you to commit: `release: vX.Y.Z`
-- Suggested annotated tag (only if they ask): `git tag -a vX.Y.Z -m "vX.Y.Z"`
+  unpushed, say so. The follow-on skill pushes the branch, creates or
+  reuses tag `vX.Y.Z`, and opens the GitHub release — do not do that here.
 
 ## 8. Hand off to development-release-npm — do not publish here
 
@@ -193,8 +192,10 @@ and continue with `development-release-npm` (or wait if they only asked
 to prepare).
 
 That skill stages the README for npmjs.com, opens the default browser
-for npm web 2FA, and publishes the seven packages in dependency order
-(schema → core → media → transitions → renderer → preview → CLI).
+for npm web 2FA, publishes the seven packages in dependency order
+(schema → core → media → transitions → renderer → preview → CLI), then
+pushes git, tags `vX.Y.Z` (reusing the tag if it already exists), and
+creates the GitHub release from the changelog.
 
 ## 9. Summarise
 
